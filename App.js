@@ -2,24 +2,32 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Button } from 'react-native';
 import { useState } from 'react';
 import Navigation from './services/Navigation'
+import Page1 from './examplePages/Page1'
+import Page2 from './examplePages/Page2'
+import Page3 from './examplePages/Page3'
 
 export default function App() {
 
-  const [page, setPage] = useState(0);
- 
+  const [navigate, setNavigate] = useState(0)
+  
   return (
     <View style={styles.container}>
 
-      <Navigation page = {page} setPage = {setPage}/>
+      {/* This component renders pages*/}
+    <Navigation setNavigate = {setNavigate} navigate = {navigate}>
+      <Page1/>
+      <Page2/>
+      <Page3/>
+    </Navigation>
 
-      {/* this is example thing */}
-      <View style={styles.navigationContainer}>
-        <Button title="Page 1" onPress={() => setPage(0)} />
-        <Button title="Page 2" onPress={() => setPage(1)} />
-        <Button title="Page 3" onPress={() => setPage(2)} />
-      </View>
+      {/* this is example navbar */}
+    <View style={styles.navigationContainer}>
+      <Button title="Page 1" onPress={() => setNavigate(0)} />
+      <Button title="Page 2" onPress={() => setNavigate(1)} />
+      <Button title="Page 3" onPress={() => setNavigate(2)} />
+    </View>
       <StatusBar style="auto" />
-      </View>
+    </View>
   );
 }
 
