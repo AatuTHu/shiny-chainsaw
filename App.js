@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Button } from 'react-native';
-import { authState } from './services/Firebase';
+import { auth } from './services/Firebase';
 import { useState, useEffect } from 'react';
 import Navigation from './services/Navigation'
 import Page1 from './examplePages/Page1'
@@ -11,28 +11,24 @@ import AuthPage from './components/AuthPage';
 export default function App() {
 
   const [navigate, setNavigate] = useState(0)
-  const [isLogged, setIsLogged] = useState(false)
-  const [user, setUser] = useState([])
+  const [loggedIn, setLoggedIn] = useState(true)
+  const [currentUser, setCurrentUser] = useState([])
 
   useEffect(() => {
-    const response = authState()
-
-    if(response.currentUser == undefined ) {
-      setIsLogged(false)
-    } else {
-      setIsLogged(true)
-      setUser(response.currentUser)
-    }
-  }, [isLogged])
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if(user) {
+        setCurrentUser(user)
+        setLoggedIn(false)
+      }
+    })
+    return unsubscribe
+  }, [])
   
+  if(loggedIn) {
+  return <AuthPage/> 
+  } else {
   return (
     <View style={styles.container}>
-
-    {isLogged === false ? 
-    <AuthPage setIsLogged = {setIsLogged}/> 
-    :
-    <>
-      
       <Navigation setNavigate = {setNavigate} navigate = {navigate}>
         <Page1/>
         <Page2/>
@@ -44,11 +40,10 @@ export default function App() {
         <Button title="Page 2" onPress={() => setNavigate(1)} />
         <Button title="Page 3" onPress={() => setNavigate(2)} />
       </View>
-    </>
-    }
+    
       <StatusBar style="auto" />
     </View>
-  );
+  )}
 }
 
 const styles = StyleSheet.create({
