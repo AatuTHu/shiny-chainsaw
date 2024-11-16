@@ -24,7 +24,7 @@ export default function App() {
     return unsubscribe
   }, [])
   
-  if(loggedIn) {
+  /* if(loggedIn) {
   return <AuthPage/> 
   } else {
   return (
@@ -43,7 +43,11 @@ export default function App() {
     
       <StatusBar style="auto" />
     </View>
-  )}
+  )} */
+
+    return (
+      <AuthPage/>
+    )
 }
 
 const styles = StyleSheet.create({
