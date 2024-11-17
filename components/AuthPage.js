@@ -4,19 +4,10 @@ import React, {useState} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
 
-const AuthPage = () => {
+export default function AuthPage({ setNavigate }) {
 
   const [email, setEmail] = useState('Example@email.com')
   const [password, setPassword] = useState('ExamplePassword')
-
-  const onRegisterPress = () => { 
-    const response = registerUser(email, password)
-    if( response === false) {
-      console.log("jotain error messagea")
-    } else {
-      console.log("Onnistuit")
-    }
-  }
 
   const onSignInPress = () => {
     const response = signInUser(email, password)
@@ -31,12 +22,13 @@ const AuthPage = () => {
     <View style={styles.container}>
     <Text style={styles.title}>Sign In</Text>
 
-    {/* Username Input */}
+    {/* Email Input */}
     <View style={styles.inputContainer}>
       <Icon name="person" size={20} color="#fff" style={styles.icon} />
       <TextInput
-        value={setEmail}
-        placeholder="Username"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        placeholder="Email"
         placeholderTextColor="#888"
         style={styles.input}
       />
@@ -46,7 +38,8 @@ const AuthPage = () => {
     <View style={styles.inputContainer}>
       <Icon name="key" size={20} color="#fff" style={styles.icon} />
       <TextInput
-        value={setPassword}
+        value={password}
+        onChangeText={(text) => setPassword(text)}
         placeholder="Password"
         placeholderTextColor="#888"
         secureTextEntry
@@ -87,7 +80,7 @@ const AuthPage = () => {
     {/* Sign Up Section */}
     <View style={styles.signUpContainer}>
       <Text style={styles.signUpText}>Don't have an account?</Text>
-      <TouchableOpacity onPress={onRegisterPress} >
+      <TouchableOpacity onPress={() => setNavigate(1)} >
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
@@ -191,5 +184,3 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 });
-
-export default AuthPage

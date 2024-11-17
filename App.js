@@ -3,10 +3,9 @@ import { StyleSheet, View, Button } from 'react-native';
 import { auth } from './services/Firebase';
 import { useState, useEffect } from 'react';
 import Navigation from './services/Navigation'
-import Page1 from './examplePages/Page1'
-import Page2 from './examplePages/Page2'
-import Page3 from './examplePages/Page3'
 import AuthPage from './components/AuthPage';
+import RegisterPage from './components/RegisterPage'
+import Page3 from './examplePages/Page3'
 
 export default function App() {
 
@@ -46,7 +45,10 @@ export default function App() {
   )} */
 
     return (
-      <AuthPage/>
+      <Navigation setNavigate={setNavigate} navigate={navigate}>
+        <AuthPage setNavigate={setNavigate} />
+        <RegisterPage setNavigate={setNavigate} />
+      </Navigation>
     )
 }
 
