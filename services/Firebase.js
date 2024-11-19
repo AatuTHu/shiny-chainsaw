@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  initializeAuth, 
+  getReactNativePersistence, 
+  signInAnonymously} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -18,31 +24,19 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage)
 })
 
-const registerUser = async(email, password) => { //Register user with email and password
-  await createUserWithEmailAndPassword(auth, email, password)
-  .then((credentials) => {
-    return credentials.user
-  }).catch((err) => {
-    return false
-  })
-
+const registerUser = (email, password) => { //Register user with email and password
+  createUserWithEmailAndPassword(auth, email, password)
 }
 
-const signInUser = async(email, password) => { //login user with email and password
-  await signInWithEmailAndPassword(auth, email, password)
-  .then((credentials) => {
-    return credentials.user
-  }).catch((err) => {
-    return false
-  })
-  
+const signInUser = (email, password) => { //login user with email and password
+  signInWithEmailAndPassword(auth, email, password)
+}
+
+const signInAnonymousUser = () => { //Sign user in anonymously
+  signInAnonymously(auth)
 }
 const signOutUser = () => { //Sign user out
-  signOut(auth).then(()=> {
-    return true
-  }).catch((err) => {
-    return false
-  })
+  signOut(auth)
 }
 
 
@@ -51,5 +45,6 @@ export {
   registerUser,
   signInUser,
   signOutUser,
+  signInAnonymousUser,
   auth
 }

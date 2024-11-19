@@ -1,5 +1,5 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
-import { registerUser, signInUser } from '../services/Firebase'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { signInUser, signInAnonymousUser } from '../services/Firebase'
 import React, {useState} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,12 +10,13 @@ export default function AuthPage({ setNavigate }) {
   const [password, setPassword] = useState('ExamplePassword')
 
   const onSignInPress = () => {
-    const response = signInUser(email, password)
-    if( response === false) {
-      console.log("jotain error messagea")
-    } else {
-      console.log("Onnistuit")
-    }
+    signInUser(email, password)
+    setNavigate(2); // Navigate to HomePage
+  }
+
+  const onContinueAnonymousPress = () => {
+    signInAnonymousUser()
+    setNavigate(2) // Navigate to HomePage
   }
 
   return (
@@ -75,6 +76,12 @@ export default function AuthPage({ setNavigate }) {
     <TouchableOpacity style={styles.googleButton}>
       <Icon name="logo-google" size={20} color="#fff" />
       <Text style={styles.googleButtonText}>Google</Text>
+    </TouchableOpacity>
+
+    {/* Anonymous Sign In Button */}
+    <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
+      <Icon name="person" size={20} color="#fff" />
+      <Text style={styles.googleButtonText}>Continue as guest</Text>
     </TouchableOpacity>
 
     {/* Sign Up Section */}

@@ -29,11 +29,12 @@ export default function CreateAccountScreen({ setNavigate})  {
         if (password.length < 6) {
         Alert.alert('Weak Password', 'Password should be at least 6 characters long.');
         return;
-    }
-
-    // If all validations pass
-    Alert.alert('Success', 'Account created successfully!');
-    setNavigate(0); // Navigate back to the login page
+      }
+      
+      // If all validations pass
+      registerUser(email, password)
+      Alert.alert('Success', 'Account created successfully!');
+      setNavigate(2); // Navigate to HomePage
     };
 
   return (
