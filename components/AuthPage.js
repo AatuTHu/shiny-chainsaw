@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import { signInUser, signInAnonymousUser } from '../services/Firebase'
+import { auth, signInWithEmailAndPassword, signInAnonymously} from '../services/Firebase'
 import React, {useState} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,13 +10,21 @@ export default function AuthPage({ setNavigate }) {
   const [password, setPassword] = useState('ExamplePassword')
 
   const onSignInPress = () => {
-    signInUser(email, password)
-    setNavigate(2); // Navigate to HomePage
+    signInWithEmailAndPassword(auth, email, password).then((creds) =>{
+
+    }).catch((error) => {
+      console.log(error)
+      Alert.alert('Error', 'Invalid email or password')
+    })
   }
 
   const onContinueAnonymousPress = () => {
-    signInAnonymousUser()
-    setNavigate(2) // Navigate to HomePage
+    signInAnonymously(auth).then((creds) =>{
+
+    }).catch((error) => {
+      console.log(error)
+      Alert.alert('Error', 'Failed to sign in anonymously')
+    })
   }
 
   return (

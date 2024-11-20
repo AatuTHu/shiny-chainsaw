@@ -24,27 +24,12 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage)
 })
 
-const registerUser = (email, password) => { //Register user with email and password
-  createUserWithEmailAndPassword(auth, email, password)
-}
-
-const signInUser = (email, password) => { //login user with email and password
-  signInWithEmailAndPassword(auth, email, password)
-}
-
-const signInAnonymousUser = () => { //Sign user in anonymously
-  signInAnonymously(auth)
-}
-const signOutUser = () => { //Sign user out
-  signOut(auth)
-}
-
-
-
 export {
-  registerUser,
-  signInUser,
-  signOutUser,
-  signInAnonymousUser,
-  auth
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut,  
+  getReactNativePersistence, 
+  signInAnonymously,
+  auth,
+  db
 }

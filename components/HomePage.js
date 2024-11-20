@@ -1,13 +1,16 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
-import { signOutUser } from '../services/Firebase'
+import { signOut,auth } from '../services/Firebase'
 import React from 'react'
 
 export default function HomePage ({setNavigate}) {
 
   const SignOut = () => {
-      signOutUser()
+    signOut(auth).then(()=> {
       setNavigate(0)
-    }
+    }).catch((e)=> {
+      console.log(e)
+    })
+  }
 
   return (
     <View style={styles.container}>

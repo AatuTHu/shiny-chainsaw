@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { registerUser, signInUser } from '../services/Firebase'
+import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
 
 
 export default function CreateAccountScreen({ setNavigate})  {
@@ -11,7 +11,7 @@ export default function CreateAccountScreen({ setNavigate})  {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
   
-// Function to handle registration with email validation
+    // Function to handle registration with email validation
     const handleRegister = () => {
         // Email regex pattern for validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,9 +32,12 @@ export default function CreateAccountScreen({ setNavigate})  {
       }
       
       // If all validations pass
-      registerUser(email, password)
-      Alert.alert('Success', 'Account created successfully!');
-      setNavigate(2); // Navigate to HomePage
+      createUserWithEmailAndPassword(auth, email, password).then(() =>{
+        Alert.alert('Success', 'Account created successfully!');
+      }).catch((error) => {
+        console.log(error)
+        Alert.alert('Error', 'Failed to create account. Please try again.');
+      })
     };
 
   return (
