@@ -1,105 +1,136 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import { auth, signInWithEmailAndPassword, signInAnonymously} from '../services/Firebase'
+import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import { auth, signInAnonymously, signInWithEmailAndPassword} from '../services/Firebase'
 import React, {useState} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur'
 
 export default function AuthPage({ setNavigate }) {
 
   const [email, setEmail] = useState('Example@email.com')
   const [password, setPassword] = useState('ExamplePassword')
+  const [isLoading, setIsLoading] = useState(false)
 
   const onSignInPress = () => {
-    signInWithEmailAndPassword(auth, email, password).then((creds) =>{
-
-    }).catch((error) => {
-      console.log(error)
-      Alert.alert('Error', 'Invalid email or password')
-    })
-  }
+    setIsLoading(true);
+    
+    // Timeout to see the fancy blur and activity indicator
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+      Alert.alert('Error', 'Login timed out. Please try again.');
+    }, 5000);
+    
+    // Sign-in with Firebase
+    signInWithEmailAndPassword(auth, email, password)
+      .then((creds) => {
+        clearTimeout(timeout);  // Clear the timeout if sign-in is successful
+        setIsLoading(false);
+        setNavigate(2);
+      })
+      .catch((error) => {
+        clearTimeout(timeout);  // Clear the timeout if there's an error
+        setIsLoading(false);
+        console.log(error);
+        Alert.alert('Error', 'Invalid email or password');
+      });
+  };
 
   const onContinueAnonymousPress = () => {
-    signInAnonymously(auth).then((creds) =>{
-
+    setIsLoading(true);
+    signInAnonymously(auth)
+      .then((creds) =>{
+        setIsLoading(false);
+        setNavigate(2);
     }).catch((error) => {
+      setIsLoading(false);
       console.log(error)
       Alert.alert('Error', 'Failed to sign in anonymously')
     })
   }
 
   return (
-    <View style={styles.container}>
-    <Text style={styles.title}>Sign In</Text>
+    <SafeAreaView style={styles.container}>
+      {/* Blur and spinner */}
+      {isLoading && (
+        <BlurView intensity={100} tint='dark' style={styles.blur}>
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#4285F4" />
+            <Text style={styles.loaderText}>Logging in...</Text>
+          </View>
+        </BlurView>
+      )}
 
-    {/* Email Input */}
-    <View style={styles.inputContainer}>
-      <Icon name="person" size={20} color="#fff" style={styles.icon} />
-      <TextInput
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholder="Email"
-        placeholderTextColor="#888"
-        style={styles.input}
-      />
-    </View>
+      <Text style={styles.title}>Sign In</Text>
 
-    {/* Password Input */}
-    <View style={styles.inputContainer}>
-      <Icon name="key" size={20} color="#fff" style={styles.icon} />
-      <TextInput
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        style={styles.input}
-      />
-    </View>
+      {/* Email Input */}
+      <View style={styles.inputContainer}>
+        <Icon name="person" size={20} color="#fff" style={styles.icon} />
+        <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="Email"
+          placeholderTextColor="#888"
+          style={styles.input}
+        />
+      </View>
 
-    {/* Forgot Password */}
-    <TouchableOpacity style={styles.forgotPassword}>
-      <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-    </TouchableOpacity>
+      {/* Password Input */}
+      <View style={styles.inputContainer}>
+        <Icon name="key" size={20} color="#fff" style={styles.icon} />
+        <TextInput
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Password"
+          placeholderTextColor="#888"
+          secureTextEntry
+          style={styles.input}
+        />
+      </View>
 
-    {/* Sign In Button */}
-    <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
-      <LinearGradient
-        colors={['#4a90e2', '#f5d76e']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.gradientButton}
-      >
-        <Text style={styles.signInButtonText}>Sign In</Text>
-      </LinearGradient>
-    </TouchableOpacity>
-
-    {/* Divider Text */}
-    <View style={styles.dividerContainer}>
-      <View style={styles.dividerLine} />
-        <Text style={styles.orText}>Or Sign In With</Text>
-      <View style={styles.dividerLine} />
-    </View>
-
-    {/* Google Sign In Button */}
-    <TouchableOpacity style={styles.googleButton}>
-      <Icon name="logo-google" size={20} color="#fff" />
-      <Text style={styles.googleButtonText}>Google</Text>
-    </TouchableOpacity>
-
-    {/* Anonymous Sign In Button */}
-    <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
-      <Icon name="person" size={20} color="#fff" />
-      <Text style={styles.googleButtonText}>Continue as guest</Text>
-    </TouchableOpacity>
-
-    {/* Sign Up Section */}
-    <View style={styles.signUpContainer}>
-      <Text style={styles.signUpText}>Don't have an account?</Text>
-      <TouchableOpacity onPress={() => setNavigate(1)} >
-        <Text style={styles.signUpButtonText}>Sign Up</Text>
+      {/* Forgot Password */}
+      <TouchableOpacity style={styles.forgotPassword}>
+        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
-    </View>
-  </View>
+
+      {/* Sign In Button */}
+      <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
+        <LinearGradient
+          colors={['#4a90e2', '#f5d76e']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientButton}
+        >
+          <Text style={styles.signInButtonText}>Sign In</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      {/* Divider Text */}
+      <View style={styles.dividerContainer}>
+        <View style={styles.dividerLine} />
+          <Text style={styles.orText}>Or Sign In With</Text>
+        <View style={styles.dividerLine} />
+      </View>
+
+      {/* Google Sign In Button */}
+      <TouchableOpacity style={styles.googleButton}>
+        <Icon name="logo-google" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Google</Text>
+      </TouchableOpacity>
+
+      {/* Anonymous Sign In Button */}
+      <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
+        <Icon name="person" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Continue as guest</Text>
+      </TouchableOpacity>
+
+      {/* Sign Up Section */}
+      <View style={styles.signUpContainer}>
+        <Text style={styles.signUpText}>Don't have an account?</Text>
+        <TouchableOpacity onPress={() => setNavigate(1)} >
+          <Text style={styles.signUpButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   )
 };
 
@@ -197,5 +228,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 10,
+  },
+  blur:{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1, // Ensure blur view is on top of other content
   },
 });
