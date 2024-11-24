@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
 
 
-export default function CreateAccountScreen({ setNavigate})  {
+export default function RegisterPage({ setNavigate })  {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
@@ -86,7 +86,7 @@ export default function CreateAccountScreen({ setNavigate})  {
       {/* Create Account Button */}
       <TouchableOpacity onPress={handleRegister} style={styles.createAccountButton}>
         <LinearGradient
-          colors={['#4a90e2', '#f5d76e']}
+          colors={['#0F3544', '#33E49C']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.gradientButton}

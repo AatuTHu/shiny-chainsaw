@@ -2,9 +2,10 @@ import { StyleSheet,View,Text } from 'react-native';
 import { auth } from './services/Firebase';
 import { useState, useEffect } from 'react';
 import Navigation from './services/Navigation'
-import AuthPage from './components/AuthPage';
-import RegisterPage from './components/RegisterPage'
-import HomePage from './components/HomePage'
+import Auth from './components/AuthPage';
+import Register from './components/RegisterPage'
+import Home from './components/HomePage'
+import Start from  './components/StartPage'
 
 export default function App() {
 
@@ -34,9 +35,10 @@ export default function App() {
     )} else {
     return (
       <Navigation setNavigate={setNavigate} navigate={navigate}>
-        <AuthPage setNavigate={setNavigate} />
-        <RegisterPage setNavigate={setNavigate}/>
-        <HomePage setNavigate={setNavigate} currentUser={currentUser}/>
+        <Auth setNavigate={setNavigate} />
+        <Register setNavigate={setNavigate}/>
+        <Start setNavigate={setNavigate} navigate={navigate}/>
+        <Home setNavigate={setNavigate} currentUser={currentUser}/>
       </Navigation>
     )
   }
