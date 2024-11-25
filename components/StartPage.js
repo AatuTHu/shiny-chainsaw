@@ -1,5 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, SafeAreaView } from 'react-native'
+import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
+
 export default function StartPage() {
   const [step, setStep] = useState(1);
 
@@ -7,7 +9,9 @@ export default function StartPage() {
   const [salaryFrq, setSalaryFrq] = useState('Monthly');
   const [salaryFrqVisible, setSalaryFrqVisible] = useState(false);
 
-  const [livingExpenses, setLivingExpenses] = useState('');
+  const [housing, setHousing] = useState('');	
+  const [groceries, setGroceries] = useState('');
+  const [transportation, setTransportation] = useState('');
 
   const [bills, setBills] = useState([]);
   const [billName, setBillName] = useState('');
@@ -27,7 +31,7 @@ export default function StartPage() {
 
   const [savingGoal, setSavingGoal] = useState('');
   
-  const frequencies = ['Weekly', 'Bi-Weekly', 'Monthly']; // May need to add more options
+  const frequencies = ['Weekly', 'Bi-Weekly', 'Monthly', 'Bi-Monthly', 'Quarterly', 'Semiannual', 'Annual']; // May need to add more options
 
   // Show inputfields step by step
   const handleNextStep = () => {
@@ -38,29 +42,26 @@ export default function StartPage() {
         }
         break;
       case 2:
-        if(livingExpenses!== ''){
+        if(housing !== '' && groceries !== '' && transportation !== ''){
+          handleAddBill();
           setStep(3);
         }
         break;
       case 3:
-        handleAddBill();
+        handleAddDebt();
         setStep(4);
         break;
       case 4:
-        handleAddDebt();
-        setStep(5);
-        break;
-      case 5:
         if (emergencyFund !== '' && emergencyGoal !== ''){
           setStep(6);
         }
         break;
-      case 6:
+      case 5:
         if(savingGoal !== ''){
           setStep(7);
         }
         break;
-      case 7:
+      case 6:
         console.log('Final confirmation submitted!');
         break;
       default:
@@ -136,7 +137,7 @@ export default function StartPage() {
       {/* Step 1: Salary */}
       {step === 1 && (
         <View style={styles.stepContainer}>
-          <Text style={styles.label}>Enter your salary:</Text>
+          <Text style={styles.label}>Salary:</Text>
           <TextInput
             style={styles.input}
             placeholder="Salary amount"
@@ -172,36 +173,35 @@ export default function StartPage() {
       {/* Step 2: Living Expenses */}
       {step === 2 && (
         <View style={styles.stepContainer}>
-          <Text style={styles.label}>Living expenses:</Text>
+          <Text style={styles.label}>Monthly Living Expenses:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Monthly living expenses"
+            placeholder="Rent / Mortgage"
             placeholderTextColor="#888"
             keyboardType="numeric"
-            value={livingExpenses}
-            onChangeText={(text) => setLivingExpenses(text)}
+            value={housing}
+            onChangeText={(text) => setHousing(text)}
           />
-          <View style={styles.navButtons}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={handleStepBack}
-            >
-              <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={handleNextStep}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-  
-      {/* Step 3: Recurring Bills */}
-      {step === 3 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.label}>Add a recurring bill:</Text>
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Food and Groceries"
+            placeholderTextColor="#888"
+            keyboardType="numeric"
+            value={groceries}
+            onChangeText={(text) => setGroceries(text)}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Transportation"
+            placeholderTextColor="#888"
+            keyboardType="numeric"
+            value={transportation}
+            onChangeText={(text) => setTransportation(text)}
+          />
+
+          <Text style={styles.label}>Recurring Bills:</Text>
           <TextInput
             style={styles.input}
             placeholder="Bill name"
@@ -263,8 +263,8 @@ export default function StartPage() {
         </View>
       )}
   
-      {/* Step 4: Debt Details */}
-      {step === 4 && (
+      {/* Step 3: Debt Details */}
+      {step === 3 && (
         <View style={styles.stepContainer}>
           <Text style={styles.label}>Debt:</Text>
           <TextInput
@@ -336,10 +336,10 @@ export default function StartPage() {
         </View>
       )}
   
-      {/* Step 5: Emergency Fund */}
-      {step === 5 && (
+      {/* Step 4: Emergency Fund */}
+      {step === 4 && (
         <View style={styles.stepContainer}>
-          <Text style={styles.label}>Emergency fund:</Text>
+          <Text style={styles.label}>Emergency Fund:</Text>
           <TextInput
             style={styles.input}
             placeholder="Current emergency fund"
@@ -348,7 +348,7 @@ export default function StartPage() {
             value={emergencyFund}
             onChangeText={(text) => setEmergencyFund(text)}
           />
-          <Text style={styles.label}>Emergency fund goal:</Text>
+          <Text style={styles.label}>Emergency Fund Goal:</Text>
           <TextInput
             style={styles.input}
             placeholder="Emergency fund goal"
@@ -374,10 +374,10 @@ export default function StartPage() {
         </View>
       )}
 
-      {/* Step 6: Saving Goal */}
-      {step === 6 && (
+      {/* Step 5: Saving Goal */}
+      {step === 5 && (
         <View style={styles.stepContainer}>
-          <Text style={styles.label}>Saving goal:</Text>
+          <Text style={styles.label}>Saving Goal:</Text>
           <TextInput
             style={styles.input}
             placeholder="Saving goal amount"
@@ -403,18 +403,23 @@ export default function StartPage() {
         </View>
       )};
 
-      {/* Step 7: Summary */}
-      {step === 7 && (
+      {/* Step 6: Summary */}
+      {step === 6 && (
         <View style={styles.summaryContainer}>
           <Text style={styles.summaryTitle}>Summary</Text>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Salary:</Text>
             <Text style={styles.summaryValue}>{salary} ({salaryFrq})</Text>
           </View>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Living Expenses:</Text>
-            <Text style={styles.summaryValue}>{livingExpenses}</Text>
+            <Text style={styles.summaryValue}>Housing: {housing}</Text>
+            <Text style={styles.summaryValue}>Food and Groceries: {groceries}</Text>
+            <Text style={styles.summaryValue}>Transportation: {transportation}</Text>
           </View>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Bills:</Text>
             {bills.length > 0 ? (
@@ -424,27 +429,35 @@ export default function StartPage() {
                 </Text>
               ))
             ) : (
-              <Text style={styles.summaryValue}>No bills added.</Text>
+              <Text style={styles.summaryValue}>No Bills Added.</Text>
             )}
           </View>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Debts:</Text>
-            {debts.map((debt, index) => (
+            {debts.length > 0 ? (
+            debts.map((debt, index) => (
             <Text key={index} style={styles.summaryValue}>
               {debt.name}: ${debt.amount} (Repayment: ${debt.payment}, {debt.frq})
             </Text>
-        ))}
+            ))
+          ) : (
+            <Text style={styles.summaryValue}>No debts added.</Text>
+          )}
           </View>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Emergency Fund:</Text>
             <Text style={styles.summaryValue}>
               Current: {emergencyFund}, Goal: {emergencyGoal}
             </Text>
           </View>
+
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Saving Goal:</Text>
             <Text style={styles.summaryValue}>{savingGoal}</Text>
           </View>
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.backButton}
@@ -465,170 +478,3 @@ export default function StartPage() {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0e0e14',
-    padding: 20,
-  },
-  stepContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: 18,
-    color: '#fff',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#444',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#2a2a3d',
-    color: '#fff',
-    marginVertical: 10,
-  },
-  dropdownButton: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#2a2a3d',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  dropdownText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  billItem: {
-    color: '#fff',
-    fontSize: 16,
-    marginVertical: 5,
-  },
-  navButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginTop: 20,
-    width: '100%',
-  },
-  backButton: {
-    backgroundColor: '#ff1100',
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  nextButton: {
-    backgroundColor: '#1e90ff',
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
-  },
-  nextButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  modal: {
-    backgroundColor: '#2a2a3d',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    color: '#fff',
-    marginBottom: 20,
-  },
-  modalItem: {
-    paddingVertical: 10,
-  },
-  modalOptionText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  modalCloseButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#ff6347',
-    borderRadius: 5,
-  },
-  modalCloseText: {
-    color: '#fff',
-    textAlign: 'center',
-  },
-  summaryContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  summaryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  summaryItem: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginVertical: 5,
-    width: '100%',
-  },
-  summaryLabel: {
-    fontSize: 16,
-    color: '#aaa',
-    fontWeight: '600',
-  },
-  summaryValue: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  finishButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
-  },
-  finishButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },  
-  billListContainer: {
-    maxHeight: 200,
-    width: '80%',
-    marginVertical: 10,
-    overflow: 'hidden',
-  },
-});
