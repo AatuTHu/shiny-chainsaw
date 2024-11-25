@@ -5,25 +5,28 @@ import Navigation from './services/Navigation'
 import AuthPage from './components/AuthPage';
 import RegisterPage from './components/RegisterPage'
 import HomePage from './components/HomePage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
 
   const [navigate, setNavigate] = useState(0)
-  const [currentUser, setCurrentUser] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if(user) {
-        setCurrentUser(user)
-        setLoading(false)
-        setNavigate(2)
-      } else {
-        setLoading(false)
-        setNavigate(0) // User not logged in. Go to AuthPage.
-      }
-    })
-    return unsubscribe
+  const isLoggedIn = async() => {
+      const isAnonymous = await AsyncStorage.getItem('isAnonymous')   
+      auth.onAuthStateChanged(user => {
+        if(user || isAnonymous) {
+          setLoading(false)
+          setNavigate(2)
+        } else {
+          setLoading(false)
+          setNavigate(0)
+        }
+      })
+  }
+
+  isLoggedIn()
   }, [])
 
   if(loading == true) {
@@ -36,7 +39,7 @@ export default function App() {
       <Navigation setNavigate={setNavigate} navigate={navigate}>
         <AuthPage setNavigate={setNavigate} />
         <RegisterPage setNavigate={setNavigate}/>
-        <HomePage setNavigate={setNavigate} currentUser={currentUser}/>
+        <HomePage setNavigate={setNavigate}/>
       </Navigation>
     )
   }

@@ -4,6 +4,7 @@ import React, {useState} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AuthPage({ setNavigate }) {
 
@@ -35,17 +36,17 @@ export default function AuthPage({ setNavigate }) {
       });
   };
 
-  const onContinueAnonymousPress = () => {
+  const onContinueAnonymousPress = async() => {
     setIsLoading(true);
-    signInAnonymously(auth)
-      .then((creds) =>{
-        setIsLoading(false);
-        setNavigate(2);
-    }).catch((error) => {
+    try {
+      await AsyncStorage.setItem('isAnonymous', 'true');
+      setIsLoading(false);
+      setNavigate(2);
+    } catch (e) {
       setIsLoading(false);
       console.log(error)
       Alert.alert('Error', 'Failed to sign in anonymously')
-    })
+    }
   }
 
   return (

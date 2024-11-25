@@ -1,9 +1,15 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
-import { signOut,auth } from '../services/Firebase'
-import React from 'react'
+import { signOut, auth } from '../services/Firebase'
+import React,{useState,useEffect} from 'react'
 
 export default function HomePage ({setNavigate}) {
 
+  const [user, setUser] = useState([])
+
+  useEffect(() => {
+    setUser(auth.currentUser)
+  }, [])
+  
   const SignOut = () => {
     signOut(auth).then(()=> {
       setNavigate(0)
