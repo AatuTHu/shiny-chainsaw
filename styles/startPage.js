@@ -86,40 +86,6 @@ export default StyleSheet.create({
       color: '#fff',
       fontSize: 16,
     },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-    modal: {
-      backgroundColor: '#2a2a3d',
-      padding: 20,
-      borderRadius: 10,
-      width: '80%',
-    },
-    modalTitle: {
-      fontSize: 18,
-      color: '#fff',
-      marginBottom: 20,
-    },
-    modalItem: {
-      paddingVertical: 10,
-    },
-    modalOptionText: {
-      color: '#fff',
-      fontSize: 16,
-    },
-    modalCloseButton: {
-      marginTop: 20,
-      padding: 10,
-      backgroundColor: '#ff6347',
-      borderRadius: 5,
-    },
-    modalCloseText: {
-      color: '#fff',
-      textAlign: 'center',
-    },
     summaryContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -164,5 +130,22 @@ export default StyleSheet.create({
       width: '80%',
       marginVertical: 10,
       overflow: 'hidden',
+    },
+    incomeRow: {
+      width: '100%',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    removeButton: {
+      backgroundColor: '#ff4d4d',
+      padding: 8,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    removeButtonText: {
+      color: '#fff',
+      fontSize: 14,
     },
   });

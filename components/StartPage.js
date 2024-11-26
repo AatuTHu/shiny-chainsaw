@@ -1,6 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, SafeAreaView } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, FlatList, SafeAreaView } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
+import ModalMenu from './reusables/ModalMenu'
 
 export default function StartPage() {
   const [step, setStep] = useState(1);
@@ -8,6 +9,7 @@ export default function StartPage() {
   const [salary, setSalary] = useState('');
   const [salaryFrq, setSalaryFrq] = useState('Monthly');
   const [salaryFrqVisible, setSalaryFrqVisible] = useState(false);
+  const [incomes, setIncomes] = useState([]);
 
   const [housing, setHousing] = useState('');	
   const [groceries, setGroceries] = useState('');
@@ -74,6 +76,21 @@ export default function StartPage() {
     setStep(step-1);
   };
 
+  const handleAddIncome = () => {
+    setIncomes([...incomes, { name: '', amount: ''}]);
+  };
+
+  const handleIncomeChange = (index, field, value) => {
+    const updatedIncomes = incomes.map((income, i) =>
+    i === index? {...income, [field]: value } : income);
+    setIncomes(updatedIncomes);
+  };
+
+  const handleRemoveIncome = (index) => {
+    const updatedIncomes = incomes.filter((_, i) => i!== index);
+    setIncomes(updatedIncomes);
+  }
+
   //Create a new item to the list of bills
   const handleAddBill = () => {
     if(billName.trim() && billAmount.trim()){
@@ -93,43 +110,6 @@ export default function StartPage() {
       setDebtPaymentFrq('Monthly');
   }
 }
-
-  // Create a pop-up to select payment frequency
-  const renderFrqModal = (visible, setVisible, selectedValue, setSelectedValue) => (
-    <Modal
-      transparent
-      visible={visible}
-      animationType='slide'
-      onRequestClose={() => setVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Select Frequency</Text>
-            <FlatList
-              data={frequencies}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.modalItem}
-                  onPress={() => {
-                    setSelectedValue(item);
-                    setVisible(false);
-                  }}
-                >
-                  <Text style={styles.modalOptionText}>{item}</Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setVisible(false)}
-            >
-              <Text style={styles.modalCloseText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-  )
 
   return (
     <SafeAreaView style={styles.container}>
@@ -153,12 +133,50 @@ export default function StartPage() {
           >
             <Text style={styles.dropdownText}>{salaryFrq}</Text>
           </TouchableOpacity>
-          {renderFrqModal(
-            salaryFrqVisible,
-            setSalaryFrqVisible,
-            salaryFrq,
-            setSalaryFrq
-          )}
+
+          <ModalMenu
+            visible={salaryFrqVisible}
+            setVisible={setSalaryFrqVisible}
+            data={frequencies}
+            selectedValue={salaryFrq}
+            setSelectedValue={setSalaryFrq}
+            title="Select Salary Frequency" 
+          />
+
+          {/* Additional Incomes */}
+          <Text style={styles.label}>Other Incomes:</Text>
+          {incomes.map((income, index) => (
+            <View key={index} style={styles.incomeRow}>
+              <TextInput
+                style={styles.input}
+                placeholder="Income name"
+                placeholderTextColor="#888"
+                value={income.name}
+                onChangeText={(text) => handleIncomeChange(index, 'name', text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Income amount"
+                placeholderTextColor="#888"
+                keyboardType="numeric"
+                value={income.amount}
+                onChangeText={(text) => handleIncomeChange(index, 'amount', text)}
+              />
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => handleRemoveIncome(index)}
+              >
+          <Text style={styles.removeButtonText}>Remove</Text>
+        </TouchableOpacity>
+            </View>
+          ))}
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddIncome}
+          >
+            <Text style={styles.addButtonText}>Add Income</Text>
+          </TouchableOpacity>
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.nextButton}
@@ -209,6 +227,7 @@ export default function StartPage() {
             value={billName}
             onChangeText={(text) => setBillName(text)}
           />
+
           <TextInput
             style={styles.input}
             placeholder="Bill amount"
@@ -217,24 +236,30 @@ export default function StartPage() {
             value={billAmount}
             onChangeText={(text) => setBillAmount(text)}
           />
+
           <TouchableOpacity
             style={styles.dropdownButton}
             onPress={() => setBillFrqVisible(true)}
           >
             <Text style={styles.dropdownText}>{billFrq}</Text>
           </TouchableOpacity>
-          {renderFrqModal(
-            billFrqVisible,
-            setBillFrqVisible,
-            billFrq,
-            setBillFrq
-          )}
+
+          <ModalMenu
+            visible={billFrqVisible}
+            setVisible={setBillFrqVisible}
+            data={frequencies}
+            selectedValue={billFrq}
+            setSelectedValue={setBillFrq}
+            title="Select Bill Frequency"
+          />
+
           <TouchableOpacity
             style={styles.addButton}
             onPress={handleAddBill}
           >
             <Text style={styles.addButtonText}>Add Bill</Text>
           </TouchableOpacity>
+
           <View style={styles.billListContainer}>
             <FlatList
               data={bills}
@@ -246,6 +271,7 @@ export default function StartPage() {
               )}
             />
           </View>
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.backButton}
@@ -253,6 +279,7 @@ export default function StartPage() {
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.nextButton}
               onPress={handleNextStep}
@@ -274,6 +301,7 @@ export default function StartPage() {
             value={debtName}
             onChangeText={(text) => setDebtName(text)}
           />
+
           <TextInput
             style={styles.input}
             placeholder="Debt amount"
@@ -282,6 +310,7 @@ export default function StartPage() {
             value={debtAmount}
             onChangeText={(text) => setDebtAmount(text)}
           />
+
           <TextInput
             style={styles.input}
             placeholder="Debt repayment amount"
@@ -290,24 +319,30 @@ export default function StartPage() {
             value={debtPayment}
             onChangeText={(text) => setDebtPayment(text)}
           />
+
           <TouchableOpacity
             style={styles.dropdownButton}
             onPress={() => setDebtFrqVisible(true)}
           >
             <Text style={styles.dropdownText}>{debtPaymentFrq}</Text>
           </TouchableOpacity>
-          {renderFrqModal(
-            debtFrqVisible,
-            setDebtFrqVisible,
-            debtPaymentFrq,
-            setDebtPaymentFrq
-          )}
+
+          <ModalMenu
+            visible={debtFrqVisible}
+            setVisible={setDebtFrqVisible}
+            data={frequencies}
+            selectedValue={debtPaymentFrq}
+            setSelectedValue={setDebtPaymentFrq}
+            title="Select Bill Frequency"
+          />
+
           <TouchableOpacity
             style={styles.addButton}
             onPress={handleAddDebt}
           >
             <Text style={styles.addButtonText}>Add Debt</Text>
           </TouchableOpacity>
+
           <View style={styles.billListContainer}>
           <FlatList
             data={debts}
@@ -319,6 +354,7 @@ export default function StartPage() {
             )}
           />
           </View>
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.backButton}
@@ -326,6 +362,7 @@ export default function StartPage() {
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.nextButton}
               onPress={handleNextStep}
@@ -348,6 +385,7 @@ export default function StartPage() {
             value={emergencyFund}
             onChangeText={(text) => setEmergencyFund(text)}
           />
+          
           <Text style={styles.label}>Emergency Fund Goal:</Text>
           <TextInput
             style={styles.input}
@@ -357,6 +395,7 @@ export default function StartPage() {
             value={emergencyGoal}
             onChangeText={(text) => setEmergencyGoal(text)}
           />
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.backButton}
@@ -364,6 +403,7 @@ export default function StartPage() {
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.nextButton}
               onPress={handleNextStep}
@@ -386,6 +426,7 @@ export default function StartPage() {
             value={savingGoal}
             onChangeText={(text) => setSavingGoal(text)}
           />
+
           <View style={styles.navButtons}>
             <TouchableOpacity
               style={styles.backButton}
@@ -393,6 +434,7 @@ export default function StartPage() {
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.nextButton}
               onPress={handleNextStep}
@@ -465,6 +507,7 @@ export default function StartPage() {
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.finishButton}
               onPress={() => console.log('Summary confirmed!')}
