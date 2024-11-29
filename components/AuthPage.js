@@ -1,17 +1,35 @@
 import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
-import { auth, signInAnonymously, signInWithEmailAndPassword} from '../services/Firebase'
-import React, {useState} from 'react'
+import { auth, signInWithEmailAndPassword} from '../services/Firebase'
+import React, {useState, useEffect} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '../services/Navigation';
 
-export default function AuthPage({ setNavigate }) {
+export default function AuthPage() {
 
   const [email, setEmail] = useState('Example@email.com')
   const [password, setPassword] = useState('ExamplePassword')
   const [isLoading, setIsLoading] = useState(false)
+  const { setNavigate } = useNavigation()
 
+  useEffect(() => {
+    const isLoggedIn = async() => {
+        const isAnonymous = await AsyncStorage.getItem('isAnonymous')
+        if(isAnonymous === "true") {
+          setNavigate("HomePage")
+        } else {
+          auth.onAuthStateChanged(user => {
+          if(user) setNavigate("HomePage")
+          else setNavigate("AuthPage")
+        })//auth
+      }//else
+    }//function
+  
+    isLoggedIn()
+    }, [])
+  
   const onSignInPress = () => {
     setIsLoading(true);
     
@@ -23,7 +41,7 @@ export default function AuthPage({ setNavigate }) {
     
     // Sign-in with Firebase
     signInWithEmailAndPassword(auth, email, password)
-      .then((creds) => {
+      .then(() => {
         clearTimeout(timeout);  // Clear the timeout if sign-in is successful
         setIsLoading(false);
         setNavigate(2);
@@ -41,7 +59,7 @@ export default function AuthPage({ setNavigate }) {
     try {
       await AsyncStorage.setItem('isAnonymous', 'true');
       setIsLoading(false);
-      setNavigate(2);
+      setNavigate("HomePage");
     } catch (e) {
       setIsLoading(false);
       console.log(error)
@@ -49,6 +67,7 @@ export default function AuthPage({ setNavigate }) {
     }
   }
 
+  
   return (
     <SafeAreaView style={styles.container}>
       {/* Blur and spinner */}
@@ -127,7 +146,7 @@ export default function AuthPage({ setNavigate }) {
       {/* Sign Up Section */}
       <View style={styles.signUpContainer}>
         <Text style={styles.signUpText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => setNavigate(1)} >
+        <TouchableOpacity onPress={() => setNavigate("RegisterPage")} >
           <Text style={styles.signUpButtonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
