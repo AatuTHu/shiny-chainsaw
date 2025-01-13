@@ -5,34 +5,35 @@ const NavigationContext = createContext()
 
 export default function Navigation ({children}) {
 
-  const [navigate, setNavigate] = useState("")
-  const [history, setHistory] = useState([0]); // Maintain a history of pages
-  const [number, setNumber] = useState(0)
+  const [navigate, setNavigate] = useState("") // Used on other components for navigating
+  const [history, setHistory] = useState([0]); // Maintain a order history of pages
+  const [number, setNumber] = useState(0) // Index on what page to return from pages array
+  const exitIndex = 0 // Index where back button exits app rather than navigates back
   const pages = []
 
     useEffect(() => {
       children.forEach((n) => {
         pages.push(n.type.name) // Store the page names in an array for easy access
       })
-    })
+    }) // useEffect
 
     // Update history whenever the page changes
     useEffect(() => {
 
-     const n = pages.indexOf(navigate)
+     const n = pages.indexOf(navigate) // Finds index of given page
      if (n != -1) {
       setNumber(n)
      }
 
       if (history[history.length - 1] !== number) {
-        setHistory([...history, number]); // Add the new page to the history stack
+        setHistory([...history, number]); // Add the new page to the history array
       }
     }, [navigate]); // useEffect
   
     // Handle hardware back button
     useEffect(() => {
       const backAction = () => {
-        if (number ===  0) {
+        if (number ===  exitIndex) {
           BackHandler.exitApp(); // Exit the app if we're on the first page
         } else {
           const newHistory = [...history]; // Copy the history array
@@ -41,9 +42,9 @@ export default function Navigation ({children}) {
           setNumber(newHistory[newHistory.length - 1]); // Navigate to the previous page
           return true; // Prevent default back action
         }
-      };
+      }; //function
   
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction); //Listen for hardware back button press
   
       return () => backHandler.remove(); // Clean up the event listener on component unmount
     }, [number, history]); // useEffect
