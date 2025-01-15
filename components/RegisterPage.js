@@ -3,14 +3,17 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
+import { useNavigation } from '../services/Navigation';
 
 
-export default function CreateAccountScreen({ setNavigate})  {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('');
+export default function RegisterPage()  {
+
+    const [email, setEmail] = useState('Example@email.com')
+    const [password, setPassword] = useState('ExamplePassword')
     const [confirmPassword, setConfirmPassword] = useState('');
-  
+    const { setNavigate } = useNavigation()
+
     // Function to handle registration with email validation
     const handleRegister = () => {
         // Email regex pattern for validation
@@ -33,7 +36,7 @@ export default function CreateAccountScreen({ setNavigate})  {
       
       // If all validations pass
       createUserWithEmailAndPassword(auth, email, password).then(() =>{
-        Alert.alert('Success', 'Account created successfully!');
+        setNavigate("StartPage")
       }).catch((error) => {
         console.log(error)
         Alert.alert('Error', 'Failed to create account. Please try again.');
@@ -86,7 +89,7 @@ export default function CreateAccountScreen({ setNavigate})  {
       {/* Create Account Button */}
       <TouchableOpacity onPress={handleRegister} style={styles.createAccountButton}>
         <LinearGradient
-          colors={['#4a90e2', '#f5d76e']}
+          colors={['#0F3544', '#33E49C']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.gradientButton}
@@ -98,7 +101,7 @@ export default function CreateAccountScreen({ setNavigate})  {
       {/* Link to Sign In */}
       <View style={styles.signInLinkContainer}>
         <Text style={styles.signInText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => setNavigate(0)} >
+        <TouchableOpacity onPress={() => setNavigate("AuthPage")} >
           <Text style={styles.signInLink}>Sign In</Text>
         </TouchableOpacity>
       </View>

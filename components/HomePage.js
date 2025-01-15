@@ -1,23 +1,110 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
-import { signOut,auth } from '../services/Firebase'
-import React from 'react'
+import { View, Text, Button, StyleSheet, FlatList } from 'react-native'
+import { signOut, auth, USERINFO,query,collection,db,where,onSnapshot } from '../services/Firebase'
+import { useNavigation } from '../services/Navigation';
+import React,{useState,useEffect} from 'react'
 
-export default function HomePage ({setNavigate}) {
+export default function HomePage () {
 
-  const SignOut = () => {
+  const [userData, setUserData] = useState([])
+  const { setNavigate } = useNavigation()
+
+  useEffect(() => {
+    const q = query(collection(db,USERINFO), where("uid", "==", auth.currentUser.uid))
+    const queryUserData = onSnapshot(q,(querySnapshot) => {
+      const tempData = []
+
+      querySnapshot.forEach((doc) => {
+        const object = {
+          amountSaved: doc.data().amountSaved,
+          bills: doc.data().bills,
+          debts: doc.data().debts,
+          emergencyFund: doc.data().emergencyFund,
+          emergencyGoal: doc.data().emergencyGoal,
+          groceries: doc.data().groceries,
+          housing: doc.data().housing,
+          salary: doc.data().salary,
+          savingGoal: doc.data().savingGoal,
+          transportation: doc.data().transportation,
+          otherIncomes: doc.data().otherIncomes,
+          uid: doc.data().uid,
+        }
+        tempData.push(object)
+      })
+      setUserData(tempData)
+    })
+
+    return () => {
+      queryUserData()
+    }
+
+  }, [])
+  
+  const SignOut = async() => {
     signOut(auth).then(()=> {
-      setNavigate(0)
+      setNavigate("AuthPage")
     }).catch((e)=> {
       console.log(e)
-    })
-  }
+    })//catch
+  }//function
 
   return (
     <View style={styles.container}>
+      <FlatList
+      data={userData}
+      renderItem={({item, i}) => {
+        return (
+          <View key={i} style={styles.dataContainer}>
+            <Text style={styles.labelText}>Amount Saved:</Text>
+            <Text style={styles.text}>{item.amountSaved} $</Text>
+            <Text style={styles.labelText}>Savings Goal:</Text>
+            <Text style={styles.text}>{item.savingGoal} $</Text>
+
+        <Text style={styles.labelText}>Salary:</Text>
+        <Text style={styles.text}>{item.salary} $</Text>
+
+        <Text style={styles.labelText}>Other Incomes:</Text>
+        {item.otherIncomes && item.otherIncomes.map((otherIncomes, index) => (
+          <View key={`inc-${index}`}>
+            <Text style={styles.text}>{otherIncomes.name} {otherIncomes.amount} $</Text>
+          </View>
+        ))}
+
+          <Text style={styles.labelText}>Housing:</Text>
+          <Text style={styles.text}>{item.housing} $</Text>
+
+          <Text style={styles.labelText}>Transportation:</Text>
+          <Text style={styles.text}>{item.transportation} $</Text>
+          
+          <Text style={styles.labelText}>Groceries:</Text>
+          <Text style={styles.text}>{item.groceries} $</Text>
+
+
+        <Text style={styles.labelText}>Bills:</Text>
+        {item.bills && item.bills.map((bill, index) => (
+          <View key={`bill-${index}`}>
+            <Text style={styles.text}>{bill.name} {bill.amount} $ {bill.frq}</Text>
+          </View>
+        ))}
+
+        <Text style={styles.labelText}>Debts:</Text>
+        {item.debts && item.debts.map((debt, index) => (
+          <View key={`debt-${index}`}>
+            <Text style={styles.text}>{debt.name} {debt.amount} $ {debt.frq}</Text>
+          </View>
+        ))}
+        
+          <Text style={styles.labelText}>Emergency Fund:</Text>
+          <Text style={styles.text}>{item.emergencyFund} $</Text>
+          <Text style={styles.labelText}>Emergency Goal:</Text>
+          <Text style={styles.text}>{item.emergencyGoal} $</Text>
+          </View>
+        )
+      }}
+      />
       <Button style={styles.signOutButton} onPress={SignOut} title='Sign Out'/>
     </View>
   )
-}
+} //component
 
 const styles = StyleSheet.create({
     container: {
@@ -26,11 +113,23 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
       justifyContent: 'center',
     },
+    dataContainer:{
+      marginTop: 20,
+    },
     signOutButton: {
         backgroundColor: '#f44336',
         color: '#fff',
         padding: 10,
         borderRadius: 5,
         marginTop: 20,
+    },
+    text:{
+      color: '#fff',
+      fontSize: 16,
+    },
+    labelText:{
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: 'bold',
     }
 });

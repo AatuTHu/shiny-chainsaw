@@ -6,7 +6,18 @@ import {
   initializeAuth, 
   getReactNativePersistence, 
   signInAnonymously} from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+  const { getFirestore, 
+    collection, 
+    onSnapshot, 
+    query, 
+    doc, 
+    getDocs,
+    addDoc,
+    orderBy,
+    deleteDoc,
+    limit,
+    updateDoc,
+    where } = require("firebase/firestore");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
@@ -24,6 +35,8 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage)
 })
 
+const USERINFO = "userInfo"
+
 export {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -31,5 +44,17 @@ export {
   getReactNativePersistence, 
   signInAnonymously,
   auth,
-  db
+  db,
+  USERINFO,
+  collection,
+  addDoc,
+  deleteDoc,
+  where,
+  limit,
+  updateDoc,
+  orderBy,
+  onSnapshot,
+  query,
+  doc,
+  getDocs
 }
