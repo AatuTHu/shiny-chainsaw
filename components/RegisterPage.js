@@ -3,13 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
+import { useNavigation } from '../services/Navigation';
 
 
-export default function RegisterPage({ setNavigate })  {
+export default function RegisterPage()  {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const { setNavigate } = useNavigation()
   
     // Function to handle registration with email validation
     const handleRegister = () => {
@@ -98,7 +100,7 @@ export default function RegisterPage({ setNavigate })  {
       {/* Link to Sign In */}
       <View style={styles.signInLinkContainer}>
         <Text style={styles.signInText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => setNavigate(0)} >
+        <TouchableOpacity onPress={() => setNavigate("AuthPage")} >
           <Text style={styles.signInLink}>Sign In</Text>
         </TouchableOpacity>
       </View>
