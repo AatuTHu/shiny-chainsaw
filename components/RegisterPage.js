@@ -6,13 +6,14 @@ import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
 import { useNavigation } from '../services/Navigation';
 
 
+
 export default function RegisterPage()  {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('Example@email.com')
+    const [password, setPassword] = useState('ExamplePassword')
     const [confirmPassword, setConfirmPassword] = useState('');
     const { setNavigate } = useNavigation()
-  
+
     // Function to handle registration with email validation
     const handleRegister = () => {
         // Email regex pattern for validation
@@ -35,7 +36,7 @@ export default function RegisterPage()  {
       
       // If all validations pass
       createUserWithEmailAndPassword(auth, email, password).then(() =>{
-        Alert.alert('Success', 'Account created successfully!');
+        setNavigate("StartPage")
       }).catch((error) => {
         console.log(error)
         Alert.alert('Error', 'Failed to create account. Please try again.');

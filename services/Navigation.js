@@ -15,23 +15,19 @@ export default function Navigation ({children}) {
       children.forEach((n) => {
         pages.push(n.type.name) // Store the page names in an array for easy access
       })
-    }) // useEffect
-
-    // Update history whenever the page changes
-    useEffect(() => {
-
+    }) // useEffect   
+    
+    useEffect(() => { // Update history whenever the page changes
      const n = pages.indexOf(navigate) // Finds index of given page
      if (n != -1) {
       setNumber(n)
      }
-
       if (history[history.length - 1] !== number) {
         setHistory([...history, number]); // Add the new page to the history array
       }
-    }, [navigate]); // useEffect
-  
-    // Handle hardware back button
-    useEffect(() => {
+    }, [navigate]); // useEffect 
+    
+    useEffect(() => { // Handle hardware back button
       const backAction = () => {
         if (number ===  exitIndex) {
           BackHandler.exitApp(); // Exit the app if we're on the first page
@@ -43,9 +39,7 @@ export default function Navigation ({children}) {
           return true; // Prevent default back action
         }
       }; //function
-  
       const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction); //Listen for hardware back button press
-  
       return () => backHandler.remove(); // Clean up the event listener on component unmount
     }, [number, history]); // useEffect
 
