@@ -18,18 +18,16 @@ export default function HomePage () {
           amountSaved: doc.data().amountSaved,
           bills: doc.data().bills,
           debts: doc.data().debts,
-          emergencyFund: doc.data().emergencyFund,
-          emergencyGoal: doc.data().emergencyGoal,
-          groceries: doc.data().groceries,
-          housing: doc.data().housing,
+          emergencyFunds: doc.data().emergencyFunds,
+          expenses: doc.data().expenses,
           salary: doc.data().salary,
           savingGoal: doc.data().savingGoal,
-          transportation: doc.data().transportation,
           otherIncomes: doc.data().otherIncomes,
           uid: doc.data().uid,
         }
         tempData.push(object)
       })
+      console.log(tempData)
       setUserData(tempData)
     })
 
@@ -60,7 +58,7 @@ export default function HomePage () {
             <Text style={styles.text}>{item.savingGoal} $</Text>
 
         <Text style={styles.labelText}>Salary:</Text>
-        <Text style={styles.text}>{item.salary} $</Text>
+        <Text style={styles.text}>{item.salary.salary}$ {item.salary.frq}</Text>
 
         <Text style={styles.labelText}>Other Incomes:</Text>
         {item.otherIncomes && item.otherIncomes.map((otherIncomes, index) => (
@@ -70,13 +68,13 @@ export default function HomePage () {
         ))}
 
           <Text style={styles.labelText}>Housing:</Text>
-          <Text style={styles.text}>{item.housing} $</Text>
+          <Text style={styles.text}>{item.expenses.housing} $</Text>
 
           <Text style={styles.labelText}>Transportation:</Text>
-          <Text style={styles.text}>{item.transportation} $</Text>
+          <Text style={styles.text}>{item.expenses.transportation} $</Text>
           
           <Text style={styles.labelText}>Groceries:</Text>
-          <Text style={styles.text}>{item.groceries} $</Text>
+          <Text style={styles.text}>{item.expenses.groceries} $</Text>
 
 
         <Text style={styles.labelText}>Bills:</Text>
@@ -94,9 +92,9 @@ export default function HomePage () {
         ))}
         
           <Text style={styles.labelText}>Emergency Fund:</Text>
-          <Text style={styles.text}>{item.emergencyFund} $</Text>
+          <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
           <Text style={styles.labelText}>Emergency Goal:</Text>
-          <Text style={styles.text}>{item.emergencyGoal} $</Text>
+          <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
           </View>
         )
       }}

@@ -11,11 +11,12 @@ import {
 const CustomFrequencyModal = ({
   visible,
   setVisible,
-  data,
-  selectedValue,
   setSelectedValue,
   title = 'Select Frequency',
 }) => {
+
+  const frequencies = ['Weekly', 'Bi-Weekly', 'Monthly', 'Bi-Monthly', 'Quarterly', 'Semiannual', 'Annual']; // May need to add more options
+
   return (
     <Modal
       transparent
@@ -27,7 +28,7 @@ const CustomFrequencyModal = ({
         <View style={styles.modal}>
           <Text style={styles.modalTitle}>{title}</Text>
           <FlatList
-            data={data}
+            data={frequencies}
             keyExtractor={(item) => item}
             renderItem={({ item }) => (
               <TouchableOpacity
