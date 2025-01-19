@@ -50,6 +50,11 @@ export default function HomePage () {
   return (
     <View style={styles.container}>
       <FlatList
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       data={userData}
       renderItem={({item, i}) => {
         return (
@@ -62,12 +67,18 @@ export default function HomePage () {
         <Text style={styles.labelText}>Salary:</Text>
         <Text style={styles.text}>{item.salary} $</Text>
 
-        <Text style={styles.labelText}>Other Incomes:</Text>
-        {item.otherIncomes && item.otherIncomes.map((otherIncomes, index) => (
-          <View key={`inc-${index}`}>
-            <Text style={styles.text}>{otherIncomes.name} {otherIncomes.amount} $</Text>
-          </View>
-        ))}
+        {item.otherIncomes && item.otherIncomes.length > 0 && ( // Only show other income if there are any
+          <>
+            <Text style={styles.labelText}>Other Incomes:</Text>
+            {item.otherIncomes.map((income, index) => (
+              <View key={`inc-${index}`}>
+                <Text style={styles.text}>
+                  {income.name} {income.amount} $
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
 
           <Text style={styles.labelText}>Housing:</Text>
           <Text style={styles.text}>{item.housing} $</Text>
@@ -107,29 +118,37 @@ export default function HomePage () {
 } //component
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#0e0e14',
-      paddingHorizontal: 20,
-      justifyContent: 'center',
-    },
-    dataContainer:{
-      marginTop: 20,
-    },
-    signOutButton: {
-        backgroundColor: '#f44336',
-        color: '#fff',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    text:{
-      color: '#fff',
-      fontSize: 16,
-    },
-    labelText:{
-      color: '#fff',
-      fontSize: 18,
-      fontWeight: 'bold',
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  dataContainer: {
+    backgroundColor: '#1E1E1E',
+    padding: 15,
+    borderRadius: 10,
+  },
+  labelText: {
+    color: '#A5A5A5',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  text: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  signOutButton: {
+    backgroundColor: '#E53935',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  signOutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
