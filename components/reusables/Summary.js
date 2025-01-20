@@ -9,7 +9,7 @@ export default function Summary({salary,incomes,expenses,bills,debts,emergencies
 
     <View style={styles.summaryItem}>
     <Text style={styles.summaryLabel}>Salary:</Text>
-    <Text style={styles.summaryValue}>{salary.salary} ({salary.frq})</Text>
+    <Text style={styles.summaryValue}>{salary.salary} ({salary.frqType})</Text>
     <Text style={styles.summaryLabel}>Other incomes:</Text>
     {incomes.length > 0 ? (
         incomes.map((income,index) => (
@@ -34,7 +34,7 @@ export default function Summary({salary,incomes,expenses,bills,debts,emergencies
     {bills.length > 0 ? (
         bills.map((bill, index) => (
         <Text key={index} style={styles.summaryValue}>
-            {bill.name}: {bill.amount} ({bill.frq})
+            {bill.name}: {bill.amount} ({bill.frqType})
         </Text>
         ))
     ) : (
@@ -47,7 +47,7 @@ export default function Summary({salary,incomes,expenses,bills,debts,emergencies
     {debts.length > 0 ? (
     debts.map((debt, index) => (
     <Text key={index} style={styles.summaryValue}>
-        {debt.name}: ${debt.amount} (Repayment: ${debt.payment}, {debt.frq})
+        {debt.name}: ${debt.amount} (Repayment: ${debt.payment}, {debt.frqType})
     </Text>
     ))
     ) : (

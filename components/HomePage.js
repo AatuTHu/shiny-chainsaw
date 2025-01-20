@@ -1,11 +1,14 @@
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native'
+import { View, Text, Button, StyleSheet, FlatList, TextInput } from 'react-native'
 import { signOut, auth, USERINFO,query,collection,db,where,onSnapshot } from '../services/Firebase'
 import { useNavigation } from '../services/Navigation';
 import React,{useState,useEffect} from 'react'
+import { calculateSavings } from '../services/Calculator';
 
 export default function HomePage () {
 
   const [userData, setUserData] = useState([])
+  const [visible, setVisible] = useState(false)
+  const [amount, setAmount] = useState(0)
   const { setNavigate } = useNavigation()
 
   useEffect(() => {
@@ -23,11 +26,13 @@ export default function HomePage () {
           salary: doc.data().salary,
           savingGoal: doc.data().savingGoal,
           otherIncomes: doc.data().otherIncomes,
+          transactionHistory: doc.data().transactionHistory,
+          timeStamp: doc.data().timeStamp,
           uid: doc.data().uid,
         }
         tempData.push(object)
       })
-      console.log(tempData)
+      tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
       setUserData(tempData)
     })
 
@@ -36,6 +41,10 @@ export default function HomePage () {
     }
 
   }, [])
+
+  const addTransaction = (type) => {
+    setVisible(false)
+  }
   
   const SignOut = async() => {
     signOut(auth).then(()=> {
@@ -45,9 +54,14 @@ export default function HomePage () {
     })//catch
   }//function
 
-  return (
+return (
     <View style={styles.container}>
       <FlatList
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       data={userData}
       renderItem={({item, i}) => {
         return (
@@ -57,77 +71,115 @@ export default function HomePage () {
             <Text style={styles.labelText}>Savings Goal:</Text>
             <Text style={styles.text}>{item.savingGoal} $</Text>
 
-        <Text style={styles.labelText}>Salary:</Text>
-        <Text style={styles.text}>{item.salary.salary}$ {item.salary.frq}</Text>
+        {item.salary && item.salary.length > 0 && (
+          <>
+            <Text style={styles.labelText}>Salary:</Text>
+            <Text style={styles.text}>{item.salary.salary} $</Text>
+          </>
+        )}
 
-        <Text style={styles.labelText}>Other Incomes:</Text>
-        {item.otherIncomes && item.otherIncomes.map((otherIncomes, index) => (
-          <View key={`inc-${index}`}>
-            <Text style={styles.text}>{otherIncomes.name} {otherIncomes.amount} $</Text>
-          </View>
-        ))}
+        {item.otherIncomes && item.otherIncomes.length > 0 && ( // Only show other income if there are any
+          <>
+            <Text style={styles.labelText}>Other Incomes:</Text>
+            {item.otherIncomes.map((income, index) => (
+              <View key={`inc-${index}`}>
+                <Text style={styles.text}>
+                  {income.name} {income.amount} $
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
 
-          <Text style={styles.labelText}>Housing:</Text>
-          <Text style={styles.text}>{item.expenses.housing} $</Text>
+        { item.expenses && (<>
+        <Text style={styles.labelText}>Housing:</Text>
+        <Text style={styles.text}>{item.expenses.housing} $</Text>
 
-          <Text style={styles.labelText}>Transportation:</Text>
-          <Text style={styles.text}>{item.expenses.transportation} $</Text>
-          
-          <Text style={styles.labelText}>Groceries:</Text>
-          <Text style={styles.text}>{item.expenses.groceries} $</Text>
-
-
-        <Text style={styles.labelText}>Bills:</Text>
-        {item.bills && item.bills.map((bill, index) => (
-          <View key={`bill-${index}`}>
-            <Text style={styles.text}>{bill.name} {bill.amount} $ {bill.frq}</Text>
-          </View>
-        ))}
-
-        <Text style={styles.labelText}>Debts:</Text>
-        {item.debts && item.debts.map((debt, index) => (
-          <View key={`debt-${index}`}>
-            <Text style={styles.text}>{debt.name} {debt.amount} $ {debt.frq}</Text>
-          </View>
-        ))}
+        <Text style={styles.labelText}>Transportation:</Text>
+        <Text style={styles.text}>{item.expenses.transportation} $</Text>
         
-          <Text style={styles.labelText}>Emergency Fund:</Text>
-          <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
-          <Text style={styles.labelText}>Emergency Goal:</Text>
-          <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
+        <Text style={styles.labelText}>Groceries:</Text>
+        <Text style={styles.text}>{item.expenses.groceries} $</Text>
+        </>)}
+
+        {item.bills.length > 0 && (<>
+          <Text style={styles.labelText}>Bills:</Text>
+          {item.bills && item.bills.map((bill, index) => (
+            <View key={`bill-${index}`}>
+              <Text style={styles.text}>{bill.name} {bill.amount} $ {bill.frq}</Text>
+            </View>
+          ))}
+        </>)}
+
+        {item.debts.length > 0 &&(<>
+              <Text style={styles.labelText}>Debts:</Text>
+              {item.debts && item.debts.map((debt, index) => (
+                <View key={`debt-${index}`}>
+                  <Text style={styles.text}>{debt.name} {debt.amount} $ {debt.frq} {debt.payment}</Text>
+                </View>
+              ))}
+        </>)}
+
+          {item.emergencyFunds && 
+          <>
+            <Text style={styles.labelText}>Emergency Fund:</Text>
+            <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
+            <Text style={styles.labelText}>Emergency Goal:</Text>
+            <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
+          </>}
           </View>
         )
       }}
       />
+
+      {visible && 
+        <View style={styles.transactionPopUp}>
+        <TextInput style={styles.dataContainer}
+        value={amount}
+        onChangeText={text => setAmount(text)}/>
+        <Button style={styles.signOutButton} onPress={() => addTransaction()} title='Complete'/>    
+        </View>
+      }
+      
+      <Button style={styles.signOutButton} onPress={() => setVisible(!visible)} title='Add Income'/>
+      <Button style={styles.signOutButton} onPress={() => setVisible(!visible)} title='Add Payment'/>
       <Button style={styles.signOutButton} onPress={SignOut} title='Sign Out'/>
     </View>
   )
 } //component
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#0e0e14',
-      paddingHorizontal: 20,
-      justifyContent: 'center',
-    },
-    dataContainer:{
-      marginTop: 20,
-    },
-    signOutButton: {
-        backgroundColor: '#f44336',
-        color: '#fff',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    text:{
-      color: '#fff',
-      fontSize: 16,
-    },
-    labelText:{
-      color: '#fff',
-      fontSize: 18,
-      fontWeight: 'bold',
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  dataContainer: {
+    backgroundColor: '#1E1E1E',
+    padding: 15,
+    borderRadius: 10,
+  },
+  labelText: {
+    color: '#A5A5A5',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  text: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  signOutButton: {
+    backgroundColor: '#E53935',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  signOutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

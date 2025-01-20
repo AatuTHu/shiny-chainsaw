@@ -29,10 +29,12 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
           }));
       }
 
-      const handleFrq = (value) => {
+      const handleFrq = (item) => {
+        console.log(item);
         setSalary(prevSalary => ({
             ...prevSalary,
-            ["frq"]: value,
+            ["frqType"]: item.name,
+            ["frqAmount"]: item.inNumber,
           }));
       }
 
@@ -52,13 +54,13 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
         style={styles.dropdownButton}
         onPress={() => setVisible(true)}
       >
-        <Text style={styles.dropdownText}>{salary.frq}</Text>
+        <Text style={styles.dropdownText}>{salary.frqType}</Text>
       </TouchableOpacity>
 
       <ModalMenu
         visible={visible}
         setVisible={setVisible}
-        selectedValue={salary.frq}
+        selectedValue={salary.frqType}
         setSelectedValue={handleFrq}
         title="Select Salary Frequency" 
       />

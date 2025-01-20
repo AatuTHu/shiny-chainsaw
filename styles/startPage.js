@@ -82,8 +82,20 @@ export default StyleSheet.create({
       width: '45%',
       alignItems: 'center',
     },
+    skipButton: {
+      backgroundColor: '#ffA500',
+      padding: 10,
+      borderRadius: 5,
+      width: '45%',
+      alignItems: 'center',
+    },
     nextButtonText: {
       color: '#fff',
+      fontSize: 16,
+    },
+    skipButtonText: {
+      color: 'black',
+      fontWeight:'bold',
       fontSize: 16,
     },
     summaryContainer: {

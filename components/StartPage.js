@@ -1,11 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity, FlatList, SafeAreaView } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
-import ModalMenu from './reusables/ModalMenu'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
 import { makeTimeStamp } from '../services/TimeStamper.js'
-import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
+import { BackButton,FinishButton,NextButton,SkipButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
 import Bills from './reusables/Bills.js'
 import Debts from './reusables/Debts.js'
@@ -21,7 +20,7 @@ const [step, setStep] = useState(1);
 
 const [expenses, setExpenses] = useState({housing: 0, groceries: 0, transportation: 0});
 const [emergencies, setEmergencies] = useState({emergencyFund: 0, emergencyGoal: 0})
-const [salary, setSalary] = useState({ salary: 0, frq: "Monthly"});
+const [salary, setSalary] = useState({ salary: 0, frqType: "Monthly", frqAmount: 30});
 
 const [incomes, setIncomes] = useState([]);
 const [bills, setBills] = useState([]);
@@ -33,31 +32,34 @@ const [savingGoal, setSavingGoal] = useState('');
 const handleNextStep = () => {
   switch (step) {
     case 1:
-      if(salary !== ''){
-        setStep(2);
-      }
-      break;
+      setStep(2)
+      break
     case 2:
-      if(expenses.housing !== '' && expenses.groceries !== '' && expenses.transportation !== ''){
-        //handleAddBill();
+      if(salary !== ''){
         setStep(3);
-      } 
+      }
       break;
     case 3:
-      //handleAddDebt();
-      setStep(4);
+      if(expenses.housing !== '' && expenses.groceries !== '' && expenses.transportation !== ''){
+        //handleAddBill();
+        setStep(4);
+      } 
       break;
     case 4:
-      if (emergencies.emergencyFund !== '' && emergencies.emergencyGoal !== ''){
-        setStep(5);
-      }
+      //handleAddDebt();
+      setStep(5);
       break;
     case 5:
-      if(savingGoal !== ''){
+      if (emergencies.emergencyFund !== '' && emergencies.emergencyGoal !== ''){
         setStep(6);
       }
       break;
     case 6:
+      if(savingGoal !== ''){
+        setStep(7);
+      }
+      break;
+    case 7:
       break;
     default:
       console.log('Reached last step');
@@ -65,8 +67,17 @@ const handleNextStep = () => {
   }
 };
 
+const handleBack = () => {
+  if(step > 1){
+    setStep(step - 1)
+  }
+}
+
+const handleSkip = () => {
+  setStep(6);
+}
+ 
 const handleFinish = async() => {
-  console.log('Finish')
   await addDoc(collection(db, USERINFO), {
     uid: auth.currentUser.uid,
     amountSaved: 0,
@@ -85,8 +96,19 @@ const handleFinish = async() => {
 
 return (
   <SafeAreaView style={styles.container}>
-  {/* Step 1: Salary */}
+  {/* Step 1: Option to go with the automatated or to use full manual */}
   {step === 1 && (
+    <View style={styles.stepContainer}>
+      <Text style={styles.addButtonText}>Choose between going with automated mode or a manual mode. 
+        Automated mode calculates your incomes and expenses for you and in manual you add your incomes and expenses as onetime payments. You can change this later.</Text>
+      <View style={styles.navButtons}>
+        <SkipButton handleSkip={handleSkip} title = {"Manual"}/>
+        <NextButton handleNextStep={handleNextStep} title ={"Automated"}/>
+      </View>   
+    </View>
+  )}
+  {/* Step 2: Salary */}
+  {step === 2 && (
     <View style={styles.stepContainer}>
         <Incomes 
           setIncomes={setIncomes} 
@@ -99,57 +121,57 @@ return (
         </View>   
     </View>
   )}
-  {/* Step 2: Living Expenses */}
-  {step === 2 && (
+  {/* Step 3: Living Expenses */}
+  {step === 3 && (
     <View style={styles.stepContainer}>
       <LivingExpenses expenses={expenses} setExpenses={setExpenses}/>
       <Bills bills={bills} setBills={setBills}/>
 
       <View style={styles.navButtons}>
-        <BackButton setStep={setStep} step={step}/>
+        <BackButton handleBack={handleBack}/>
 
         <NextButton handleNextStep={handleNextStep}/>
       </View>
     </View>
   )}
 
-  {/* Step 3: Debt Details */}
-  {step === 3 && (
+  {/* Step 4: Debt Details */}
+  {step === 4 && (
     <View style={styles.stepContainer}>
       
       <Debts debts={debts} setDebts={setDebts}/>
 
       <View style={styles.navButtons}>
-        <BackButton setStep={setStep} step={step}/>
+        <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
       </View>
     </View>
   )}
 
-  {/* Step 4: Emergency Fund */}
-  {step === 4 && (
+  {/* Step 5: Emergency Fund */}
+  {step === 5 && (
     <View style={styles.stepContainer}>
       <Emergencies emergencies={emergencies} setEmergencies={setEmergencies}/>
       <View style={styles.navButtons}>
-        <BackButton setStep={setStep} step={step}/>
+        <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
       </View>
     </View>
   )}
 
-  {/* Step 5: Saving Goal */}
-  {step === 5 && (
+  {/* Step 6: Saving Goal */}
+  {step === 6 && (
     <View style={styles.stepContainer}>
       <SavingGoal savingGoal={savingGoal} setSavingGoal={setSavingGoal}/>
       <View style={styles.navButtons}>
-        <BackButton setStep={setStep} step={step}/>
+        <BackButton handleBack={handleBack}/>
         <FinishButton handleFinish={handleNextStep}/>
       </View>
     </View>
   )}
 
-  {/* Step 6: Summary */}
-  {step === 6 && (
+  {/* Step 7: Summary */}
+  {step === 7 && (
     <View style={styles.summaryContainer}>
       <Summary
       salary = {salary}
@@ -161,8 +183,8 @@ return (
       savingGoal = {savingGoal}
       />
       <View style={styles.navButtons}>
-        <BackButton setStep={setStep} step={step}/>
-        <FinishButton handleFinish={handleFinish}/>
+        <BackButton handleBack={handleBack}/>
+        <FinishButton handleFinish={handleFinish} title = {"Confirm"}/>
       </View>
     </View>
   )}

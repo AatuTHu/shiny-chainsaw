@@ -6,7 +6,7 @@ import ModalMenu from './ModalMenu'
 export default function Debts({debts, setDebts}) {
 
     const [visible, setVisible] = useState(false);
-    const [tempObject, setTempObject] = useState({name: "", amount: 0,payment:"", frq: "Monthly"})
+    const [tempObject, setTempObject] = useState({name: "", amount: 0,payment:"", frqType: "Monthly", frqAmount: 30})
 
     const handleChangeDebt = (field,value) => {
         setTempObject(prev => ({
@@ -15,10 +15,11 @@ export default function Debts({debts, setDebts}) {
         }));
     }
 
-    const handleSelectFrq = (frq) => {
+    const handleSelectFrq = (item) => {
         setTempObject(prev => ({
             ...prev,
-            ["frq"]: frq,
+            ["frqType"]: item.name,
+            ["frqAmount"]: item.inNumber,
         }));
     }
 
@@ -27,7 +28,7 @@ export default function Debts({debts, setDebts}) {
         setDebts((prevDebts) => {
             const updatedDebts = [
             ...prevDebts,
-            { name: tempObject.name, amount: tempObject.amount, frq: tempObject.frq }
+            { name: tempObject.name, amount: tempObject.amount, payment: tempObject.payment, frqType: tempObject.frqType, frqAmount: tempObject.frqAmount }
             ];
             return updatedDebts;
         });
@@ -71,13 +72,13 @@ export default function Debts({debts, setDebts}) {
         style={styles.dropdownButton}
         onPress={() => setVisible(true)}
       >
-        <Text style={styles.dropdownText}>{tempObject.frq}</Text>
+        <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
       </TouchableOpacity>
 
       <ModalMenu
         visible={visible}
         setVisible={setVisible}
-        selectedValue={tempObject.frq}
+        selectedValue={tempObject.frqType}
         setSelectedValue={handleSelectFrq}
         title="Select Bill Frequency"
       />
@@ -96,7 +97,7 @@ export default function Debts({debts, setDebts}) {
         renderItem={({ item, index }) => (
             <>
           <Text style={styles.billItem}>
-            {item.name}: ${item.amount} ({item.frq})
+            {item.name}: ${item.amount} ({item.frqType})
           </Text>
           <Button onPress={()=>handleRemoveDebt(index)} title="remove"/>
           </>

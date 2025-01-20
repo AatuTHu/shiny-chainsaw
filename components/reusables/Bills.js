@@ -6,7 +6,7 @@ import ModalMenu from './ModalMenu'
 export default function Bills({bills, setBills}) {
 
     const [visible, setVisible] = useState(false);
-    const [tempObject, setTempObject] = useState({name: "", amount: 0, frq: "Monthly"})
+    const [tempObject, setTempObject] = useState({name: "", amount: 0, frqType: "Monthly", frqAmount: 30})
 
     const handleChangeBill = (field,value) => {
         setTempObject(prev => ({
@@ -15,10 +15,11 @@ export default function Bills({bills, setBills}) {
         }));
     }
 
-    const handleSelectFrq = (frq) => {
+    const handleSelectFrq = (item) => {
         setTempObject(prev => ({
             ...prev,
-            ["frq"]: frq,
+            ["frqType"]: item.name,
+            ["frqAmount"]: item.inNumber,
         }));
     }
 
@@ -27,7 +28,7 @@ export default function Bills({bills, setBills}) {
         setBills((prevBills) => {
           const updatedBills = [
             ...prevBills,
-            { name: tempObject.name, amount: tempObject.amount, frq: tempObject.frq }
+            { name: tempObject.name, amount: tempObject.amount, frqType: tempObject.frqType, frqAmount: tempObject.frqAmount}
           ];
           return updatedBills;
         });
@@ -62,13 +63,13 @@ export default function Bills({bills, setBills}) {
         style={styles.dropdownButton}
         onPress={() => setVisible(true)}
       >
-        <Text style={styles.dropdownText}>{tempObject.frq}</Text>
+        <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
       </TouchableOpacity>
 
       <ModalMenu
         visible={visible}
         setVisible={setVisible}
-        selectedValue={tempObject.frq}
+        selectedValue={tempObject.frqType}
         setSelectedValue={handleSelectFrq}
         title="Select Bill Frequency"
       />
@@ -83,10 +84,9 @@ export default function Bills({bills, setBills}) {
       <View style={styles.billListContainer}>
         <FlatList
           data={bills}
-          keyExtractor={(index) => index.toString()}
-          renderItem={({ item, index }) => (<>
-            <Text style={styles.billItem}>
-              {item.name}: ${item.amount} ({item.frq})
+          renderItem={({ item, i }) => (<>
+            <Text key={i} style={styles.billItem}>
+              {item.name}: ${item.amount} ({item.frqType})
             </Text>
             <Button onPress={()=>handleRemoveBill(index)} title="remove"/>
             </>
