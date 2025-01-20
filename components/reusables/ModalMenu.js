@@ -11,11 +11,19 @@ import {
 const CustomFrequencyModal = ({
   visible,
   setVisible,
-  data,
-  selectedValue,
   setSelectedValue,
   title = 'Select Frequency',
 }) => {
+  const frequencies = [
+    { name: 'Weekly', inNumber: 7 },        // Every 7 days
+    { name: 'Bi-Weekly', inNumber: 14 },   // Every 14 days
+    { name: 'Monthly', inNumber: 30 },     // Approximately every 30 days
+    { name: 'Bi-Monthly', inNumber: 60 },  // Approximately every 60 days
+    { name: 'Quarterly', inNumber: 90 },   // Approximately every 90 days
+    { name: 'Semiannual', inNumber: 182 }, // Approximately every 182 days
+    { name: 'Annual', inNumber: 365 }      // Once a year
+  ];
+
   return (
     <Modal
       transparent
@@ -27,8 +35,8 @@ const CustomFrequencyModal = ({
         <View style={styles.modal}>
           <Text style={styles.modalTitle}>{title}</Text>
           <FlatList
-            data={data}
-            keyExtractor={(item) => item}
+            data={frequencies}
+            keyExtractor={(item, i) => i}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.modalItem}
@@ -37,7 +45,7 @@ const CustomFrequencyModal = ({
                   setVisible(false);
                 }}
               >
-                <Text style={styles.modalOptionText}>{item}</Text>
+                <Text style={styles.modalOptionText}>{item.name}</Text>
               </TouchableOpacity>
             )}
           />

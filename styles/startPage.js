@@ -86,6 +86,11 @@ export default StyleSheet.create({
       color: '#fff',
       fontSize: 16,
     },
+    skipButtonText: {
+      color: 'black',
+      fontWeight:'bold',
+      fontSize: 16,
+    },
     summaryContainer: {
       flex: 1,
       justifyContent: 'center',
