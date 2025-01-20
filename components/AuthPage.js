@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, TouchableWithoutFeedback, ActivityIndicator, Keyboard } from 'react-native'
 import { auth, signInWithEmailAndPassword, signInAnonymously} from '../services/Firebase'
 import React, {useState, useEffect} from 'react'
 import Icon from '@expo/vector-icons/Ionicons'
@@ -62,80 +62,82 @@ export default function AuthPage() {
     }
 
   return (
-    <View style={styles.container}>
-      {isLoading && (
-        <BlurView intensity={100} tint='dark' style={styles.blur}>
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#4285F4" />
-            <Text style={styles.loaderText}>Logging in...</Text>
-          </View>
-        </BlurView>
-      )}
-    <Text style={styles.title}>Sign In</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> {/* Hide keyboard when pressing away from keyboard*/}
+      <View style={styles.container}>
+        {isLoading && (
+          <BlurView intensity={100} tint='dark' style={styles.blur}>
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#4285F4" />
+              <Text style={styles.loaderText}>Logging in...</Text>
+            </View>
+          </BlurView>
+        )}
+      <Text style={styles.title}>Sign In</Text>
 
-    {/* Email Input */}
-    <View style={styles.inputContainer}>
-      <Icon name="person" size={20} color="#fff" style={styles.icon} />
-      <TextInput
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholder="Email"
-        placeholderTextColor="#888"
-        style={styles.input}
-      />
-    </View>
+      {/* Email Input */}
+      <View style={styles.inputContainer}>
+        <Icon name="person" size={20} color="#fff" style={styles.icon} />
+        <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="Email"
+          placeholderTextColor="#888"
+          style={styles.input}
+        />
+      </View>
 
-    {/* Password Input */}
-    <View style={styles.inputContainer}>
-      <Icon name="key" size={20} color="#fff" style={styles.icon} />
-      <TextInput
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        style={styles.input}
-      />
-    </View>
+      {/* Password Input */}
+      <View style={styles.inputContainer}>
+        <Icon name="key" size={20} color="#fff" style={styles.icon} />
+        <TextInput
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Password"
+          placeholderTextColor="#888"
+          secureTextEntry
+          style={styles.input}
+        />
+      </View>
 
-    {/* Forgot Password */}
-    <TouchableOpacity style={styles.forgotPassword}>
-      <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-    </TouchableOpacity>
-
-    {/* Sign In Button */}
-    <TouchableOpacity onPress={onSignInPress}>
-      <LinearGradient
-        colors={['#0F3544', '#33E49C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.gradientButton}
-      >
-        <Text style={styles.signInButtonText}>Sign In</Text>
-      </LinearGradient>
-    </TouchableOpacity>
-
-    {/* Divider Text */}
-    <View style={styles.dividerContainer}>
-      <View style={styles.dividerLine} />
-        <Text style={styles.orText}>Or Sign In With</Text>
-      <View style={styles.dividerLine} />
-    </View>
-
-    {/* Anonymous Sign In Button */}
-    <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
-      <Icon name="person" size={20} color="#fff" />
-      <Text style={styles.googleButtonText}>Continue as guest</Text>
-    </TouchableOpacity>
-
-    {/* Sign Up Section */}
-    <View style={styles.signUpContainer}>
-      <Text style={styles.signUpText}>Don't have an account?</Text>
-      <TouchableOpacity onPress={() => setNavigate("RegisterPage")} >
-        <Text style={styles.signUpButtonText}>Sign Up</Text>
+      {/* Forgot Password */}
+      <TouchableOpacity style={styles.forgotPassword}>
+        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
+
+      {/* Sign In Button */}
+      <TouchableOpacity onPress={onSignInPress}>
+        <LinearGradient
+          colors={['#0F3544', '#33E49C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientButton}
+        >
+          <Text style={styles.signInButtonText}>Sign In</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      {/* Divider Text */}
+      <View style={styles.dividerContainer}>
+        <View style={styles.dividerLine} />
+          <Text style={styles.orText}>Or Sign In With</Text>
+        <View style={styles.dividerLine} />
+      </View>
+
+      {/* Anonymous Sign In Button */}
+      <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
+        <Icon name="person" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Continue as guest</Text>
+      </TouchableOpacity>
+
+      {/* Sign Up Section */}
+      <View style={styles.signUpContainer}>
+        <Text style={styles.signUpText}>Don't have an account?</Text>
+        <TouchableOpacity onPress={() => setNavigate("RegisterPage")} >
+          <Text style={styles.signUpButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
+  </TouchableWithoutFeedback>
   )
 };
 

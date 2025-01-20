@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createUserWithEmailAndPassword, auth } from '../services/Firebase'
@@ -44,68 +44,70 @@ export default function RegisterPage()  {
     };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> {/* Hide keyboard when pressing away from keyboard*/}
+      <View style={styles.container}>
+        <Text style={styles.title}>Create Account</Text>
 
-      {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Ionicons name="mail-outline" size={20} color="#fff" style={styles.icon} />
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#888"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.input}
-        />
-      </View>
+        {/* Email Input */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={20} color="#fff" style={styles.icon} />
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="#888"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            style={styles.input}
+          />
+        </View>
 
-      {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={20} color="#fff" style={styles.icon} />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#888"
-          secureTextEntry
-          style={styles.input}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-      </View>
+        {/* Password Input */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={20} color="#fff" style={styles.icon} />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="#888"
+            secureTextEntry
+            style={styles.input}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+          />
+        </View>
 
-      {/* Confirm Password Input */}
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={20} color="#fff" style={styles.icon} />
-        <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor="#888"
-          secureTextEntry
-          style={styles.input}
-          value={confirmPassword}
-          onChangeText={(text) => setConfirmPassword(text)}
-        />
-      </View>
+        {/* Confirm Password Input */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={20} color="#fff" style={styles.icon} />
+          <TextInput
+            placeholder="Confirm Password"
+            placeholderTextColor="#888"
+            secureTextEntry
+            style={styles.input}
+            value={confirmPassword}
+            onChangeText={(text) => setConfirmPassword(text)}
+          />
+        </View>
 
-      {/* Create Account Button */}
-      <TouchableOpacity onPress={handleRegister} style={styles.createAccountButton}>
-        <LinearGradient
-          colors={['#0F3544', '#33E49C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.gradientButton}
-        >
-          <Text style={styles.createAccountButtonText}>Create Account</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-
-      {/* Link to Sign In */}
-      <View style={styles.signInLinkContainer}>
-        <Text style={styles.signInText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => setNavigate("AuthPage")} >
-          <Text style={styles.signInLink}>Sign In</Text>
+        {/* Create Account Button */}
+        <TouchableOpacity onPress={handleRegister} style={styles.createAccountButton}>
+          <LinearGradient
+            colors={['#0F3544', '#33E49C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientButton}
+          >
+            <Text style={styles.createAccountButtonText}>Create Account</Text>
+          </LinearGradient>
         </TouchableOpacity>
+
+        {/* Link to Sign In */}
+        <View style={styles.signInLinkContainer}>
+          <Text style={styles.signInText}>Already have an account?</Text>
+          <TouchableOpacity onPress={() => setNavigate("AuthPage")} >
+            <Text style={styles.signInLink}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
