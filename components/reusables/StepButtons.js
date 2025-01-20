@@ -26,18 +26,6 @@ const BackButton = ({handleBack,title}) => {
     )
 }
 
-const SkipButton = ({handleSkip, title}) => {
-    if(title === undefined) title = 'Skip'
-    return (
-        <TouchableOpacity
-            style={styles.skipButton}
-            onPress={handleSkip}
-        >
-            <Text style={styles.skipButtonText}>{title}</Text>
-        </TouchableOpacity>
-    )
-}
-
 const FinishButton = ({handleFinish, title}) => {
     if(title === undefined) title = 'Finish'
     return (
@@ -50,4 +38,4 @@ const FinishButton = ({handleFinish, title}) => {
     )
 }
 
-export { NextButton, BackButton, FinishButton, SkipButton }
+export { NextButton, BackButton, FinishButton }

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
 import { makeTimeStamp } from '../services/TimeStamper.js'
-import { BackButton,FinishButton,NextButton,SkipButton } from './reusables/StepButtons.js'
+import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
 import Bills from './reusables/Bills.js'
 import Debts from './reusables/Debts.js'
@@ -32,34 +32,29 @@ const [savingGoal, setSavingGoal] = useState('');
 const handleNextStep = () => {
   switch (step) {
     case 1:
-      setStep(2)
-      break
-    case 2:
       if(salary !== ''){
-        setStep(3);
+        setStep(2);
       }
       break;
-    case 3:
+    case 2:
       if(expenses.housing !== '' && expenses.groceries !== '' && expenses.transportation !== ''){
         //handleAddBill();
-        setStep(4);
+        setStep(3);
       } 
       break;
-    case 4:
+    case 3:
       //handleAddDebt();
-      setStep(5);
+      setStep(4);
+      break;
+    case 4:
+      if (emergencies.emergencyFund !== '' && emergencies.emergencyGoal !== ''){
+        setStep(5);
+      }
       break;
     case 5:
-      if (emergencies.emergencyFund !== '' && emergencies.emergencyGoal !== ''){
+      if(savingGoal !== ''){
         setStep(6);
       }
-      break;
-    case 6:
-      if(savingGoal !== ''){
-        setStep(7);
-      }
-      break;
-    case 7:
       break;
     default:
       console.log('Reached last step');
@@ -96,19 +91,8 @@ const handleFinish = async() => {
 
 return (
   <SafeAreaView style={styles.container}>
-  {/* Step 1: Option to go with the automatated or to use full manual */}
+  {/* Step 1: Salary */}
   {step === 1 && (
-    <View style={styles.stepContainer}>
-      <Text style={styles.addButtonText}>Choose between going with automated mode or a manual mode. 
-        Automated mode calculates your incomes and expenses for you and in manual you add your incomes and expenses as onetime payments. You can change this later.</Text>
-      <View style={styles.navButtons}>
-        <SkipButton handleSkip={handleSkip} title = {"Manual"}/>
-        <NextButton handleNextStep={handleNextStep} title ={"Automated"}/>
-      </View>   
-    </View>
-  )}
-  {/* Step 2: Salary */}
-  {step === 2 && (
     <View style={styles.stepContainer}>
         <Incomes 
           setIncomes={setIncomes} 
@@ -121,8 +105,8 @@ return (
         </View>   
     </View>
   )}
-  {/* Step 3: Living Expenses */}
-  {step === 3 && (
+  {/* Step 2: Living Expenses */}
+  {step === 2 && (
     <View style={styles.stepContainer}>
       <LivingExpenses expenses={expenses} setExpenses={setExpenses}/>
       <Bills bills={bills} setBills={setBills}/>
@@ -135,8 +119,8 @@ return (
     </View>
   )}
 
-  {/* Step 4: Debt Details */}
-  {step === 4 && (
+  {/* Step 3: Debt Details */}
+  {step === 3 && (
     <View style={styles.stepContainer}>
       
       <Debts debts={debts} setDebts={setDebts}/>
@@ -148,8 +132,8 @@ return (
     </View>
   )}
 
-  {/* Step 5: Emergency Fund */}
-  {step === 5 && (
+  {/* Step 4: Emergency Fund */}
+  {step === 4 && (
     <View style={styles.stepContainer}>
       <Emergencies emergencies={emergencies} setEmergencies={setEmergencies}/>
       <View style={styles.navButtons}>
@@ -159,8 +143,8 @@ return (
     </View>
   )}
 
-  {/* Step 6: Saving Goal */}
-  {step === 6 && (
+  {/* Step 5: Saving Goal */}
+  {step === 5 && (
     <View style={styles.stepContainer}>
       <SavingGoal savingGoal={savingGoal} setSavingGoal={setSavingGoal}/>
       <View style={styles.navButtons}>
@@ -170,8 +154,8 @@ return (
     </View>
   )}
 
-  {/* Step 7: Summary */}
-  {step === 7 && (
+  {/* Step 6: Summary */}
+  {step === 6 && (
     <View style={styles.summaryContainer}>
       <Summary
       salary = {salary}

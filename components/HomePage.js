@@ -7,8 +7,6 @@ import { calculateSavings } from '../services/Calculator';
 export default function HomePage () {
 
   const [userData, setUserData] = useState([])
-  const [visible, setVisible] = useState(false)
-  const [amount, setAmount] = useState(0)
   const { setNavigate } = useNavigation()
 
   useEffect(() => {
@@ -32,6 +30,7 @@ export default function HomePage () {
         }
         tempData.push(object)
       })
+      console.log(tempData)
       tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
       setUserData(tempData)
     })
@@ -41,10 +40,6 @@ export default function HomePage () {
     }
 
   }, [])
-
-  const addTransaction = (type) => {
-    setVisible(false)
-  }
   
   const SignOut = async() => {
     signOut(auth).then(()=> {
@@ -67,11 +62,9 @@ return (
         return (
           <View key={i} style={styles.dataContainer}>
             <Text style={styles.labelText}>Amount Saved:</Text>
-            <Text style={styles.text}>{item.amountSaved} $</Text>
-            <Text style={styles.labelText}>Savings Goal:</Text>
-            <Text style={styles.text}>{item.savingGoal} $</Text>
+            <Text style={styles.text}>{item.amountSaved}$ / {item.savingGoal} $</Text>
 
-        {item.salary && item.salary.length > 0 && (
+        {item.salary && (
           <>
             <Text style={styles.labelText}>Salary:</Text>
             <Text style={styles.text}>{item.salary.salary} $</Text>
@@ -132,17 +125,6 @@ return (
       }}
       />
 
-      {visible && 
-        <View style={styles.transactionPopUp}>
-        <TextInput style={styles.dataContainer}
-        value={amount}
-        onChangeText={text => setAmount(text)}/>
-        <Button style={styles.signOutButton} onPress={() => addTransaction()} title='Complete'/>    
-        </View>
-      }
-      
-      <Button style={styles.signOutButton} onPress={() => setVisible(!visible)} title='Add Income'/>
-      <Button style={styles.signOutButton} onPress={() => setVisible(!visible)} title='Add Payment'/>
       <Button style={styles.signOutButton} onPress={SignOut} title='Sign Out'/>
     </View>
   )
