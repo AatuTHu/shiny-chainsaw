@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, FlatList, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
@@ -90,6 +90,7 @@ const handleFinish = async() => {
 }
 
 return (
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
   <SafeAreaView style={styles.container}>
   {/* Step 1: Salary */}
   {step === 1 && (
@@ -116,8 +117,8 @@ return (
 
         <NextButton handleNextStep={handleNextStep}/>
       </View>
-    </View>
-  )}
+      </View>
+    )}
 
   {/* Step 3: Debt Details */}
   {step === 3 && (
@@ -171,7 +172,7 @@ return (
         <FinishButton handleFinish={handleFinish} title = {"Confirm"}/>
       </View>
     </View>
-  )}
-</SafeAreaView>
-);
-};
+    )}
+  </SafeAreaView>
+  </TouchableWithoutFeedback>
+)}
