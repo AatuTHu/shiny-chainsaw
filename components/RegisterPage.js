@@ -44,7 +44,7 @@ export default function RegisterPage()  {
     };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> {/* Hide keyboard when pressing away from keyboard*/}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Text style={styles.title}>Create Account</Text>
 

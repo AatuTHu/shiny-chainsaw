@@ -135,7 +135,7 @@ const handleFinish = async() => {
 }
 
 return (
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss}> {/* Hide keyboard when pressing away from keyboard*/}
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
     {/* Step 1: Salary */}
     {step === 1 && (

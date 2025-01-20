@@ -62,7 +62,7 @@ export default function AuthPage() {
     }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> {/* Hide keyboard when pressing away from keyboard*/}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         {isLoading && (
           <BlurView intensity={100} tint='dark' style={styles.blur}>
