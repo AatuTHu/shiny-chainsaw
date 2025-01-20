@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, FlatList, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'

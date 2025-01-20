@@ -4,6 +4,7 @@ import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
+import { calculateSavings } from '../services/Calculator';
 
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
@@ -31,7 +32,7 @@ export default function HomePage() {
         tempData.push(object)
       })
       console.log(tempData)
-      tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
+      tempData[0].amonutSaved = calculateSavings(tempData[0], '10.2.2025') // string is for simulating to a date
       setUserData(tempData)
     })
 
@@ -61,9 +62,9 @@ return (
         data={userData}
         renderItem={({ item, i }) => {
           // Default to 0 if any value is undefined or null
-          const housing = Number(item.housing) || 0;
-          const transportation = Number(item.transportation) || 0;
-          const groceries = Number(item.groceries) || 0;
+          const housing = Number(item.expenses.housing) || 0;
+          const transportation = Number(item.expenses.transportation) || 0;
+          const groceries = Number(item.expenses.groceries) || 0;
           
           // Calculate the total of all bills
           const totalBills = item.bills
@@ -147,7 +148,7 @@ return (
               <Text style={styles.text}>{item.savingGoal} $</Text>
 
               <Text style={styles.labelText}>Salary:</Text>
-              <Text style={styles.text}>{item.salary} $</Text>
+              <Text style={styles.text}>{item.salary.salary} $</Text>
 
               {item.otherIncomes && item.otherIncomes.length > 0 && (
                 <>
@@ -193,9 +194,9 @@ return (
                 ))}
 
               <Text style={styles.labelText}>Emergency Fund:</Text>
-              <Text style={styles.text}>{item.emergencyFund} $</Text>
+              <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
               <Text style={styles.labelText}>Emergency Goal:</Text>
-              <Text style={styles.text}>{item.emergencyGoal} $</Text>
+              <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
             </View>
           );
         }}
