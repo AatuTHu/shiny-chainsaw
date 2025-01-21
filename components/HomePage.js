@@ -31,8 +31,8 @@ export default function HomePage() {
         }
         tempData.push(object)
       })
-      console.log(tempData)
-      tempData[0].amonutSaved = calculateSavings(tempData[0], '10.2.2025') // string is for simulating to a date
+
+      tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
       setUserData(tempData)
     })
 
@@ -113,11 +113,11 @@ return (
           ];
 
           // Debugging
-          console.log('Housing:', housing);
+         /*console.log('Housing:', housing);
           console.log('Transportation:', transportation);
           console.log('Groceries:', groceries);
           console.log('Total Bills:', totalBills);
-          console.log('Chart Data:', chartData);
+          console.log('Chart Data:', chartData);*/
 
           return (
             <View key={i} style={styles.dataContainer}>

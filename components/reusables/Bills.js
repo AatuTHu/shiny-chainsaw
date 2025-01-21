@@ -2,26 +2,12 @@ import { View, Text, TextInput, TouchableOpacity,FlatList,Button } from 'react-n
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
 import ModalMenu from './ModalMenu'
+import { handleChangeItem } from '../../services/Utilities';
 
 export default function Bills({bills, setBills}) {
 
     const [visible, setVisible] = useState(false);
     const [tempObject, setTempObject] = useState({name: "", amount: 0, frqType: "Monthly", frqAmount: 30})
-
-    const handleChangeBill = (field,value) => {
-        setTempObject(prev => ({
-            ...prev,
-            [field]: value,
-        }));
-    }
-
-    const handleSelectFrq = (item) => {
-        setTempObject(prev => ({
-            ...prev,
-            ["frqType"]: item.name,
-            ["frqAmount"]: item.inNumber,
-        }));
-    }
 
     //Create a new item to the list of bills
     const handleAddBill = () => {
@@ -32,7 +18,7 @@ export default function Bills({bills, setBills}) {
           ];
           return updatedBills;
         });
-        setTempObject({name: "", amount: 0, frq: "Monthly"})
+        setTempObject({name: "", amount: 0, frqType: "Monthly", frqAmount: 30})
       };
 
     const handleRemoveBill = (index) => {
@@ -47,7 +33,7 @@ export default function Bills({bills, setBills}) {
         placeholder="Bill name"
         placeholderTextColor="#888"
         value={tempObject.name}
-        onChangeText={(text) => handleChangeBill("name",text)}
+        onChangeText={(text) => handleChangeItem(setTempObject,"name",text)}
       />
 
       <TextInput
@@ -56,7 +42,7 @@ export default function Bills({bills, setBills}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={tempObject.amount}
-        onChangeText={(text) => handleChangeBill("amount",text)}
+        onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
       />
 
       <TouchableOpacity
@@ -70,7 +56,7 @@ export default function Bills({bills, setBills}) {
         visible={visible}
         setVisible={setVisible}
         selectedValue={tempObject.frqType}
-        setSelectedValue={handleSelectFrq}
+        setSelectedValue={setTempObject}
         title="Select Bill Frequency"
       />
 
@@ -84,8 +70,8 @@ export default function Bills({bills, setBills}) {
       <View style={styles.billListContainer}>
         <FlatList
           data={bills}
-          renderItem={({ item, i }) => (<>
-            <Text key={i} style={styles.billItem}>
+          renderItem={({ item, index }) => (<>
+            <Text key={index} style={styles.billItem}>
               {item.name}: ${item.amount} ({item.frqType})
             </Text>
             <Button onPress={()=>handleRemoveBill(index)} title="remove"/>

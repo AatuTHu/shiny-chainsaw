@@ -5,7 +5,6 @@ import Icon from '@expo/vector-icons/Ionicons'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '../services/Navigation';
-import { makeTimeStamp } from '../services/TimeStamper'
 
 
 export default function AuthPage() {
@@ -21,7 +20,7 @@ export default function AuthPage() {
         if(user) { 
           setNavigate("HomePage")
         } else { 
-          setNavigate("AuthPage")
+          setNavigate("StartPage")
         }
       })//auth
     }//function

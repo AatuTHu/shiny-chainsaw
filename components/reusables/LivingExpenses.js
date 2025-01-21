@@ -1,6 +1,7 @@
 import { View, Text, TextInput } from 'react-native'
 import styles from '../../styles/startPage'
 import React from 'react'
+import { handleChangeItem } from '../../services/Utilities';
 
 export default function LivingExpenses({expenses, setExpenses}) {
     const handleExpenses = (field, value) => {
@@ -18,7 +19,7 @@ export default function LivingExpenses({expenses, setExpenses}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.housing}
-        onChangeText={(text) => handleExpenses("housing", text)}
+        onChangeText={(text) => handleChangeItem(setExpenses,"housing", text)}
       />
       
       <TextInput
@@ -27,7 +28,7 @@ export default function LivingExpenses({expenses, setExpenses}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.groceries}
-        onChangeText={(text) => handleExpenses("groceries",text)}
+        onChangeText={(text) => handleChangeItem(setExpenses,"groceries",text)}
       />
 
       <TextInput
@@ -36,7 +37,7 @@ export default function LivingExpenses({expenses, setExpenses}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.transportation}
-        onChangeText={(text) => handleExpenses("transportation",text)}
+        onChangeText={(text) => handleChangeItem(setExpenses,"transportation",text)}
       />
 
     </>

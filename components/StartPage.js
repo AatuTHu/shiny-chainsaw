@@ -3,7 +3,7 @@ import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
-import { makeTimeStamp } from '../services/TimeStamper.js'
+import { makeTimeStamp } from '../services/Utilities.js'
 import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
 import Bills from './reusables/Bills.js'
@@ -32,7 +32,7 @@ const [savingGoal, setSavingGoal] = useState('');
 const handleNextStep = () => {
   switch (step) {
     case 1:
-      if(salary !== ''){
+      if(salary.salary !== ""){
         setStep(2);
       }
       break;
@@ -68,10 +68,6 @@ const handleBack = () => {
   }
 }
 
-const handleSkip = () => {
-  setStep(6);
-}
- 
 const handleFinish = async() => {
   await addDoc(collection(db, USERINFO), {
     uid: auth.currentUser.uid,

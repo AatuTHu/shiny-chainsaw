@@ -18,35 +18,41 @@ const calculateSavings = (data, targetDate = null) => {
     const totalDays = calculateDaysBetween(startDate, endDate);
     for (let day = 1; day <= totalDays; day++) {
         // Debugging each iteration
-        console.log(`Processing Day ${day}`);
       
         // Process Bills
         bills.forEach(bill => {
           if (day % bill.frqAmount === 0) {
-            console.log(`Paying Bill: ${bill.name} amount ${bill.payment} on Day ${day}`);
-            amountSaved -= Number(bill.payment); // Convert to number before subtracting
+            console.log(`Paying Bill: ${bill.name} amount ${bill.amount} on Day ${day}`);
+            amountSaved -= bill.amount;
           }
         });
       
         // Process Debts
         debts.forEach(debt => {
           if (day % debt.frqAmount === 0) {
-            console.log(`Paying Debt: ${debt.name} on Day ${day}`);
-            amountSaved -= Number(debt.payment); // Convert to number before subtracting
+            console.log(`Paying Debt: ${debt.name} on Day ${day} amount ${debt.amount} - ${debt.payment}`);
+            data.debts.amount -= debt.payment
+            amountSaved -= debt.payment;
           }
         });
+
+        // Process monthlyExpenses
+        if (day % 30 === 0) { // Assuming monthly expenses
+          console.log(`Spending Expenses on Day ${day}`);
+          amountSaved -= data.expenses.housing;
+        }
       
         // Process Salary
         if (day % salary.frqAmount === 0) {
           console.log(`Receiving Salary on Day ${day}`);
-          amountSaved += Number(salary.salary); // Convert to number before adding
+          amountSaved += salary.salary;
         }
       
         // Process Other Incomes
         otherIncomes.forEach(income => {
           if (day % 30 === 0) { // Assuming monthly incomes
-            console.log(`Receiving Income: ${income.name} on Day ${day}`);
-            amountSaved += Number(income.amount); // Convert to number before adding
+            console.log(`Receiving Income: ${income.name} on Day ${day} amount`);
+            amountSaved += income.amount
           }
         });
       }

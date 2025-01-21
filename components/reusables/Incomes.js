@@ -2,41 +2,33 @@ import { View, Text, TextInput,TouchableOpacity } from 'react-native'
 import React, {useState} from 'react'
 import ModalMenu from './ModalMenu'
 import styles from '../..//styles/startPage'
+import { handleChangeItem, isNumber, isValidFeild } from '../../services/Utilities';
 
 export default function Incomes({incomes,setIncomes,salary,setSalary}) {
 
     const [visible, setVisible] = useState(false);
 
     const handleAddIncome = () => {
-        setIncomes([...incomes, { name: '', amount: ''}]);
+        setIncomes([...incomes, { name: '', amount: 0}]);
       };
       
-      const handleIncomeChange = (index, field, value) => {
+    const handleIncomeChange = (index, field, value) => {
+      if(isNumber(value) && isValidFeild(field)) {
+        const numberValue = parseFloat(value);
+        const updatedIncomes = incomes.map((income, i) =>
+        i === index? {...income, [field]: numberValue } : income);
+        setIncomes(updatedIncomes);
+      } else {
         const updatedIncomes = incomes.map((income, i) =>
         i === index? {...income, [field]: value } : income);
         setIncomes(updatedIncomes);
-      };
-       
-      const handleRemoveIncome = (index) => {
-        const updatedIncomes = incomes.filter((_, i) => i!== index);
-        setIncomes(updatedIncomes);
       }
-
-      const handleSalary = (value) => {
-        setSalary(prevSalary => ({
-            ...prevSalary,
-            ["salary"]: value,
-          }));
-      }
-
-      const handleFrq = (item) => {
-        console.log(item);
-        setSalary(prevSalary => ({
-            ...prevSalary,
-            ["frqType"]: item.name,
-            ["frqAmount"]: item.inNumber,
-          }));
-      }
+    };
+    
+    const handleRemoveIncome = (index) => {
+      const updatedIncomes = incomes.filter((_, i) => i!== index);
+      setIncomes(updatedIncomes);
+    }
 
   return (
     <>
@@ -47,7 +39,7 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={salary.salary}
-        onChangeText={(text) => handleSalary(text)}
+        onChangeText={(text) => handleChangeItem(setSalary, "salary", text)}
       />
       <Text style={styles.label}>How often is your salary paid?</Text>
       <TouchableOpacity
@@ -61,7 +53,7 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
         visible={visible}
         setVisible={setVisible}
         selectedValue={salary.frqType}
-        setSelectedValue={handleFrq}
+        setSelectedValue={setSalary}
         title="Select Salary Frequency" 
       />
 

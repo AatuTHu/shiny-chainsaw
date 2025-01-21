@@ -24,6 +24,14 @@ const CustomFrequencyModal = ({
     { name: 'Annual', inNumber: 365 }      // Once a year
   ];
 
+  const handleSelectFrq = (item) => {
+    setSelectedValue(prev => ({
+        ...prev,
+        ["frqType"]: item.name,
+        ["frqAmount"]: item.inNumber,
+    }));
+}
+
   return (
     <Modal
       transparent
@@ -41,7 +49,7 @@ const CustomFrequencyModal = ({
               <TouchableOpacity
                 style={styles.modalItem}
                 onPress={() => {
-                  setSelectedValue(item);
+                  handleSelectFrq(item);
                   setVisible(false);
                 }}
               >
