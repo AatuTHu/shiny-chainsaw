@@ -4,12 +4,11 @@ export default StyleSheet.create({
      container: {
       flex: 1,
       backgroundColor: '#0e0e14',
-      padding: 20,
     },
     stepContainer: {
       flex: 1,
-      justifyContent: 'center',
       alignItems: 'center',
+      padding: 30,
     },
     label: {
       fontSize: 18,
@@ -20,8 +19,6 @@ export default StyleSheet.create({
     input: {
       width: '100%',
       height: 50,
-      borderWidth: 1,
-      borderColor: '#444',
       borderRadius: 5,
       paddingHorizontal: 10,
       backgroundColor: '#2a2a3d',
@@ -29,8 +26,8 @@ export default StyleSheet.create({
       marginVertical: 10,
     },
     dropdownButton: {
-      width: '100%',
       height: 50,
+      width: 90,
       backgroundColor: '#2a2a3d',
       justifyContent: 'center',
       alignItems: 'center',
@@ -62,6 +59,8 @@ export default StyleSheet.create({
       justifyContent: 'space-evenly',
       marginTop: 20,
       width: '100%',
+      position: 'absolute',
+      bottom: 20,
     },
     backButton: {
       backgroundColor: '#ff1100',
@@ -91,13 +90,8 @@ export default StyleSheet.create({
       fontWeight:'bold',
       fontSize: 16,
     },
-    summaryContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     summaryTitle: {
-      fontSize: 20,
+      fontSize: 24,
       fontWeight: 'bold',
       color: '#fff',
       marginBottom: 20,
@@ -107,15 +101,15 @@ export default StyleSheet.create({
       flexDirection: 'column',
       justifyContent: 'space-between',
       marginVertical: 5,
-      width: '100%',
+      width: 300,
     },
     summaryLabel: {
-      fontSize: 16,
+      fontSize: 20,
       color: '#aaa',
       fontWeight: '600',
     },
     summaryValue: {
-      fontSize: 16,
+      fontSize: 18,
       color: '#fff',
     },
     finishButton: {
@@ -131,8 +125,9 @@ export default StyleSheet.create({
       fontWeight: 'bold',
     },  
     billListContainer: {
-      maxHeight: 200,
-      width: '80%',
+      flexDirection: 'row',
+      maxHeight: 240,
+      width: '100%',
       marginVertical: 10,
       overflow: 'hidden',
     },
@@ -152,5 +147,35 @@ export default StyleSheet.create({
     removeButtonText: {
       color: '#fff',
       fontSize: 14,
+    },
+    billsHolder:{
+      flexDirection: 'row',
+      justifyContent:'space-around',
+      alignContent: 'center',
+    },
+    billsContainer:{
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    billsInput:{
+      height: 50,
+      width: 90,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      backgroundColor: '#2a2a3d',
+      color: '#fff',
+      marginVertical: 10,
+    },
+    removeBill:{
+      color: 'red',
+      fontSize: 16,
+      marginVertical: 5,
+    },
+    summaryContainer:{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 30,
     },
   });

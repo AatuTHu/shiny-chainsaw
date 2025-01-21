@@ -24,38 +24,40 @@ export default function Bills({bills, setBills}) {
   return (
     <>
       <Text style={styles.label}>Recurring Bills:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Bill name"
-        placeholderTextColor="#888"
-        value={tempObject.name}
-        onChangeText={(text) => handleChangeItem(setTempObject,"name",text)}
-      />
+      <View style={styles.billsContainer}>
+        <TextInput
+          style={styles.billsInput}
+          placeholder="Bill name"
+          placeholderTextColor="#888"
+          value={tempObject.name}
+          onChangeText={(text) => handleChangeItem(setTempObject,"name",text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Bill amount"
-        placeholderTextColor="#888"
-        keyboardType="numeric"
-        value={tempObject.amount}
-        onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
-      />
+        <TextInput
+          style={styles.billsInput}
+          placeholder="Bill amount"
+          placeholderTextColor="#888"
+          keyboardType="numeric"
+          value={tempObject.amount}
+          onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
+        />
 
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setVisible(true)}
-      >
-        <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setVisible(true)}
+        >
+          <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
+        </TouchableOpacity>
 
-      <ModalMenu
-        visible={visible}
-        setVisible={setVisible}
-        selectedValue={tempObject.frqType}
-        setSelectedValue={setTempObject}
-        title="Select Bill Frequency"
-      />
+        <ModalMenu
+          visible={visible}
+          setVisible={setVisible}
+          selectedValue={tempObject.frqType}
+          setSelectedValue={setTempObject}
+          title="Select Bill Frequency"
+        />
 
+    </View>
       <TouchableOpacity
         style={styles.addButton}
         onPress={handleAddBill}
@@ -66,12 +68,15 @@ export default function Bills({bills, setBills}) {
       <View style={styles.billListContainer}>
         <FlatList
           data={bills}
-          renderItem={({ item, index }) => (<>
+          renderItem={({ item, index }) => (
+          <View style={styles.billsHolder}>
             <Text key={index} style={styles.billItem}>
               {item.name}: ${item.amount} ({item.frqType})
             </Text>
-            <Button onPress={()=>handleRemoveFromList(setBills,index)} title="remove"/>
-            </>
+            <TouchableOpacity onPress={()=>handleRemoveFromList(setBills,index)}>
+              <Text style={styles.removeBill}>Remove</Text>
+            </TouchableOpacity>
+          </View>
           )}
         />
       </View>

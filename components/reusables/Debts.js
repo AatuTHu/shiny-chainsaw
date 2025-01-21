@@ -77,12 +77,14 @@ export default function Debts({debts, setDebts}) {
         data={debts}
         keyExtractor={(index) => index.toString()}
         renderItem={({ item, index }) => (
-            <>
-          <Text style={styles.billItem}>
-            {item.name}: ${item.amount} ({item.frqType})
-          </Text>
-          <Button onPress={()=>handleRemoveFromList(setDebts,index)} title="remove"/>
-          </>
+          <View style={styles.billsHolder}>
+            <Text style={styles.billItem}>
+              {item.name}: ${item.amount} ({item.frqType})
+            </Text>
+            <TouchableOpacity onPress={()=>handleRemoveFromList(setDebts,index)}>
+              <Text style={styles.removeBill}>Remove</Text>
+            </TouchableOpacity>
+          </View>
         )}
       />
       </View>

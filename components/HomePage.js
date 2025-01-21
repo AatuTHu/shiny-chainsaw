@@ -1,14 +1,16 @@
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot } from '../services/Firebase';
 import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import { calculateSavings } from '../services/Calculator';
+import Icon from '@expo/vector-icons/Ionicons'
 
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
   const { setNavigate } = useNavigation();
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
@@ -65,13 +67,21 @@ return (
           const housing = item.expenses.housing || 0;
           const transportation = item.expenses.transportation || 0;
           const groceries = item.expenses.groceries || 0;
+          const salary = item.salary.salary || 0;
+          const income = item.otherIncomes.amount || 0;
           
           // Calculate the total of all bills
           const totalBills = item.bills
           ? item.bills.reduce((sum, bill) => sum + bill.amount || 0, 0)
           : 0;
 
+          const totalIncomes = salary + income || 0;
+          const totalExpenses = housing + groceries + transportation + totalBills;
+
           const needs = housing + groceries + transportation + totalBills; // Add up nescessary expenses
+
+          const calculatedBalance = totalIncomes - totalExpenses;
+          setBalance(calculatedBalance);
 
           // Example piechart to show nescessary expenses in different colors
           const chartData = [
@@ -113,14 +123,34 @@ return (
           ];
 
           // Debugging
-         /*console.log('Housing:', housing);
+          /*
+          console.log('Housing:', housing);
           console.log('Transportation:', transportation);
           console.log('Groceries:', groceries);
           console.log('Total Bills:', totalBills);
-          console.log('Chart Data:', chartData);*/
+          console.log('Chart Data:', chartData);
+          console.log('total income:', totalIncomes);
+          console.log('total expenses:', totalExpenses);
+          console.log('salary:', salary);
+          console.log('income:', income);
+          */
 
           return (
             <View key={i} style={styles.dataContainer}>
+              <View style={styles.balanceHolder}>
+                <TouchableOpacity style={styles.minusButton} onPress={() => console.log("Minus button pressed")}>
+                  <Icon name="remove-circle-outline" size={30} color="#FFFFFF" />
+                </TouchableOpacity>
+
+                <View style={styles.balanceContent}>
+                  <Text style={styles.labelText}>Balance:</Text>
+                  <Text style={styles.balanceText}>{balance.toFixed(2)} $</Text>
+                </View>
+
+                <TouchableOpacity style={styles.plusButton} onPress={() => console.log("Plus button pressed")}>
+                  <Icon name="add-circle-outline" size={30} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
               {/* Pie Chart */}
               <PieChart
                 data={chartData}
@@ -140,10 +170,11 @@ return (
                 accessor="population"
                 backgroundColor="transparent"
               />
-
               {/* Displaying the rest of the user data */}
+
               <Text style={styles.labelText}>Amount Saved:</Text>
               <Text style={styles.text}>{item.amountSaved} $</Text>
+
               <Text style={styles.labelText}>Savings Goal:</Text>
               <Text style={styles.text}>{item.savingGoal} $</Text>
 
@@ -219,12 +250,12 @@ const styles = StyleSheet.create({
   },
   labelText: {
     color: '#A5A5A5',
-    fontSize: 14,
+    fontSize: 20,
     marginBottom: 5,
   },
   text: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
   },
   signOutButton: {
@@ -240,4 +271,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  balanceHolder: {
+    flexDirection: 'row',
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  balanceContent: {
+    flexDirection: 'column',
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  balanceText: {
+    fontSize: 18,
+    color: "#32CD32",
+    textAlign: "center",
+  },
+  labelText: {
+    color: "#A5A5A5",
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  minusButton: {
+    backgroundColor: "#FF6347",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 40,
+    height: 40,
+  },
+  plusButton: {
+    backgroundColor: "#32CD32",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 40,
+    height: 40,
+  },
+  icon: {
+    textAlign: 'center',
+    alignSelf: 'center', 
+  }
 });
