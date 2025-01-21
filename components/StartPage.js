@@ -32,6 +32,7 @@ const [savingGoal, setSavingGoal] = useState('');
 const handleNextStep = () => {
   switch (step) {
     case 1:
+      console.log(salary)
       if(salary.salary !== ""){
         setStep(2);
       }
@@ -80,7 +81,6 @@ const handleFinish = async() => {
     emergencyFunds: emergencies,
     savingGoal: savingGoal,
     timeStamp: makeTimeStamp(),
-    transactionHistory: "",
 }).catch (error => console.log(error))
   setNavigate("HomePage")
 }

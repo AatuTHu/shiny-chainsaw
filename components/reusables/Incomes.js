@@ -1,34 +1,24 @@
-import { View, Text, TextInput,TouchableOpacity } from 'react-native'
+import { View, Text, TextInput,TouchableOpacity, FlatList } from 'react-native'
 import React, {useState} from 'react'
 import ModalMenu from './ModalMenu'
 import styles from '../..//styles/startPage'
-import { handleChangeItem, isNumber, isValidFeild } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Incomes({incomes,setIncomes,salary,setSalary}) {
 
     const [visible, setVisible] = useState(false);
+    const [tempObject, setTempObject] = useState({name: "", amount: 0})
 
     const handleAddIncome = () => {
-        setIncomes([...incomes, { name: '', amount: 0}]);
+        setIncomes((prevIncomes) => {
+          const updatedIncomes = [
+            ...prevIncomes,
+            { name: tempObject.name, amount: tempObject.amount }
+          ];
+          return updatedIncomes;
+        });
+        setTempObject({name: "", amount: ""})
       };
-      
-    const handleIncomeChange = (index, field, value) => {
-      if(isNumber(value) && isValidFeild(field)) {
-        const numberValue = parseFloat(value);
-        const updatedIncomes = incomes.map((income, i) =>
-        i === index? {...income, [field]: numberValue } : income);
-        setIncomes(updatedIncomes);
-      } else {
-        const updatedIncomes = incomes.map((income, i) =>
-        i === index? {...income, [field]: value } : income);
-        setIncomes(updatedIncomes);
-      }
-    };
-    
-    const handleRemoveIncome = (index) => {
-      const updatedIncomes = incomes.filter((_, i) => i!== index);
-      setIncomes(updatedIncomes);
-    }
 
   return (
     <>
@@ -58,32 +48,41 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
       />
 
       {/* Additional Incomes */}
-      <Text style={styles.label}>Other Incomes:</Text>
-      {incomes.map((income, index) => (
-        <View key={index} style={styles.incomeRow}>
+      <Text style={styles.label}>Other Incomes:</Text>    
+        <View style={styles.incomeRow}>
           <TextInput
             style={styles.input}
             placeholder="Income name"
             placeholderTextColor="#888"
-            value={income.name}
-            onChangeText={(text) => handleIncomeChange(index, 'name', text)}
+            value={tempObject.name}
+            onChangeText={(text) => handleChangeItem(setTempObject,'name', text)}
           />
           <TextInput
             style={styles.input}
             placeholder="Income amount"
             placeholderTextColor="#888"
             keyboardType="numeric"
-            value={income.amount}
-            onChangeText={(text) => handleIncomeChange(index, 'amount', text)}
+            value={tempObject.amount}
+            onChangeText={(text) => handleChangeItem(setTempObject,'amount', text)}
           />
-          <TouchableOpacity
-            style={styles.removeButton}
-            onPress={() => handleRemoveIncome(index)}
-          >
-      <Text style={styles.removeButtonText}>Remove</Text>
-    </TouchableOpacity>
+
+          <FlatList
+            data={incomes}
+            renderItem={({ item, index }) => (<>
+              <Text key={index} style={styles.billItem}>
+                {item.name}: ${item.amount}
+              </Text>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => handleRemoveFromList(setIncomes,index)}
+              >
+                <Text style={styles.removeButtonText}>Remove</Text>
+              </TouchableOpacity>
+              </>
+            )}
+          />
         </View>
-      ))}
+
       <TouchableOpacity
         style={styles.addButton}
         onPress={handleAddIncome}

@@ -2,7 +2,7 @@ import { View, Text, TextInput, TouchableOpacity,FlatList,Button } from 'react-n
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
 import ModalMenu from './ModalMenu'
-import { handleChangeItem } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Bills({bills, setBills}) {
 
@@ -18,13 +18,9 @@ export default function Bills({bills, setBills}) {
           ];
           return updatedBills;
         });
-        setTempObject({name: "", amount: 0, frqType: "Monthly", frqAmount: 30})
+        setTempObject({name: "", amount: "", frqType: "Monthly", frqAmount: 30})
       };
-
-    const handleRemoveBill = (index) => {
-        setBills((prevBills) => prevBills.filter((_, i) => i !== index));
-    }
-
+      
   return (
     <>
       <Text style={styles.label}>Recurring Bills:</Text>
@@ -74,7 +70,7 @@ export default function Bills({bills, setBills}) {
             <Text key={index} style={styles.billItem}>
               {item.name}: ${item.amount} ({item.frqType})
             </Text>
-            <Button onPress={()=>handleRemoveBill(index)} title="remove"/>
+            <Button onPress={()=>handleRemoveFromList(setBills,index)} title="remove"/>
             </>
           )}
         />

@@ -4,12 +4,6 @@ import React from 'react'
 import { handleChangeItem } from '../../services/Utilities';
 
 export default function LivingExpenses({expenses, setExpenses}) {
-    const handleExpenses = (field, value) => {
-        setExpenses(prevExpenses => ({
-          ...prevExpenses,
-          [field]: value,
-        }));
-    };
   return (
     <>
       <Text style={styles.label}>Monthly Living Expenses:</Text>

@@ -20,7 +20,7 @@ export default function AuthPage() {
         if(user) { 
           setNavigate("HomePage")
         } else { 
-          setNavigate("StartPage")
+          setNavigate("AuthPage")
         }
       })//auth
     }//function

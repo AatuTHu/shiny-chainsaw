@@ -2,7 +2,7 @@ import { View, Text,TextInput,TouchableOpacity,FlatList, Button } from 'react-na
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
 import ModalMenu from './ModalMenu'
-import { handleChangeItem } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Debts({debts, setDebts}) {
 
@@ -18,12 +18,8 @@ export default function Debts({debts, setDebts}) {
             ];
             return updatedDebts;
         });
-        setTempObject({name: "", amount: 0,payment: 0, frqType: "Monthly", frqAmount: 0});
+        setTempObject({name: "", amount: "",payment: "", frqType: "Monthly", frqAmount: 0});
         };
-
-    const handleRemoveDebt = (index) => {
-        setDebts((prevDebts) => prevDebts.filter((_, i) => i !== index));
-    }
 
   return (
     <>
@@ -85,7 +81,7 @@ export default function Debts({debts, setDebts}) {
           <Text style={styles.billItem}>
             {item.name}: ${item.amount} ({item.frqType})
           </Text>
-          <Button onPress={()=>handleRemoveDebt(index)} title="remove"/>
+          <Button onPress={()=>handleRemoveFromList(setDebts,index)} title="remove"/>
           </>
         )}
       />

@@ -16,18 +16,18 @@ const makeTimeStamp = () => {
 const isNumber = (value) => !isNaN(value) && !(value === "");
 
 //Check if the field is a field that requires a number
-const isValidFeild = (field) => {
+const isValidField = (field) => {
     const allowedFields = ["amount", "salary", "payment", "frqAmount", "housing", "groceries", "transportation", "emergencyFund","emergencyGoal"];
     return allowedFields.includes(field);
 };
 
 const handleChangeItem = (setItem, field, value) => {
-    if (isValidFeild(field) && isNumber(value)) {
+    if (isValidField(field) && isNumber(value)) {
         setItem(prev => ({
             ...prev,
             [field]: Number(value),
         }));
-    } else if (isValidFeild(field) && !isNumber(value)) {
+    } else if (isValidField(field) && !isNumber(value)) {
         setItem(prev => ({
             ...prev,
             [field]: "",
@@ -40,9 +40,14 @@ const handleChangeItem = (setItem, field, value) => {
     }
 }
 
+const handleRemoveFromList = (setItem,index) => {
+    setItem((prevBills) => prevBills.filter((_, i) => i !== index));
+}
+
 export {
     makeTimeStamp,
     isNumber,
     handleChangeItem,
-    isValidFild
+    isValidField,
+    handleRemoveFromList,
 }
