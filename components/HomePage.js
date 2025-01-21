@@ -31,8 +31,8 @@ export default function HomePage() {
         }
         tempData.push(object)
       })
-      console.log(tempData)
-      tempData[0].amonutSaved = calculateSavings(tempData[0], '10.2.2025') // string is for simulating to a date
+
+      tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
       setUserData(tempData)
     })
 
@@ -62,16 +62,16 @@ return (
         data={userData}
         renderItem={({ item, i }) => {
           // Default to 0 if any value is undefined or null
-          const housing = Number(item.expenses.housing) || 0;
-          const transportation = Number(item.expenses.transportation) || 0;
-          const groceries = Number(item.expenses.groceries) || 0;
+          const housing = item.expenses.housing || 0;
+          const transportation = item.expenses.transportation || 0;
+          const groceries = item.expenses.groceries || 0;
           
           // Calculate the total of all bills
           const totalBills = item.bills
-          ? item.bills.reduce((sum, bill) => sum + (Number(bill.amount) || 0), 0)
+          ? item.bills.reduce((sum, bill) => sum + bill.amount || 0, 0)
           : 0;
 
-          const needs = Number(housing) + Number(groceries) + Number(transportation) + Number(totalBills); // Add up nescessary expenses
+          const needs = housing + groceries + transportation + totalBills; // Add up nescessary expenses
 
           // Example piechart to show nescessary expenses in different colors
           const chartData = [
@@ -113,11 +113,11 @@ return (
           ];
 
           // Debugging
-          console.log('Housing:', housing);
+         /*console.log('Housing:', housing);
           console.log('Transportation:', transportation);
           console.log('Groceries:', groceries);
           console.log('Total Bills:', totalBills);
-          console.log('Chart Data:', chartData);
+          console.log('Chart Data:', chartData);*/
 
           return (
             <View key={i} style={styles.dataContainer}>

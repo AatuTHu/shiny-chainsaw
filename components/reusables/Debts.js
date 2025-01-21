@@ -2,26 +2,12 @@ import { View, Text,TextInput,TouchableOpacity,FlatList, Button } from 'react-na
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
 import ModalMenu from './ModalMenu'
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Debts({debts, setDebts}) {
 
     const [visible, setVisible] = useState(false);
     const [tempObject, setTempObject] = useState({name: "", amount: 0,payment:"", frqType: "Monthly", frqAmount: 30})
-
-    const handleChangeDebt = (field,value) => {
-        setTempObject(prev => ({
-            ...prev,
-            [field]: value,
-        }));
-    }
-
-    const handleSelectFrq = (item) => {
-        setTempObject(prev => ({
-            ...prev,
-            ["frqType"]: item.name,
-            ["frqAmount"]: item.inNumber,
-        }));
-    }
 
     //Create a new item to the list of Debts
     const handleAddDebt = () => {
@@ -32,12 +18,8 @@ export default function Debts({debts, setDebts}) {
             ];
             return updatedDebts;
         });
-        setTempObject({name: "", amount: 0, frq: "Monthly"})
+        setTempObject({name: "", amount: "",payment: "", frqType: "Monthly", frqAmount: 0});
         };
-
-    const handleRemoveDebt = (index) => {
-        setDebts((prevDebts) => prevDebts.filter((_, i) => i !== index));
-    }
 
   return (
     <>
@@ -47,7 +29,7 @@ export default function Debts({debts, setDebts}) {
         placeholder="Debt name"
         placeholderTextColor="#888"
         value={tempObject.name}
-        onChangeText={(text) => handleChangeDebt('name',text)}
+        onChangeText={(text) => handleChangeItem(setTempObject,'name',text)}
       />
 
       <TextInput
@@ -56,7 +38,7 @@ export default function Debts({debts, setDebts}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={tempObject.amount}
-        onChangeText={(text) => handleChangeDebt('amount',text)}
+        onChangeText={(text) => handleChangeItem(setTempObject,'amount',text)}
       />
 
       <TextInput
@@ -65,7 +47,7 @@ export default function Debts({debts, setDebts}) {
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={tempObject.payment}
-        onChangeText={(text) => handleChangeDebt('payment',text)}
+        onChangeText={(text) => handleChangeItem(setTempObject,'payment',text)}
       />
 
       <TouchableOpacity
@@ -79,7 +61,7 @@ export default function Debts({debts, setDebts}) {
         visible={visible}
         setVisible={setVisible}
         selectedValue={tempObject.frqType}
-        setSelectedValue={handleSelectFrq}
+        setSelectedValue={setTempObject}
         title="Select Bill Frequency"
       />
 
@@ -99,7 +81,7 @@ export default function Debts({debts, setDebts}) {
           <Text style={styles.billItem}>
             {item.name}: ${item.amount} ({item.frqType})
           </Text>
-          <Button onPress={()=>handleRemoveDebt(index)} title="remove"/>
+          <Button onPress={()=>handleRemoveFromList(setDebts,index)} title="remove"/>
           </>
         )}
       />
