@@ -4,13 +4,14 @@ import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { calculateSavings } from '../services/Calculator';
+import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses } from '../services/Calculator';
 import Icon from '@expo/vector-icons/Ionicons'
 
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
   const { setNavigate } = useNavigation();
   const [balance, setBalance] = useState(0);
+  const [chartData, setChartData] = useState([])
 
   useEffect(() => {
     const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
@@ -34,7 +35,8 @@ export default function HomePage() {
         tempData.push(object)
       })
 
-      tempData[0].amonutSaved = calculateSavings(tempData[0], '20.2.2025') // string is for simulating to a date
+      setBalance(calculateBalance(tempData[0], '15.1.2025')) // string is for simulating to a date
+      makeChart(tempData[0])
       setUserData(tempData)
     })
 
@@ -42,6 +44,59 @@ export default function HomePage() {
       queryUserData();
     };
   }, []);
+
+  const makeChart = (item) => {
+    const housing = item.expenses.housing || 0;
+    const transportation = item.expenses.transportation || 0;
+    const groceries = item.expenses.groceries || 0;
+    const totalBills = getTotalAmountOfBills(item.bills)  // Calculate the total of all bills    
+    const needs = (getTotalAmountOfExpenses(item.expenses) + totalBills); // Add up nescessary expenses
+    setChartData([   // Example piechart to show nescessary expenses in different colors 
+      {
+        name: "Needs",
+        population: needs,
+        color: "#FF6347",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14
+      },
+      {
+        name: "Housing",
+        population: housing,
+        color: "#FF7F50",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14
+      },
+      {
+        name: "Transportation",
+        population: transportation,
+        color: "#FF4500",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14
+      },
+      {
+        name: "Groceries",
+        population: groceries,
+        color: "#FF0000",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14
+      },
+      {
+        name: "Bills",
+        population: totalBills,
+        color: "#8B0000",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14
+      },
+    ])
+      /*
+      // Debugging
+      console.log('Housing:', housing);
+      console.log('Transportation:', transportation);
+      console.log('Groceries:', groceries);
+      console.log('Total Bills:', totalBills);
+      console.log('Chart Data:', chartData);
+      */
+  }
 
   const SignOut = async () => {
     signOut(auth)
@@ -62,80 +117,7 @@ return (
           alignItems: 'center',
         }}
         data={userData}
-        renderItem={({ item, i }) => {
-          // Default to 0 if any value is undefined or null
-          const housing = item.expenses.housing || 0;
-          const transportation = item.expenses.transportation || 0;
-          const groceries = item.expenses.groceries || 0;
-          const salary = item.salary.salary || 0;
-          const income = item.otherIncomes.amount || 0;
-          
-          // Calculate the total of all bills
-          const totalBills = item.bills
-          ? item.bills.reduce((sum, bill) => sum + bill.amount || 0, 0)
-          : 0;
-
-          const totalIncomes = salary + income || 0;
-          const totalExpenses = housing + groceries + transportation + totalBills;
-
-          const needs = housing + groceries + transportation + totalBills; // Add up nescessary expenses
-
-          const calculatedBalance = totalIncomes - totalExpenses;
-          setBalance(calculatedBalance);
-
-          // Example piechart to show nescessary expenses in different colors
-          const chartData = [
-            {
-              name: "Needs",
-              population: needs,
-              color: "#FF6347",
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 14
-            },
-            {
-              name: "Housing",
-              population: housing,
-              color: "#FF7F50",
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 14
-            },
-            {
-              name: "Transportation",
-              population: transportation,
-              color: "#FF4500",
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 14
-            },
-            {
-              name: "Groceries",
-              population: groceries,
-              color: "#FF0000",
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 14
-            },
-            {
-              name: "Bills",
-              population: totalBills,
-              color: "#8B0000",
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 14
-            },
-          ];
-
-          // Debugging
-          /*
-          console.log('Housing:', housing);
-          console.log('Transportation:', transportation);
-          console.log('Groceries:', groceries);
-          console.log('Total Bills:', totalBills);
-          console.log('Chart Data:', chartData);
-          console.log('total income:', totalIncomes);
-          console.log('total expenses:', totalExpenses);
-          console.log('salary:', salary);
-          console.log('income:', income);
-          */
-
-          return (
+        renderItem={({ item, i }) => (
             <View key={i} style={styles.dataContainer}>
               <View style={styles.balanceHolder}>
                 <TouchableOpacity style={styles.minusButton} onPress={() => console.log("Minus button pressed")}>
@@ -144,7 +126,7 @@ return (
 
                 <View style={styles.balanceContent}>
                   <Text style={styles.labelText}>Balance:</Text>
-                  <Text style={styles.balanceText}>{balance.toFixed(2)} $</Text>
+                  <Text style={styles.balanceText}>{balance} $</Text>
                 </View>
 
                 <TouchableOpacity style={styles.plusButton} onPress={() => console.log("Plus button pressed")}>
@@ -195,13 +177,13 @@ return (
               )}
 
               <Text style={styles.labelText}>Housing:</Text>
-              <Text style={styles.text}>{housing} $</Text>
+              <Text style={styles.text}>{item.expenses.housing} $</Text>
 
               <Text style={styles.labelText}>Transportation:</Text>
-              <Text style={styles.text}>{transportation} $</Text>
+              <Text style={styles.text}>{item.expenses.transportation} $</Text>
 
               <Text style={styles.labelText}>Groceries:</Text>
-              <Text style={styles.text}>{groceries} $</Text>
+              <Text style={styles.text}>{item.expenses.groceries} $</Text>
 
               {/* Additional user data rendering */}
               <Text style={styles.labelText}>Bills:</Text>
@@ -229,8 +211,7 @@ return (
               <Text style={styles.labelText}>Emergency Goal:</Text>
               <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
             </View>
-          );
-        }}
+        )}
       />
       <Button style={styles.signOutButton} onPress={SignOut} title="Sign Out" />
     </View>
