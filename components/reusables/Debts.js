@@ -26,7 +26,7 @@ export default function Debts({debts, setDebts}) {
       <Text style={styles.label}>Debt:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Debt name"
+        placeholder="Name"
         placeholderTextColor="#888"
         value={tempObject.name}
         onChangeText={(text) => handleChangeItem(setTempObject,'name',text)}
@@ -34,7 +34,7 @@ export default function Debts({debts, setDebts}) {
 
       <TextInput
         style={styles.input}
-        placeholder="Debt amount"
+        placeholder="Total"
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={tempObject.amount}
@@ -43,7 +43,7 @@ export default function Debts({debts, setDebts}) {
 
       <TextInput
         style={styles.input}
-        placeholder="Debt repayment amount"
+        placeholder="Repayment amount"
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={tempObject.payment}

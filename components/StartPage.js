@@ -12,6 +12,7 @@ import Emergencies from './reusables/Emergencies.js'
 import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
 import Summary from './reusables/Summary.js'
+import OtherExpenses from './reusables/OtherExpenses.js';
 
 export default function StartPage() {
 
@@ -129,10 +130,10 @@ return (
     </View>
   )}
 
-  {/* Step 4: Emergency Fund */}
+  {/* Step 4: Other Expenses */}
   {step === 4 && (
     <View style={styles.stepContainer}>
-      <Emergencies emergencies={emergencies} setEmergencies={setEmergencies}/>
+      <OtherExpenses/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>

@@ -25,7 +25,7 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
       <Text style={styles.label}>Salary:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Salary amount"
+        placeholder="Amount"
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={salary.salary}
@@ -52,14 +52,14 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
         <View style={styles.incomeRow}>
           <TextInput
             style={styles.input}
-            placeholder="Income name"
+            placeholder="Name"
             placeholderTextColor="#888"
             value={tempObject.name}
             onChangeText={(text) => handleChangeItem(setTempObject,'name', text)}
           />
           <TextInput
             style={styles.input}
-            placeholder="Income amount"
+            placeholder="Amount"
             placeholderTextColor="#888"
             keyboardType="numeric"
             value={tempObject.amount}
