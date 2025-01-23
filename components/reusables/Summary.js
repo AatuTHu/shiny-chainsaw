@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import styles from '../../styles/startPage'
 import React from 'react'
 
-export default function Summary({salary,incomes,expenses,bills,debts,emergencies,savingGoal}) {
+export default function Summary({salary,incomes,expenses,bills,debts,savingGoals,otherExpenses}) {
   return (
     <View style={styles.summaryContainer}>
         <Text style={styles.summaryTitle}>Summary</Text>
@@ -27,6 +27,15 @@ export default function Summary({salary,incomes,expenses,bills,debts,emergencies
             <Text style={styles.summaryValue}>Housing: {expenses.housing}</Text>
             <Text style={styles.summaryValue}>Food and Groceries: {expenses.groceries}</Text>
             <Text style={styles.summaryValue}>Transportation: {expenses.transportation}</Text>
+        </View>
+
+        <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>Other Expenses:</Text>
+            {otherExpenses.map((expense, index) => (
+                <Text key={index} style={styles.summaryValue}>
+                    {expense.name}: {expense.amount}
+                </Text>
+            ))}
         </View>
 
         <View style={styles.summaryItem}>
@@ -56,15 +65,12 @@ export default function Summary({salary,incomes,expenses,bills,debts,emergencies
         </View>
 
         <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Emergency Fund:</Text>
-            <Text style={styles.summaryValue}>
-                Current: {emergencies.emergencyFund}, Goal: {emergencies.emergencyGoal}
-            </Text>
-        </View>
-
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Saving Goal:</Text>
-            <Text style={styles.summaryValue}>{savingGoal}</Text>
+            <Text style={styles.summaryLabel}>Saving Goals:</Text>
+            {savingGoals.map((goals, index) => (
+                <Text key={index} style={styles.summaryValue}>
+                    {goals.name}: {goals.amountSaved} / {goals.savingGoal}$
+                </Text>
+            ))}
         </View>
     </View>
   )

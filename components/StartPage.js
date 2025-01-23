@@ -8,7 +8,6 @@ import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
 import Bills from './reusables/Bills.js'
 import Debts from './reusables/Debts.js'
-import Emergencies from './reusables/Emergencies.js'
 import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
 import Summary from './reusables/Summary.js'
@@ -20,46 +19,34 @@ const { setNavigate } = useNavigation()
 const [step, setStep] = useState(1);
 
 const [expenses, setExpenses] = useState({housing: 0, groceries: 0, transportation: 0});
-const [emergencies, setEmergencies] = useState({emergencyFund: 0, emergencyGoal: 0})
 const [salary, setSalary] = useState({ salary: 0, frqType: "Monthly", frqAmount: 30});
 
 const [incomes, setIncomes] = useState([]);
 const [bills, setBills] = useState([]);
 const [debts, setDebts] = useState([]);
+const [otherExpenses, setOtherExpenses] = useState([])
+const [savingGoals, setSavingGoals] = useState([]);
 
-const [savingGoal, setSavingGoal] = useState('');
 
 // Show inputfields step by step
 const handleNextStep = () => {
   switch (step) {
-    case 1:
-      console.log(salary)
-      if(salary.salary !== ""){
+    case 1: // incomes
         setStep(2);
-      }
       break;
-    case 2:
-      if(expenses.housing !== '' && expenses.groceries !== '' && expenses.transportation !== ''){
-        //handleAddBill();
+    case 2: // expenses
         setStep(3);
-      } 
       break;
-    case 3:
-      //handleAddDebt();
-      setStep(4);
+    case 3: // debts
+        setStep(4)
       break;
-    case 4:
-      if (emergencies.emergencyFund !== '' && emergencies.emergencyGoal !== ''){
-        setStep(5);
-      }
+    case 4: // otherExpenses
+        setStep(5)
       break;
-    case 5:
-      if(savingGoal !== ''){
-        setStep(6);
-      }
+    case 5: //goals
+        setStep(6)
       break;
     default:
-      console.log('Reached last step');
       break;
   }
 };
@@ -77,10 +64,10 @@ const handleFinish = async() => {
     salary: salary,
     otherIncomes: incomes,
     expenses: expenses,
+    otherExpenses: otherExpenses,
     bills: bills,
     debts: debts,
-    emergencyFunds: emergencies,
-    savingGoal: savingGoal,
+    savingGoal: savingGoals,
     timeStamp: makeTimeStamp(),
 }).catch (error => console.log(error))
   setNavigate("HomePage")
@@ -133,7 +120,7 @@ return (
   {/* Step 4: Other Expenses */}
   {step === 4 && (
     <View style={styles.stepContainer}>
-      <OtherExpenses/>
+      <OtherExpenses setOtherExpenses={setOtherExpenses}/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
@@ -144,7 +131,7 @@ return (
   {/* Step 5: Saving Goal */}
   {step === 5 && (
     <View style={styles.stepContainer}>
-      <SavingGoal savingGoal={savingGoal} setSavingGoal={setSavingGoal}/>
+      <SavingGoal setSavingGoals={setSavingGoals}/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <FinishButton handleFinish={handleNextStep}/>
@@ -161,8 +148,8 @@ return (
       expenses = {expenses}
       bills = {bills}
       debts = {debts}
-      emergencies = {emergencies}
-      savingGoal = {savingGoal}
+      savingGoals = {savingGoals}
+      otherExpenses={otherExpenses}
       />
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>

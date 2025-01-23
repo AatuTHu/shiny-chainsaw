@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
 import styles from '../../styles/startPage';
+import { handleChangeItem } from '../../services/Utilities';
 
-export default function SavingGoal({ savingGoals, setSavingGoals }) {
-  const [expandedGoal, setExpandedGoal] = useState(null);
-  const [amounts, setAmounts] = useState({});
-  const [savedAmounts, setSavedAmounts] = useState({});
-  const [customGoalName, setCustomGoalName] = useState('');
+export default function SavingGoal({savingGoals,setSavingGoals}) {
+  const [visibleGoal, setVisibleGoal] = useState(null);
+  const [tempObject, setTempObject] = useState({name: "", amountSaved: "", savingGoal: ""});
 
   const goalOptions = [
     { name: 'Emergency Fund', emoji: '🛟' },
@@ -18,45 +17,22 @@ export default function SavingGoal({ savingGoals, setSavingGoals }) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const handleInputChange = (goal, type, value) => {
-    if (type === 'amount') {
-      setAmounts((prev) => ({ ...prev, [goal]: value }));
-    } else if (type === 'saved') {
-      setSavedAmounts((prev) => ({ ...prev, [goal]: value }));
-    }
-
-    const goalAmount = amounts[goal];
-    const savedAmount = savedAmounts[goal];
-    if (goalAmount) {
-      setSavingGoals((prev) => {
-        const updatedGoals = prev.filter((item) => item.name !== goal);
-        return [
-          ...updatedGoals,
-          {
-            name: goal,
-            goalAmount: goalAmount,
-            savedAmount: savedAmount || 0,
-          },
-        ];
+  const handleAddgoal = () => {
+      setSavingGoals((prevDebts) => {
+          const updatedDebts = [
+          ...prevDebts,
+          { name: tempObject.name, amountSaved: tempObject.amountSaved, savingGoal: tempObject.savingGoal }
+          ];
+          return updatedDebts;
       });
-    }
-  };
+      setVisibleGoal(null)
+      setTempObject({name: tempObject.name ,amountSaved: "", savingGoal: ""});
+  }
 
-  const handleCustomGoalNameChange = (value) => {
-    setCustomGoalName(value);
-  };
-
-  const handleGoalSelection = (goalName) => {
-    if (goalName === 'Other') {
-      if (customGoalName) {
-        setExpandedGoal(expandedGoal === goalName ? null : goalName);
-      } else {
-        setExpandedGoal(expandedGoal === goalName ? null : goalName);
-      }
-    } else {
-      setExpandedGoal(expandedGoal === goalName ? null : goalName);
-    }
-  };
+  const handleOnGoalPress = (name, index) => {
+    handleChangeItem(setTempObject,"name",name)
+    setVisibleGoal(index);
+  }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -67,36 +43,36 @@ export default function SavingGoal({ savingGoals, setSavingGoals }) {
           <View key={index} style={localStyles.goalContainer}>
             <TouchableOpacity
               style={localStyles.goalItem}
-              onPress={() => handleGoalSelection(goal.name)}
+              onPress={() => handleOnGoalPress(goal.name,index)}
             >
               <Text style={localStyles.goalText}>
                 {goal.emoji} {goal.name}
               </Text>
             </TouchableOpacity>
 
-            {expandedGoal === goal.name && (
+            {visibleGoal === index && (
               <View style={localStyles.expandedContainer}>
-                {goal.name === 'Other' ? (
+                {goal.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Goal Name:</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter name"
                       placeholderTextColor="#888"
-                      value={customGoalName}
-                      onChangeText={handleCustomGoalNameChange}
+                      value={tempObject.name}
+                      onChangeText={(text) => handleChangeItem(setTempObject,"name", text)}
                     />
                   </>
-                ) : null}
+                )}
 
-                <Text style={styles.label}>{goal.name === 'Other' ? customGoalName : goal.name} Goal:</Text>
+                <Text style={styles.label}>{tempObject.name} Goal:</Text>
                 <TextInput
                   style={styles.input}
                   placeholder={`Enter amount`}
                   placeholderTextColor="#888"
                   keyboardType="numeric"
-                  value={amounts[goal.name] || ''}
-                  onChangeText={(text) => handleInputChange(goal.name === 'Other' ? customGoalName : goal.name, 'amount', text)}
+                  value={tempObject.savingGoal}
+                  onChangeText={(text) => handleChangeItem(setTempObject,"savingGoal", text)}
                 />
 
                 <Text style={styles.label}>Already Saved:</Text>
@@ -105,9 +81,16 @@ export default function SavingGoal({ savingGoals, setSavingGoals }) {
                   placeholder={`Enter amount`}
                   placeholderTextColor="#888"
                   keyboardType="numeric"
-                  value={savedAmounts[goal.name] || ''}
-                  onChangeText={(text) => handleInputChange(goal.name === 'Other' ? customGoalName : goal.name, 'saved', text)}
+                  value={tempObject.amountSaved}
+                  onChangeText={(text) => handleChangeItem(setTempObject,"amountSaved", text)}
                 />
+
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleAddgoal}
+                >
+                  <Text style={styles.addButtonText}>Add Goal</Text>
+                </TouchableOpacity>
               </View>
             )}
           </View>

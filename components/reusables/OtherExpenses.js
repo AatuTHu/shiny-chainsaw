@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import styles from '../../styles/startPage';
-
-export default function OtherExpenses({ expenses, setExpenses }) {
-  const [expandedExpense, setExpandedExpense] = useState(null);
-  const [amounts, setAmounts] = useState({});
-  const [customExpenseName, setCustomExpenseName] = useState('');
+import { handleChangeItem } from '../../services/Utilities';
+export default function OtherExpenses({setOtherExpenses}) {
+  const [visible, setVisible] = useState(null);
+  const [tempObject, setTempObject] = useState({name:"",amount:0})
 
   const expenseOptions = [
     { name: 'Hobbies', emoji: '🎨' },
@@ -24,80 +23,69 @@ export default function OtherExpenses({ expenses, setExpenses }) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const handleInputChange = (expense, value) => {
-    setAmounts((prev) => ({ ...prev, [expense]: value }));
-
-    const expenseAmount = amounts[expense];
-    if (expenseAmount) {
-      setExpenses((prev) => {
-        const updatedExpenses = prev.filter((item) => item.name !== expense);
-        return [
-          ...updatedExpenses,
-          {
-            name: expense,
-            expenseAmount: expenseAmount,
-          },
+  const handleAddgoal = () => {
+    setOtherExpenses((prevDebts) => {
+        const updatedDebts = [
+        ...prevDebts,
+        { name: tempObject.name, amount: tempObject.amount }
         ];
-      });
-    }
-  };
+        return updatedDebts;
+    });
+    setVisible(null)
+    setTempObject({name: tempObject.name ,amount: ""});
+}
 
-  const handleCustomExpenseNameChange = (value) => {
-    setCustomExpenseName(value);
-  };
+const handleOnGoalPress = (name, index) => {
+  handleChangeItem(setTempObject,"name",name)
+  setVisible(index);
+}
 
-  const handleExpenseSelection = (expenseName) => {
-    if (expenseName === 'Other') {
-      if (customExpenseName) {
-        setExpandedExpense(expandedExpense === expenseName ? null : expenseName);
-      } else {
-        setExpandedExpense(expandedExpense === expenseName ? null : expenseName);
-      }
-    } else {
-      setExpandedExpense(expandedExpense === expenseName ? null : expenseName);
-    }
-  };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ padding: 15 }}>
         <Text style={styles.label}>Other Expenses</Text>
-
         {expenseOptions.map((expense, index) => (
           <View key={index} style={localStyles.expenseContainer}>
             <TouchableOpacity
               style={localStyles.expenseItem}
-              onPress={() => handleExpenseSelection(expense.name)}
+              onPress={() => handleOnGoalPress(expense.name,index)}
             >
               <Text style={localStyles.expenseText}>
                 {expense.emoji} {expense.name}
               </Text>
             </TouchableOpacity>
 
-            {expandedExpense === expense.name && (
+            {visible === index && (
               <View style={localStyles.expandedContainer}>
-                {expense.name === 'Other' ? (
+                {expense.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Expense Name:</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter name"
                       placeholderTextColor="#888"
-                      value={customExpenseName}
-                      onChangeText={handleCustomExpenseNameChange}
+                      value={tempObject.name}
+                      onChangeText={(text)=>handleChangeItem(setTempObject,"name", text)}
                     />
                   </>
-                ) : null}
+                )}
 
                 <Text style={styles.label}>Amount spent:</Text>
                 <TextInput
-                  style={styles.input}
+                  style={styles.input}s
                   placeholder={`Enter amount`}
                   placeholderTextColor="#888"
                   keyboardType="numeric"
-                  value={amounts[expense.name] || ''}
-                  onChangeText={(text) => handleInputChange(expense.name === 'Other' ? customExpenseName : expense.name, text)}
+                  value={tempObject.amount}
+                  onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
                 />
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleAddgoal}
+                >
+                  <Text style={styles.addButtonText}>Add Goal</Text>
+                </TouchableOpacity>
               </View>
             )}
           </View>

@@ -23,7 +23,7 @@ export default function HomePage() {
           amountSaved: doc.data().amountSaved,
           bills: doc.data().bills,
           debts: doc.data().debts,
-          emergencyFunds: doc.data().emergencyFunds,
+          otherExpenses: doc.data().otherExpenses,
           expenses: doc.data().expenses,
           salary: doc.data().salary,
           savingGoal: doc.data().savingGoal,
@@ -154,11 +154,15 @@ return (
               />
               {/* Displaying the rest of the user data */}
 
-              <Text style={styles.labelText}>Amount Saved:</Text>
-              <Text style={styles.text}>{item.amountSaved} $</Text>
 
-              <Text style={styles.labelText}>Savings Goal:</Text>
-              <Text style={styles.text}>{item.savingGoal} $</Text>
+              <Text style={styles.labelText}>Saving goals:</Text>
+              {item.savingGoal.map((goal, index) => (
+                <View key={`goal-${index}`}>
+                  <Text style={styles.text}>
+                    {goal.name} {goal.amountSaved} / {goal.savingGoal} $
+                  </Text>
+                </View>
+              ))}
 
               <Text style={styles.labelText}>Salary:</Text>
               <Text style={styles.text}>{item.salary.salary} $</Text>
@@ -185,6 +189,15 @@ return (
               <Text style={styles.labelText}>Groceries:</Text>
               <Text style={styles.text}>{item.expenses.groceries} $</Text>
 
+              <Text style={styles.labelText}>Other Expenses:</Text>
+              {item.otherExpenses.map((expense,item)=>(
+                <View key={`exp-${item}`}>
+                  <Text style={styles.text}>
+                    {expense.name} {expense.amount} $
+                  </Text>
+                </View>
+              ))}
+
               {/* Additional user data rendering */}
               <Text style={styles.labelText}>Bills:</Text>
               {item.bills &&
@@ -205,11 +218,6 @@ return (
                     </Text>
                   </View>
                 ))}
-
-              <Text style={styles.labelText}>Emergency Fund:</Text>
-              <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
-              <Text style={styles.labelText}>Emergency Goal:</Text>
-              <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
             </View>
         )}
       />

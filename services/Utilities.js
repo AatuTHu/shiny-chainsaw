@@ -17,7 +17,7 @@ const isNumber = (value) => !isNaN(value) && !(value === "");
 
 //Check if the field is a field that requires a number
 const isValidField = (field) => {
-    const allowedFields = ["amount", "salary", "payment", "frqAmount", "housing", "groceries", "transportation", "emergencyFund","emergencyGoal"];
+    const allowedFields = ["amount", "salary", "payment", "frqAmount", "housing", "groceries", "transportation", "emergencyFund","emergencyGoal","savingGoal","amountSaved"];
     return allowedFields.includes(field);
 };
 
@@ -26,11 +26,6 @@ const handleChangeItem = (setItem, field, value) => {
         setItem(prev => ({
             ...prev,
             [field]: Number(value),
-        }));
-    } else if (isValidField(field) && !isNumber(value)) {
-        setItem(prev => ({
-            ...prev,
-            [field]: "",
         }));
     } else {
         setItem(prev => ({
