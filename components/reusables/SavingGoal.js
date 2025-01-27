@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function SavingGoal({savingGoals,setSavingGoals}) {
   const [visibleGoal, setVisibleGoal] = useState(null);
@@ -38,6 +38,16 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ padding: 15 }}>
         <Text style={styles.label}>Saving Goals</Text>
+        {savingGoals.map((goal, index) => (
+          <View key={index} style={styles.billsHolder}>
+            <Text style={localStyles.goalText}>
+              {goal.name}: {goal.amountSaved} / {goal.savingGoal}$
+            </Text>
+            <TouchableOpacity onPress={()=>handleRemoveFromList(setSavingGoals,index)}>
+                <Text style={styles.removeBill}>Remove</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
 
         {goalOptions.map((goal, index) => (
           <View key={index} style={localStyles.goalContainer}>

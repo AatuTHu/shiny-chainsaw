@@ -47,7 +47,7 @@ const calculateBalance = (data, targetDate = null) => {
         // Process Bills
         bills.forEach(bill => {
           if (day % bill.frqAmount === 0) {
-            console.log(`Paying Bill: ${bill.name} amount ${bill.amount} on Day ${day}`);
+            //console.log(`Paying Bill: ${bill.name} amount ${bill.amount} on Day ${day}`);
             balance -= bill.amount;
           }
         });
@@ -55,7 +55,7 @@ const calculateBalance = (data, targetDate = null) => {
         // Process Debts
         debts.forEach(debt => {
           if (day % debt.frqAmount === 0) {
-            console.log(`Paying Debt: ${debt.name} on Day ${day} amount ${debt.payment}`);
+            //console.log(`Paying Debt: ${debt.name} on Day ${day} amount ${debt.payment}`);
             data.debts.amount -= debt.payment
             balance -= debt.payment
           }
@@ -63,20 +63,20 @@ const calculateBalance = (data, targetDate = null) => {
 
         // Process monthlyExpenses
         if (day % 30 === 0) { // Assuming monthly expenses
-          console.log(`Spending Expenses on Day ${day} amount of ${data.expenses.housing + data.expenses.transportation + data.expenses.groceries}`);
+          //console.log(`Spending Expenses on Day ${day} amount of ${data.expenses.housing + data.expenses.transportation + data.expenses.groceries}`);
           balance -= getTotalAmountOfExpenses(data.expenses)
         }
       
         // Process Salary
         if (day % salary.frqAmount === 0) {
-          console.log(`Receiving Salary on Day ${day} amount: ${salary.salary}`);
+          //console.log(`Receiving Salary on Day ${day} amount: ${salary.salary}`);
           balance += (salary.salary);
         }
       
         // Process Other Incomes
         otherIncomes.forEach(income => {
           if (day % 30 === 0) { // Assuming monthly incomes
-            console.log(`Receiving Income: ${income.name} on Day ${day} amount ${income.amount}`);
+            //console.log(`Receiving Income: ${income.name} on Day ${day} amount ${income.amount}`);
             balance += income.amount
           }
         });

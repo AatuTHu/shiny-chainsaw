@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem } from '../../services/Utilities';
-export default function OtherExpenses({setOtherExpenses}) {
+import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
   const [visible, setVisible] = useState(null);
   const [tempObject, setTempObject] = useState({name:"",amount:0})
 
@@ -33,7 +33,7 @@ export default function OtherExpenses({setOtherExpenses}) {
     });
     setVisible(null)
     setTempObject({name: tempObject.name ,amount: ""});
-}
+  }
 
 const handleOnGoalPress = (name, index) => {
   handleChangeItem(setTempObject,"name",name)
@@ -45,6 +45,17 @@ const handleOnGoalPress = (name, index) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ padding: 15 }}>
         <Text style={styles.label}>Other Expenses</Text>
+          {otherExpenses.map((item, index)=> (
+            <View key={index} style={styles.billsHolder}>
+              <Text style={styles.billItem}>
+                {item.name}: ${item.amount}
+              </Text>
+              <TouchableOpacity onPress={()=>handleRemoveFromList(setOtherExpenses,index)}>
+                <Text style={styles.removeBill}>Remove</Text>
+              </TouchableOpacity>
+          </View>
+          ))}
+
         {expenseOptions.map((expense, index) => (
           <View key={index} style={localStyles.expenseContainer}>
             <TouchableOpacity

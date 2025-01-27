@@ -3,6 +3,7 @@ import Auth from './components/AuthPage';
 import Register from './components/RegisterPage'
 import Home from './components/HomePage'
 import Start from  './components/StartPage'
+import Edit from './components/EditPage'
 
 export default function App() {
 
@@ -12,6 +13,7 @@ export default function App() {
         <Register/>
         <Home/>
         <Start/>
+        <Edit/>
       </Navigation>
     )
   }

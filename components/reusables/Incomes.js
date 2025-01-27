@@ -25,7 +25,7 @@ export default function Incomes({incomes,setIncomes,salary,setSalary}) {
       <Text style={styles.label}>Salary:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Amount"
+        placeholder={salary.salary > 0 ? `${salary.salary}`: "Amount"}
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={salary.salary}

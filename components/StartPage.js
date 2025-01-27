@@ -26,41 +26,42 @@ const [bills, setBills] = useState([]);
 const [debts, setDebts] = useState([]);
 const [otherExpenses, setOtherExpenses] = useState([])
 const [savingGoals, setSavingGoals] = useState([]);
+const [summaryData, setSummaryData] = useState([])
 
-
-// Show inputfields step by step
-const handleNextStep = () => {
-  switch (step) {
-    case 1: // incomes
-        setStep(2);
-      break;
-    case 2: // expenses
-        setStep(3);
-      break;
-    case 3: // debts
-        setStep(4)
-      break;
-    case 4: // otherExpenses
-        setStep(5)
-      break;
-    case 5: //goals
-        setStep(6)
-      break;
-    default:
-      break;
-  }
-};
+  // Show inputfields step by step
+  const handleNextStep = () => {
+    switch (step) {
+        
+      case 1: setStep(2); break; // incomes
+      case 2: setStep(3); break; // expenses
+      case 3: setStep(4); break; // debts
+      case 4: setStep(5); break; // otherExpenses
+      case 5: //goals
+          setSummaryData({
+            salary: salary,
+            otherIncomes: incomes,
+            expenses: expenses,
+            otherExpenses: otherExpenses,
+            bills: bills,
+            debts: debts,
+            savingGoal: savingGoals,
+          })
+          setStep(6)
+        break;
+      default:
+        break;
+    }
+  };
 
 const handleBack = () => {
-  if(step > 1){
-    setStep(step - 1)
-  }
+  if(step === 1) setNavigate("AuthPage")
+  else if(step > 1) setStep(step - 1)
 }
 
 const handleFinish = async() => {
   await addDoc(collection(db, USERINFO), {
     uid: auth.currentUser.uid,
-    amountSaved: 0,
+    balance: 0,
     salary: salary,
     otherIncomes: incomes,
     expenses: expenses,
@@ -86,6 +87,7 @@ return (
           setSalary={setSalary} 
         />
         <View style={styles.navButtons}>
+        <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
         </View>   
     </View>
@@ -120,7 +122,7 @@ return (
   {/* Step 4: Other Expenses */}
   {step === 4 && (
     <View style={styles.stepContainer}>
-      <OtherExpenses setOtherExpenses={setOtherExpenses}/>
+      <OtherExpenses otherExpenses={otherExpenses} setOtherExpenses={setOtherExpenses}/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
@@ -131,7 +133,7 @@ return (
   {/* Step 5: Saving Goal */}
   {step === 5 && (
     <View style={styles.stepContainer}>
-      <SavingGoal setSavingGoals={setSavingGoals}/>
+      <SavingGoal savingGoals={savingGoals} setSavingGoals={setSavingGoals}/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <FinishButton handleFinish={handleNextStep}/>
@@ -143,13 +145,8 @@ return (
   {step === 6 && (
     <View style={styles.summaryContainer}>
       <Summary
-      salary = {salary}
-      incomes={incomes}
-      expenses = {expenses}
-      bills = {bills}
-      debts = {debts}
-      savingGoals = {savingGoals}
-      otherExpenses={otherExpenses}
+      item={summaryData}
+      title={"Summary"}
       />
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>

@@ -9,7 +9,7 @@ export default function LivingExpenses({expenses, setExpenses}) {
       <Text style={styles.label}>Monthly Living Expenses:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Rent / Mortgage"
+        placeholder={ expenses.housing > 0 ? `${expenses.housing}` : "Rent / Mortgage"}
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.housing}
@@ -18,7 +18,7 @@ export default function LivingExpenses({expenses, setExpenses}) {
       
       <TextInput
         style={styles.input}
-        placeholder="Food and Groceries"
+        placeholder={ expenses.groceries > 0 ? `${expenses.groceries}`: "Food and Groceries"}
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.groceries}
@@ -27,13 +27,12 @@ export default function LivingExpenses({expenses, setExpenses}) {
 
       <TextInput
         style={styles.input}
-        placeholder="Transportation"
+        placeholder={expenses.transportation > 0 ? `${expenses.transportation}`: "Transportation"}
         placeholderTextColor="#888"
         keyboardType="numeric"
         value={expenses.transportation}
         onChangeText={(text) => handleChangeItem(setExpenses,"transportation",text)}
       />
-
     </>
   )
 }

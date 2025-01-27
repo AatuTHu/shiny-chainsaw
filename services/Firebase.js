@@ -17,7 +17,8 @@ import {
     deleteDoc,
     limit,
     updateDoc,
-    where } = require("firebase/firestore");
+    where,
+    setDoc } = require("firebase/firestore");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
@@ -56,5 +57,6 @@ export {
   onSnapshot,
   query,
   doc,
-  getDocs
+  getDocs,
+  setDoc,
 }
