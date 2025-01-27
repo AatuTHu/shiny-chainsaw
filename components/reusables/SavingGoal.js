@@ -35,19 +35,8 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{ padding: 15 }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
         <Text style={styles.label}>Saving Goals</Text>
-        {savingGoals.map((goal, index) => (
-          <View key={index} style={styles.billsHolder}>
-            <Text style={localStyles.goalText}>
-              {goal.name}: {goal.amountSaved} / {goal.savingGoal}$
-            </Text>
-            <TouchableOpacity onPress={()=>handleRemoveFromList(setSavingGoals,index)}>
-                <Text style={styles.removeBill}>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
 
         {goalOptions.map((goal, index) => (
           <View key={index} style={localStyles.goalContainer}>
@@ -105,7 +94,17 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
             )}
           </View>
         ))}
-      </View>
+        <Text style={styles.label}>Saved Goals</Text>
+          {savingGoals.map((goal, index) => (
+          <View key={index} style={localStyles.savedItemContainer}>
+          <Text style={localStyles.savedItemText}>
+            {goal.name}: {goal.amountSaved} / {goal.savingGoal}$
+          </Text>
+          <TouchableOpacity onPress={() => handleRemoveFromList(setSavingGoals, index)}>
+            <Text style={localStyles.removeText}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+        ))}
     </ScrollView>
   );
 }
@@ -134,5 +133,23 @@ const localStyles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#2A2A2A',
     width: 300,
+  },
+  savedItemContainer: {
+    backgroundColor: '#333',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  savedItemText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  removeText: {
+    color: '#FF6347',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

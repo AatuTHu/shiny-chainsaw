@@ -42,19 +42,8 @@ const handleOnGoalPress = (name, index) => {
 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{ padding: 15 }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
         <Text style={styles.label}>Other Expenses</Text>
-          {otherExpenses.map((item, index)=> (
-            <View key={index} style={styles.billsHolder}>
-              <Text style={styles.billItem}>
-                {item.name}: ${item.amount}
-              </Text>
-              <TouchableOpacity onPress={()=>handleRemoveFromList(setOtherExpenses,index)}>
-                <Text style={styles.removeBill}>Remove</Text>
-              </TouchableOpacity>
-          </View>
-          ))}
 
         {expenseOptions.map((expense, index) => (
           <View key={index} style={localStyles.expenseContainer}>
@@ -95,13 +84,24 @@ const handleOnGoalPress = (name, index) => {
                   style={styles.addButton}
                   onPress={handleAddgoal}
                 >
-                  <Text style={styles.addButtonText}>Add Goal</Text>
+                  <Text style={styles.addButtonText}>Add</Text>
                 </TouchableOpacity>
               </View>
             )}
           </View>
         ))}
-      </View>
+          <Text style={styles.label}>Saved Expenses</Text>
+          {otherExpenses.map((item, index) => (
+            <View key={index} style={localStyles.savedItemContainer}>
+              <Text style={localStyles.savedItemText}>
+                {item.name}: ${item.amount}
+              </Text>
+              <TouchableOpacity onPress={() => handleRemoveFromList(setOtherExpenses, index)}>
+                <Text style={localStyles.removeText}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+            
+          ))}
     </ScrollView>
   );
 }
@@ -130,5 +130,23 @@ const localStyles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#2A2A2A',
     width: 300,
+  },
+  savedItemContainer: {
+    backgroundColor: '#333',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  savedItemText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  removeText: {
+    color: '#FF6347',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
