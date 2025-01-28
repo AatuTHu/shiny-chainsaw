@@ -1,27 +1,27 @@
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot } from '../services/Firebase';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity,TextInput } from 'react-native';
+import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot,doc, updateDoc} from '../services/Firebase';
 import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses } from '../services/Calculator';
+import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses} from '../services/Calculator';
 import Icon from '@expo/vector-icons/Ionicons'
 import Summary from './reusables/Summary';
 
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
   const { setNavigate } = useNavigation();
-  const [balance, setBalance] = useState(0);
   const [chartData, setChartData] = useState([])
-  const [editOn, setEditOn] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [randomBalanceChange, setRandomBalanceChange] = useState(0);
 
   useEffect(() => {
     const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
     const queryUserData = onSnapshot(q, (querySnapshot) => {
       const tempData = [];
-
       querySnapshot.forEach((doc) => {
         const object = {
+          id: doc.id,
           balance: doc.data().balance,
           bills: doc.data().bills,
           debts: doc.data().debts,
@@ -30,16 +30,15 @@ export default function HomePage() {
           salary: doc.data().salary,
           savingGoal: doc.data().savingGoal,
           otherIncomes: doc.data().otherIncomes,
-          transactionHistory: doc.data().transactionHistory,
           timeStamp: doc.data().timeStamp,
           uid: doc.data().uid,
         }
         tempData.push(object)
       })
-
-      setBalance(calculateBalance(tempData[0], '15.1.2025')) // string is for simulating to a date
+      let calculatedTemp = calculateBalance(tempData[0])
+      if(calculatedTemp.length >= 1) setUserData(calculatedTemp)
+      else setUserData(tempData)
       makeChart(tempData[0])
-      setUserData(tempData)
     })
 
     return () => {
@@ -90,15 +89,21 @@ export default function HomePage() {
         legendFontSize: 14
       },
     ])
-      /*
-      // Debugging
-      console.log('Housing:', housing);
-      console.log('Transportation:', transportation);
-      console.log('Groceries:', groceries);
-      console.log('Total Bills:', totalBills);
-      console.log('Chart Data:', chartData);
-      */
   }
+
+  const handleRandomBalanceChange = (type) => {
+    if (visible === true) {
+      const docRef = doc(db, USERINFO, userData[0].id)
+      let newBalance = type === "minus" ? userData[0].balance - Number(randomBalanceChange) : userData[0].balance + Number(randomBalanceChange)
+      updateDoc(docRef,{
+        balance: newBalance
+        }
+      )
+      setRandomBalanceChange(0)
+      setVisible(false)
+    }
+    setVisible(!visible)
+  };
 
   const SignOut = async () => {
     signOut(auth)
@@ -122,23 +127,33 @@ return (
         renderItem={({ item, i }) => (
             <View key={i} style={styles.dataContainer}>
               <View style={styles.balanceHolder}>
-                <TouchableOpacity style={styles.minusButton} onPress={() => console.log("Minus button pressed")}>
+                <TouchableOpacity style={styles.minusButton} onPress={() =>  handleRandomBalanceChange("minus")}>
                   <Icon name="remove-circle-outline" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
 
                 <View style={styles.balanceContent}>
                   <Text style={styles.labelText}>Balance:</Text>
-                  <Text style={styles.balanceText}>{balance} $</Text>
+                  <Text style={styles.balanceText}>{userData[0].balance} $</Text>
                 </View>
 
                 <TouchableOpacity onPress={()=> setNavigate("EditPage") }>
                   <Icon name= {"create-outline"} size={30} color="#FFFFFF"/>
                 </TouchableOpacity>
                 
-                <TouchableOpacity style={styles.plusButton} onPress={() => console.log("Plus button pressed")}>
+                <TouchableOpacity style={styles.plusButton} onPress={() => handleRandomBalanceChange("plus")}>
                   <Icon name="add-circle-outline" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
               </View>
+                {visible && 
+                  <TextInput
+                  style={styles.input}
+                  value={randomBalanceChange}
+                  keyboardType='numeric'
+                  placeholder="Enter Amount"
+                  placeholderTextColor="#888"
+                  onChangeText={(text) => setRandomBalanceChange(text)}
+                  />                
+                }
               {/* Pie Chart */}
               <PieChart
                 data={chartData}
@@ -158,9 +173,7 @@ return (
                 accessor="population"
                 backgroundColor="transparent"
               />
-              <Summary 
-              item={item}
-              editOn={editOn}/>
+              <Summary item={item}/>
             </View>
         )}
       />
@@ -244,5 +257,14 @@ const styles = StyleSheet.create({
   icon: {
     textAlign: 'center',
     alignSelf: 'center', 
-  }
+  },
+  input:{
+    height: 50,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#2a2a3d',
+    color: '#fff',
+    marginVertical: 10,
+    fontSize: 18
+  },
 });

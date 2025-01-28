@@ -1,4 +1,4 @@
-import { View, Text, Touchable } from 'react-native'
+import { View, Text } from 'react-native'
 import styles from '../../styles/summary'
 import React from 'react'
 
@@ -17,7 +17,7 @@ export default function Summary({item, title}) {
               ))}
 
               <Text style={styles.labelText}>Salary:</Text>
-              <Text style={styles.text}>{item.salary.salary} $</Text>
+              <Text style={styles.text}>{item.salary} $</Text>
 
               {item.otherIncomes && item.otherIncomes.length > 0 && (
                 <>

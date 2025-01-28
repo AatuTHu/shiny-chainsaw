@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import styles from '../../styles/startPage';
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function SavingGoal({savingGoals,setSavingGoals}) {
-  const [visibleGoal, setVisibleGoal] = useState(null);
+  const [visible, setVisible] = useState(null);
   const [tempObject, setTempObject] = useState({name: "", amountSaved: "", savingGoal: ""});
 
   const goalOptions = [
@@ -25,13 +25,17 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
           ];
           return updatedDebts;
       });
-      setVisibleGoal(null)
+      setVisible(null)
       setTempObject({name: tempObject.name ,amountSaved: "", savingGoal: ""});
   }
 
   const handleOnGoalPress = (name, index) => {
+    if(visible === index) {
+      setVisible(null)
+      return;
+    }
     handleChangeItem(setTempObject,"name",name)
-    setVisibleGoal(index);
+    setVisible(index);
   }
 
   return (
@@ -49,7 +53,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
               </Text>
             </TouchableOpacity>
 
-            {visibleGoal === index && (
+            {visible === index && (
               <View style={localStyles.expandedContainer}>
                 {goal.name === 'Other' && (
                   <>

@@ -18,7 +18,7 @@ export default function EditPage() {
     
     const [docId, setDocId] = useState(0);
     const [expenses, setExpenses] = useState({});
-    const [salary, setSalary] = useState({})
+    const [salary, setSalary] = useState(0)
     const [incomes, setIncomes] = useState([]);
     const [bills, setBills] = useState([]);
     const [debts, setDebts] = useState([]);
@@ -101,8 +101,7 @@ export default function EditPage() {
     }
     
     const handleFinish = async() => {
-      try {
-        
+      try {  
         const docRef = doc(db, USERINFO, docId);  // Reference to the Firestore document
         await setDoc(docRef, {  // Update the Firestore document
           uid: auth.currentUser.uid,
@@ -117,7 +116,6 @@ export default function EditPage() {
           timeStamp: timeStamp,
         });
       } catch (error) {
-        // Catch and log errors
         console.error('Error updating document:', error);
       }
       setNavigate("HomePage")

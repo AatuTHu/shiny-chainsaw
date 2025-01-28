@@ -36,6 +36,10 @@ export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
   }
 
 const handleOnGoalPress = (name, index) => {
+  if(visible === index) {
+    setVisible(null);
+    return;
+  }
   handleChangeItem(setTempObject,"name",name)
   setVisible(index);
 }

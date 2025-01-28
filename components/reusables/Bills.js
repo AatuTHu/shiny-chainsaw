@@ -1,24 +1,22 @@
-import { View, Text, TextInput, TouchableOpacity,FlatList,Button } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity,FlatList } from 'react-native'
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
-import ModalMenu from './ModalMenu'
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Bills({bills, setBills}) {
 
-    const [visible, setVisible] = useState(false);
-    const [tempObject, setTempObject] = useState({name: "", amount: 0, frqType: "Monthly", frqAmount: 30})
+    const [tempObject, setTempObject] = useState({name: "", amount: 0})
 
     //Create a new item to the list of bills
     const handleAddBill = () => {
         setBills((prevBills) => {
           const updatedBills = [
             ...prevBills,
-            { name: tempObject.name, amount: tempObject.amount, frqType: tempObject.frqType, frqAmount: tempObject.frqAmount}
+            { name: tempObject.name, amount: tempObject.amount}
           ];
           return updatedBills;
         });
-        setTempObject({name: "", amount: "", frqType: "Monthly", frqAmount: 30})
+        setTempObject({name: "", amount: ""})
       };
       
   return (
@@ -40,21 +38,6 @@ export default function Bills({bills, setBills}) {
           keyboardType="numeric"
           value={tempObject.amount}
           onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
-        />
-
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => setVisible(true)}
-        >
-          <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
-        </TouchableOpacity>
-
-        <ModalMenu
-          visible={visible}
-          setVisible={setVisible}
-          selectedValue={tempObject.frqType}
-          setSelectedValue={setTempObject}
-          title="Select Bill Frequency"
         />
 
     </View>

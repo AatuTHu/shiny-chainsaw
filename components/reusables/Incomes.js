@@ -12,8 +12,7 @@ import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities
 
 export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
   const [visible, setVisible] = useState(null);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [tempObject, setTempObject] = useState({ name: '', amount: 0, frqType: 'Monthly' });
+  const [tempObject, setTempObject] = useState({ name: '', amount: 0});
 
   const incomeOptions = [
     { name: 'Salary', emoji: '💼' },
@@ -23,56 +22,36 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const salaryFrequencyOptions = [
-    { name: 'Weekly', emoji: '📅' },
-    { name: 'Bi-Weekly', emoji: '🗓️' },
-    { name: 'Monthly', emoji: '📆' },
-    { name: 'Annually', emoji: '🗓️' },
-  ];
-
   const handleAddIncome = () => {
     setIncomes((prevIncomes) => {
       const updatedIncomes = [
         ...prevIncomes,
-        { name: tempObject.name, amount: tempObject.amount, frqType: tempObject.frqType },
+        { name: tempObject.name, amount: tempObject.amount},
       ];
       return updatedIncomes;
     });
     setVisible(null);
-    setTempObject({ name: '', amount: '', frqType: 'Monthly' });
+    setTempObject({ name: '', amount: '' });
   };
 
   const handleOnIncomePress = (name, index) => {
-    if (name === 'Salary') {
-      setTempObject({ name: 'Salary', amount: salary.salary, frqType: salary.frqType });
-    } else {
-      handleChangeItem(setTempObject, 'name', name);
-    }
+    if(visible === index) {
+      setVisible(null)
+      return;
+    } 
+    handleChangeItem(setTempObject, 'name', name);
     setVisible(index);
-  };
+  }
 
   const handleSaveSalary = () => {
-    setSalary({
-      salary: tempObject.amount,
-      frqType: tempObject.frqType,
-    });
-    setIncomes((prevIncomes) => [
-      ...prevIncomes,
-      { name: 'Salary', amount: tempObject.amount, frqType: tempObject.frqType },
-    ]);
+    setSalary(tempObject.amount);
     setVisible(null);
-  };
-
-  const toggleFrequencyDropdown = () => {
-    setDropdownVisible((prev) => !prev);
   };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
       <Text style={styles.label}>Income</Text>
-        {incomeOptions.map((income, index) => {
-          const existingIncome = incomes.find((item) => item.name === income.name);
-          
+        {incomeOptions.map((income, index) => {        
           return (
             <View key={index} style={localStyles.incomeContainer}>
               <TouchableOpacity
@@ -109,35 +88,6 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
                     onChangeText={(text) => handleChangeItem(setTempObject, 'amount', text)}
                   />
 
-                  <Text style={styles.label}>Frequency:</Text>
-                  <TouchableOpacity
-                    style={localStyles.dropdownButton}
-                    onPress={toggleFrequencyDropdown}
-                  >
-                    <Text style={localStyles.dropdownText}>
-                      {tempObject.frqType || 'Select Frequency'}
-                    </Text>
-                  </TouchableOpacity>
-
-                  {dropdownVisible && (
-                    <View style={localStyles.dropdownContainer}>
-                      {salaryFrequencyOptions.map((option, idx) => (
-                        <TouchableOpacity
-                          key={idx}
-                          style={localStyles.dropdownItem}
-                          onPress={() => {
-                            handleChangeItem(setTempObject, 'frqType', option.name);
-                            setDropdownVisible(false);
-                          }}
-                        >
-                          <Text style={localStyles.dropdownItemText}>
-                            {option.emoji} {option.name}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  )}
-
                   <TouchableOpacity
                     style={styles.addButton}
                     onPress={income.name === 'Salary' ? handleSaveSalary : handleAddIncome}
@@ -152,10 +102,20 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
 
         <View style={styles.savedIncomesContainer}>
           <Text style={styles.label}>Saved Incomes:</Text>
+          {salary > 0 && (
+            <View style={localStyles.savedItemContainer}>
+              <Text style={localStyles.savedItemText}>
+                Salary: ${salary}
+              </Text>
+              <TouchableOpacity onPress={() => setSalary("")}>
+                <Text style={localStyles.removeText}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          )}
           {incomes.map((item, index) => (
             <View key={index} style={localStyles.savedItemContainer}>
               <Text style={localStyles.savedItemText}>
-                {item.name}: ${item.amount} {item.frqType && `(${item.frqType})`}
+                {item.name}: ${item.amount}
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setIncomes, index)}>
                 <Text style={localStyles.removeText}>Remove</Text>

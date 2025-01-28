@@ -1,25 +1,23 @@
-import { View, Text,TextInput,TouchableOpacity,FlatList, Button } from 'react-native'
+import { View, Text,TextInput,TouchableOpacity,FlatList } from 'react-native'
 import React,{useState} from 'react'
 import styles from '../../styles/startPage'
-import ModalMenu from './ModalMenu'
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Debts({debts, setDebts}) {
 
-    const [visible, setVisible] = useState(false);
-    const [tempObject, setTempObject] = useState({name: "", amount: 0,payment:"", frqType: "Monthly", frqAmount: 30})
+    const [tempObject, setTempObject] = useState({name: "", amount: 0,payment:""})
 
     //Create a new item to the list of Debts
     const handleAddDebt = () => {
         setDebts((prevDebts) => {
             const updatedDebts = [
             ...prevDebts,
-            { name: tempObject.name, amount: tempObject.amount, payment: tempObject.payment, frqType: tempObject.frqType, frqAmount: tempObject.frqAmount }
+            { name: tempObject.name, amount: tempObject.amount, payment: tempObject.payment }
             ];
             return updatedDebts;
         });
-        setTempObject({name: "", amount: "",payment: "", frqType: "Monthly", frqAmount: 0});
-        };
+        setTempObject({name: "", amount: "",payment: ""});
+    };
 
   return (
     <>
@@ -51,21 +49,6 @@ export default function Debts({debts, setDebts}) {
       />
 
       <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setVisible(true)}
-      >
-        <Text style={styles.dropdownText}>{tempObject.frqType}</Text>
-      </TouchableOpacity>
-
-      <ModalMenu
-        visible={visible}
-        setVisible={setVisible}
-        selectedValue={tempObject.frqType}
-        setSelectedValue={setTempObject}
-        title="Select Bill Frequency"
-      />
-
-      <TouchableOpacity
         style={styles.addButton}
         onPress={handleAddDebt}
       >
@@ -77,7 +60,7 @@ export default function Debts({debts, setDebts}) {
         data={debts}
         keyExtractor={(index) => index.toString()}
         renderItem={({ item, index }) => (
-          <View style={styles.billsHolder}>
+          <View key={index} style={styles.billsHolder}>
             <Text style={styles.billItem}>
               {item.name}: ${item.amount} ({item.frqType})
             </Text>
