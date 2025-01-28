@@ -179,4 +179,46 @@ export default StyleSheet.create({
       alignItems: 'center',
       padding: 30,
     },
+    dDownContainer: {
+      marginBottom: 20,
+    },
+    dDownItem: {
+      backgroundColor: '#1E1E1E',
+      width: 300,
+      padding: 20,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    dDownText: {
+      color: '#FFFFFF',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    expandedContainer: {
+      marginTop: 10,
+      padding: 15,
+      borderRadius: 10,
+      backgroundColor: '#2A2A2A',
+      width: 300,
+    },
+    savedItemContainer: {
+      backgroundColor: '#333',
+      padding: 15,
+      marginBottom: 10,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    savedItemText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+    },
+    removeText: {
+      color: '#FF6347',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
   });

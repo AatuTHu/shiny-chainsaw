@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
@@ -50,18 +50,18 @@ const handleOnGoalPress = (name, index) => {
         <Text style={styles.label}>Other Expenses</Text>
 
         {expenseOptions.map((expense, index) => (
-          <View key={index} style={localStyles.expenseContainer}>
+          <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
-              style={localStyles.expenseItem}
+              style={styles.dDownItem}
               onPress={() => handleOnGoalPress(expense.name,index)}
             >
-              <Text style={localStyles.expenseText}>
+              <Text style={styles.dDownText}>
                 {expense.emoji} {expense.name}
               </Text>
             </TouchableOpacity>
 
             {visible === index && (
-              <View style={localStyles.expandedContainer}>
+              <View style={styles.expandedContainer}>
                 {expense.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Expense Name:</Text>
@@ -96,12 +96,12 @@ const handleOnGoalPress = (name, index) => {
         ))}
           <Text style={styles.label}>Saved Expenses</Text>
           {otherExpenses.map((item, index) => (
-            <View key={index} style={localStyles.savedItemContainer}>
-              <Text style={localStyles.savedItemText}>
+            <View key={index} style={styles.savedItemContainer}>
+              <Text style={styles.savedItemText}>
                 {item.name}: ${item.amount}
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setOtherExpenses, index)}>
-                <Text style={localStyles.removeText}>Remove</Text>
+                <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
             </View>
             
@@ -109,48 +109,3 @@ const handleOnGoalPress = (name, index) => {
     </ScrollView>
   );
 }
-
-const localStyles = StyleSheet.create({
-  expenseContainer: {
-    marginBottom: 20,
-  },
-  expenseItem: {
-    backgroundColor: '#1E1E1E',
-    width: 300,
-    padding: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  expenseText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  expandedContainer: {
-    marginTop: 10,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#2A2A2A',
-    width: 300,
-  },
-  savedItemContainer: {
-    backgroundColor: '#333',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  savedItemText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  removeText: {
-    color: '#FF6347',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});

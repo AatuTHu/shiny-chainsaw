@@ -95,8 +95,7 @@ return (
   {/* Step 2: Living Expenses */}
   {step === 2 && (
     <View style={styles.stepContainer}>
-      <LivingExpenses expenses={expenses} setExpenses={setExpenses}/>
-      <Bills bills={bills} setBills={setBills}/>
+      <LivingExpenses expenses={otherExpenses} setExpenses={setOtherExpenses} bills={bills} setBills={setBills}/>
 
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>

@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
@@ -50,21 +43,21 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
-      <Text style={styles.label}>Income</Text>
+      <Text style={styles.label}>Enter your monthly income</Text>
         {incomeOptions.map((income, index) => {        
           return (
-            <View key={index} style={localStyles.incomeContainer}>
+            <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
-                style={localStyles.incomeItem}
+                style={styles.dDownItem}
                 onPress={() => handleOnIncomePress(income.name, index)}
               >
-                <Text style={localStyles.incomeText}>
+                <Text style={styles.dDownText}>
                   {income.emoji} {income.name}
                 </Text>
               </TouchableOpacity>
 
               {visible === index && (
-                <View style={localStyles.expandedContainer}>
+                <View style={styles.expandedContainer}>
                   {income.name === 'Other' ? (
                     <>
                       <Text style={styles.label}>Income Source:</Text>
@@ -100,99 +93,27 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
           );
         })}
 
-        <View style={styles.savedIncomesContainer}>
           <Text style={styles.label}>Saved Incomes:</Text>
           {salary > 0 && (
-            <View style={localStyles.savedItemContainer}>
-              <Text style={localStyles.savedItemText}>
+            <View style={styles.savedItemContainer}>
+              <Text style={styles.savedItemText}>
                 Salary: ${salary}
               </Text>
               <TouchableOpacity onPress={() => setSalary("")}>
-                <Text style={localStyles.removeText}>Remove</Text>
+                <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
             </View>
           )}
           {incomes.map((item, index) => (
-            <View key={index} style={localStyles.savedItemContainer}>
-              <Text style={localStyles.savedItemText}>
+            <View key={index} style={styles.savedItemContainer}>
+              <Text style={styles.savedItemText}>
                 {item.name}: ${item.amount}
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setIncomes, index)}>
-                <Text style={localStyles.removeText}>Remove</Text>
+                <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
             </View>
           ))}
-        </View>
     </ScrollView>
   );
 }
-
-const localStyles = StyleSheet.create({
-  incomeContainer: {
-    marginBottom: 20,
-  },
-  incomeItem: {
-    backgroundColor: '#1E1E1E',
-    width: 300,
-    padding: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  incomeText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  expandedContainer: {
-    marginTop: 10,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#2A2A2A',
-    width: 300,
-  },
-  dropdownButton: {
-    backgroundColor: '#1E1E1E',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  dropdownText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  dropdownContainer: {
-    backgroundColor: '#333',
-    borderRadius: 8,
-    paddingVertical: 5,
-  },
-  dropdownItem: {
-    padding: 10,
-  },
-  dropdownItemText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  savedIncomesContainer: {
-    marginTop: 20,
-  },
-  savedItemContainer: {
-    backgroundColor: '#333',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  savedItemText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  removeText: {
-    color: '#FF6347',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});

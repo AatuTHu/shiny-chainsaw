@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
 import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
 
@@ -43,18 +43,18 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
         <Text style={styles.label}>Saving Goals</Text>
 
         {goalOptions.map((goal, index) => (
-          <View key={index} style={localStyles.goalContainer}>
+          <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
-              style={localStyles.goalItem}
+              style={styles.dDownItem}
               onPress={() => handleOnGoalPress(goal.name,index)}
             >
-              <Text style={localStyles.goalText}>
+              <Text style={styles.dDownText}>
                 {goal.emoji} {goal.name}
               </Text>
             </TouchableOpacity>
 
             {visible === index && (
-              <View style={localStyles.expandedContainer}>
+              <View style={styles.expandedContainer}>
                 {goal.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Goal Name:</Text>
@@ -100,60 +100,15 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
         ))}
         <Text style={styles.label}>Saved Goals</Text>
           {savingGoals.map((goal, index) => (
-          <View key={index} style={localStyles.savedItemContainer}>
-          <Text style={localStyles.savedItemText}>
+          <View key={index} style={styles.savedItemContainer}>
+          <Text style={styles.savedItemText}>
             {goal.name}: {goal.amountSaved} / {goal.savingGoal}$
           </Text>
           <TouchableOpacity onPress={() => handleRemoveFromList(setSavingGoals, index)}>
-            <Text style={localStyles.removeText}>Remove</Text>
+            <Text style={styles.removeText}>Remove</Text>
           </TouchableOpacity>
         </View>
         ))}
     </ScrollView>
   );
 }
-
-const localStyles = StyleSheet.create({
-  goalContainer: {
-    marginBottom: 20,
-  },
-  goalItem: {
-    backgroundColor: '#1E1E1E',
-    width: 300,
-    padding: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  goalText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  expandedContainer: {
-    marginTop: 10,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#2A2A2A',
-    width: 300,
-  },
-  savedItemContainer: {
-    backgroundColor: '#333',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  savedItemText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  removeText: {
-    color: '#FF6347',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});
