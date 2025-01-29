@@ -11,7 +11,7 @@ export default function Debts({debts, setDebts}) {
     { name: 'House Loan', emoji: '🏢' },
     { name: 'Student Loan', emoji: '🧑‍🎓' },
     { name: 'Car Loan', emoji: '🚗' },
-    { name: 'Credit card debt', emoji: '💳' },
+    { name: 'Credit Card Debt', emoji: '💳' },
     { name: 'Other', emoji: '💡' },
   ];
 
@@ -34,7 +34,7 @@ export default function Debts({debts, setDebts}) {
               <View style={styles.expandedContainer}>
                 {debts.name === 'Other' && (
                   <>
-                    <Text style={styles.label}>Debts Name:</Text>
+                    <Text style={styles.label}>Debt Name:</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter name"
@@ -45,7 +45,7 @@ export default function Debts({debts, setDebts}) {
                   </>
                 )}
 
-                <Text style={styles.label}>Amount spent:</Text>
+                <Text style={styles.label}>Amount:</Text>
                 <TextInput
                   style={styles.input}s
                   placeholder={`Enter amount`}

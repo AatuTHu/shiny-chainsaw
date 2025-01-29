@@ -18,6 +18,7 @@ const { setNavigate } = useNavigation()
 const [step, setStep] = useState(1);
 
 const [salary, setSalary] = useState(0);
+const [balance, setBalance] = useState(0);
 const [expenses, setExpenses] = useState([]);
 const [incomes, setIncomes] = useState([]);
 const [bills, setBills] = useState([]);
@@ -37,6 +38,7 @@ const [summaryData, setSummaryData] = useState([])
       case 5: //goals
           setSummaryData({
             salary: salary,
+            balance: balance,
             otherIncomes: incomes,
             expenses: expenses,
             otherExpenses: otherExpenses,
@@ -59,8 +61,8 @@ const handleBack = () => {
 const handleFinish = async() => {
   await addDoc(collection(db, USERINFO), {
     uid: auth.currentUser.uid,
-    balance: 0,
     salary: salary,
+    balance: balance,
     otherIncomes: incomes,
     expenses: expenses,
     otherExpenses: otherExpenses,
@@ -83,10 +85,12 @@ return (
   {step === 1 && (
     <View style={styles.stepContainer}>
         <Incomes 
-          setIncomes={setIncomes} 
           incomes={incomes} 
+          setIncomes={setIncomes} 
           salary={salary} 
           setSalary={setSalary} 
+          balance={balance}
+          setBalance={setBalance}
         />
         <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>

@@ -35,55 +35,52 @@ export default function HomePage() {
     return () => unsubscribe(); // Clean up the listener
 }, []);
 
-  const makeChart = (item) => {
-    let housing = 0;
-    let groceries = 0;
-    let transportation = 0;
-    item.expenses.map(item => {
-      if(item.name === 'Housing') housing = item.amount
-      if(item.name === 'Transportation') transportation = item.amount
-      if(item.name === 'Groceries') groceries = item.amount
-    })
-    const totalBills = getTotalAmountOfBills(item.bills)  // Calculate the total of all bills    
-    const needs = (getTotalAmountOfExpenses(item.expenses) + totalBills); // Add up nescessary expenses
-    setChartData([   // Example piechart to show nescessary expenses in different colors 
-      {
-        name: "Needs",
-        population: needs,
-        color: "#FF6347",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 14
-      },
-      {
-        name: "Housing",
-        population: housing,
-        color: "#FF7F50",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 14
-      },
-      {
-        name: "Transportation",
-        population: transportation,
-        color: "#FF4500",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 14
-      },
-      {
-        name: "Groceries",
-        population: groceries,
-        color: "#FF0000",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 14
-      },
-      {
-        name: "Bills",
-        population: totalBills,
-        color: "#8B0000",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 14
-      },
-    ])
-  }
+const makeChart = (item) => {
+  // Helper function to sum amounts from arrays
+  const sumAmounts = (arr) => {
+    return arr.reduce((sum, entry) => {
+      // Ensure the field value is a valid number before adding it
+      const amount = entry.amount;
+      return typeof amount === 'number' && !isNaN(amount) ? sum + amount : sum;
+    }, 0);
+  };
+
+  // Calculate total from bills and expenses
+  const totalBills = sumAmounts(item.bills);
+  const totalExpenses = sumAmounts(item.expenses);
+  const totalNeeds = totalBills + totalExpenses;
+
+  // Repeat for other expenses
+  const totalOtherExpenses = sumAmounts(item.otherExpenses);
+
+  const balance = item.balance || 0;
+  const finalBalance = balance - totalNeeds - totalOtherExpenses;
+
+  setChartData([
+    {
+      name: "Needs",
+      population: totalNeeds,
+      color: "#FF6347",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 14
+    },
+    {
+      name: "Other Expenses",
+      population: totalOtherExpenses,
+      color: "#FFA500",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 14
+    },
+    {
+      name: "Excess balance",
+      population: finalBalance,
+      color: "#1E90FF", 
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 14
+    },
+  ]);
+};
+
 
   const handleRandomBalanceChange = (type) => {
     if (visible === true) {

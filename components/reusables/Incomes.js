@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-nativ
 import styles from '../../styles/startPage';
 import { handleAddToList, handleChangeItem, handleOnDropDownPress, handleRemoveFromList } from '../../services/Utilities';
 
-export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
+export default function Incomes({ incomes, setIncomes, salary, setSalary, balance, setBalance }) {
   const [visible, setVisible] = useState(null);
   const [tempObject, setTempObject] = useState({ name: '', amount: 0});
 
@@ -15,15 +15,57 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
     { name: 'Other', emoji: '💡' },
   ];
 
+    // Toggle dropdown for balance
+    const handleBalanceDropdown = () => {
+      setVisible(visible === 'balance' ? null : 'balance');
+    };
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
+      {/* Current Balance */}
+      <Text style={styles.label}>Current Balance</Text>
+      <View style={styles.dDownContainer}>
+        <TouchableOpacity
+          style={styles.dDownItem}
+          onPress={handleBalanceDropdown}
+        >
+          <Text style={styles.dDownText}>
+            💰 Current Balance: ${balance}
+          </Text>
+        </TouchableOpacity>
+
+        {visible === 'balance' && (
+          <View style={styles.expandedContainer}>
+            <Text style={styles.label}>Enter your current balance:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter amount"
+              placeholderTextColor="#888"
+              keyboardType="numeric"
+              value={tempObject.amount.toString()}
+              onChangeText={(text) => handleChangeItem(setTempObject, 'amount', text)}
+            />
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => {
+                setBalance(tempObject.amount);
+                setVisible(null);
+              }}
+            >
+              <Text style={styles.addButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      {/* Incomes */}
       <Text style={styles.label}>Enter your monthly income</Text>
         {incomeOptions.map((income, index) => {        
           return (
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
                 style={styles.dDownItem}
-                onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,income.name, index)}
+                onPress={() => handleOnDropDownPress(setTempObject, setVisible, visible, income.name, index)}
               >
                 <Text style={styles.dDownText}>
                   {income.emoji} {income.name}
