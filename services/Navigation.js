@@ -8,7 +8,7 @@ export default function Navigation ({children}) {
   const [navigate, setNavigate] = useState("") // Used on other components for navigating
   const [history, setHistory] = useState([0]); // Maintain a order history of pages
   const [number, setNumber] = useState(0) // Index on what page to return from pages array
-  const exitIndex = 0 // Index where back button exits app rather than navigates back
+  const exitIndex = [0,2]// Index where back button exits app rather than navigates back
   const pages = []
 
     useEffect(() => {
@@ -29,7 +29,7 @@ export default function Navigation ({children}) {
     
     useEffect(() => { // Handle hardware back button
       const backAction = () => {
-        if (number ===  exitIndex) {
+        if (exitIndex.includes(number)) {
           BackHandler.exitApp(); // Exit the app if we're on the first page
         } else {
           const newHistory = [...history]; // Copy the history array

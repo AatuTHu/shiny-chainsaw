@@ -1,54 +1,49 @@
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot } from '../services/Firebase';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity,TextInput,Alert  } from 'react-native';
+import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot,doc, updateDoc} from '../services/Firebase';
 import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses } from '../services/Calculator';
+import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses} from '../services/Calculator';
 import Icon from '@expo/vector-icons/Ionicons'
+import Summary from './reusables/Summary';
 
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
   const { setNavigate } = useNavigation();
-  const [balance, setBalance] = useState(0);
   const [chartData, setChartData] = useState([])
+  const [visible, setVisible] = useState(false)
+  const [randomBalanceChange, setRandomBalanceChange] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
-    const queryUserData = onSnapshot(q, (querySnapshot) => {
-      const tempData = [];
-
-      querySnapshot.forEach((doc) => {
-        const object = {
-          amountSaved: doc.data().amountSaved,
-          bills: doc.data().bills,
-          debts: doc.data().debts,
-          emergencyFunds: doc.data().emergencyFunds,
-          expenses: doc.data().expenses,
-          salary: doc.data().salary,
-          savingGoal: doc.data().savingGoal,
-          otherIncomes: doc.data().otherIncomes,
-          transactionHistory: doc.data().transactionHistory,
-          timeStamp: doc.data().timeStamp,
-          uid: doc.data().uid,
+    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));   
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+            setNavigate('StartPage');
+            Alert.alert('No data found, Fill your data please.');
+            return;
         }
-        tempData.push(object)
-      })
+        const tempData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const calculatedTemp = calculateBalance(tempData[0]);
+        setUserData(calculatedTemp.length ? calculatedTemp : tempData);
+        makeChart(tempData[0]);
+    });
 
-      setBalance(calculateBalance(tempData[0], '15.1.2025')) // string is for simulating to a date
-      makeChart(tempData[0])
-      setUserData(tempData)
-    })
-
-    return () => {
-      queryUserData();
-    };
-  }, []);
+    return () => unsubscribe(); // Clean up the listener
+}, []);
 
   const makeChart = (item) => {
-    const housing = item.expenses.housing || 0;
-    const transportation = item.expenses.transportation || 0;
-    const groceries = item.expenses.groceries || 0;
+    let housing = 0;
+    let groceries = 0;
+    let transportation = 0;
+    item.expenses.map(item => {
+      if(item.name === 'Housing') housing = item.amount
+      if(item.name === 'Transportation') transportation = item.amount
+      if(item.name === 'Groceries') groceries = item.amount
+    })
     const totalBills = getTotalAmountOfBills(item.bills)  // Calculate the total of all bills    
     const needs = (getTotalAmountOfExpenses(item.expenses) + totalBills); // Add up nescessary expenses
     setChartData([   // Example piechart to show nescessary expenses in different colors 
@@ -88,15 +83,21 @@ export default function HomePage() {
         legendFontSize: 14
       },
     ])
-      /*
-      // Debugging
-      console.log('Housing:', housing);
-      console.log('Transportation:', transportation);
-      console.log('Groceries:', groceries);
-      console.log('Total Bills:', totalBills);
-      console.log('Chart Data:', chartData);
-      */
   }
+
+  const handleRandomBalanceChange = (type) => {
+    if (visible === true) {
+      const docRef = doc(db, USERINFO, userData[0].id)
+      let newBalance = type === "minus" ? userData[0].balance - Number(randomBalanceChange) : userData[0].balance + Number(randomBalanceChange)
+      updateDoc(docRef,{
+        balance: newBalance
+        }
+      )
+      setRandomBalanceChange(0)
+      setVisible(false)
+    }
+    setVisible(!visible)
+  };
 
   const SignOut = async () => {
     signOut(auth)
@@ -104,7 +105,7 @@ export default function HomePage() {
         setNavigate("AuthPage");
       })
       .catch((e) => {
-        console.log(e);
+        Alert.alert("Something went wrong")
       });
   };
 
@@ -120,19 +121,33 @@ return (
         renderItem={({ item, i }) => (
             <View key={i} style={styles.dataContainer}>
               <View style={styles.balanceHolder}>
-                <TouchableOpacity style={styles.minusButton} onPress={() => console.log("Minus button pressed")}>
+                <TouchableOpacity style={styles.minusButton} onPress={() =>  handleRandomBalanceChange("minus")}>
                   <Icon name="remove-circle-outline" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
 
                 <View style={styles.balanceContent}>
                   <Text style={styles.labelText}>Balance:</Text>
-                  <Text style={styles.balanceText}>{balance} $</Text>
+                  <Text style={styles.balanceText}>{userData[0].balance} $</Text>
                 </View>
 
-                <TouchableOpacity style={styles.plusButton} onPress={() => console.log("Plus button pressed")}>
+                <TouchableOpacity onPress={()=> setNavigate("EditPage") }>
+                  <Icon name= {"create-outline"} size={30} color="#FFFFFF"/>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.plusButton} onPress={() => handleRandomBalanceChange("plus")}>
                   <Icon name="add-circle-outline" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
               </View>
+                {visible && 
+                  <TextInput
+                  style={styles.input}
+                  value={randomBalanceChange}
+                  keyboardType='numeric'
+                  placeholder="Enter Amount"
+                  placeholderTextColor="#888"
+                  onChangeText={(text) => setRandomBalanceChange(text)}
+                  />                
+                }
               {/* Pie Chart */}
               <PieChart
                 data={chartData}
@@ -152,64 +167,8 @@ return (
                 accessor="population"
                 backgroundColor="transparent"
               />
-              {/* Displaying the rest of the user data */}
-
-              <Text style={styles.labelText}>Amount Saved:</Text>
-              <Text style={styles.text}>{item.amountSaved} $</Text>
-
-              <Text style={styles.labelText}>Savings Goal:</Text>
-              <Text style={styles.text}>{item.savingGoal} $</Text>
-
-              <Text style={styles.labelText}>Salary:</Text>
-              <Text style={styles.text}>{item.salary.salary} $</Text>
-
-              {item.otherIncomes && item.otherIncomes.length > 0 && (
-                <>
-                  <Text style={styles.labelText}>Other Incomes:</Text>
-                  {item.otherIncomes.map((income, index) => (
-                    <View key={`inc-${index}`}>
-                      <Text style={styles.text}>
-                        {income.name} {income.amount} $
-                      </Text>
-                    </View>
-                  ))}
-                </>
-              )}
-
-              <Text style={styles.labelText}>Housing:</Text>
-              <Text style={styles.text}>{item.expenses.housing} $</Text>
-
-              <Text style={styles.labelText}>Transportation:</Text>
-              <Text style={styles.text}>{item.expenses.transportation} $</Text>
-
-              <Text style={styles.labelText}>Groceries:</Text>
-              <Text style={styles.text}>{item.expenses.groceries} $</Text>
-
-              {/* Additional user data rendering */}
-              <Text style={styles.labelText}>Bills:</Text>
-              {item.bills &&
-                item.bills.map((bill, index) => (
-                  <View key={`bill-${index}`}>
-                    <Text style={styles.text}>
-                      {bill.name} {bill.amount} $ {bill.frq}
-                    </Text>
-                  </View>
-                ))}
-
-              <Text style={styles.labelText}>Debts:</Text>
-              {item.debts &&
-                item.debts.map((debt, index) => (
-                  <View key={`debt-${index}`}>
-                    <Text style={styles.text}>
-                      {debt.name} {debt.amount} $
-                    </Text>
-                  </View>
-                ))}
-
-              <Text style={styles.labelText}>Emergency Fund:</Text>
-              <Text style={styles.text}>{item.emergencyFunds.emergencyFund} $</Text>
-              <Text style={styles.labelText}>Emergency Goal:</Text>
-              <Text style={styles.text}>{item.emergencyFunds.emergencyGoal} $</Text>
+              {/*Summary*/}
+              <Summary item={item}/>
             </View>
         )}
       />
@@ -293,5 +252,14 @@ const styles = StyleSheet.create({
   icon: {
     textAlign: 'center',
     alignSelf: 'center', 
-  }
+  },
+  input:{
+    height: 50,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#2a2a3d',
+    color: '#fff',
+    marginVertical: 10,
+    fontSize: 18
+  },
 });

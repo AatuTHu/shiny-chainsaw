@@ -11,7 +11,7 @@ export default StyleSheet.create({
       padding: 30,
     },
     label: {
-      fontSize: 18,
+      fontSize: 24,
       color: '#fff',
       marginVertical: 10,
       textAlign: 'center',
@@ -24,6 +24,7 @@ export default StyleSheet.create({
       backgroundColor: '#2a2a3d',
       color: '#fff',
       marginVertical: 10,
+      fontSize: 18
     },
     dropdownButton: {
       height: 50,
@@ -125,7 +126,6 @@ export default StyleSheet.create({
       fontWeight: 'bold',
     },  
     billListContainer: {
-      flexDirection: 'row',
       maxHeight: 240,
       width: '100%',
       marginVertical: 10,
@@ -150,7 +150,7 @@ export default StyleSheet.create({
     },
     billsHolder:{
       flexDirection: 'row',
-      justifyContent:'space-around',
+      justifyContent:'space-between',
       alignContent: 'center',
     },
     billsContainer:{
@@ -160,12 +160,13 @@ export default StyleSheet.create({
     },
     billsInput:{
       height: 50,
-      width: 90,
+      width: 100,
       borderRadius: 5,
       paddingHorizontal: 10,
       backgroundColor: '#2a2a3d',
       color: '#fff',
       marginVertical: 10,
+      fontSize: 18
     },
     removeBill:{
       color: 'red',
@@ -177,5 +178,47 @@ export default StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 30,
+    },
+    dDownContainer: {
+      marginBottom: 20,
+    },
+    dDownItem: {
+      backgroundColor: '#1E1E1E',
+      width: 300,
+      padding: 20,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    dDownText: {
+      color: '#FFFFFF',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    expandedContainer: {
+      marginTop: 10,
+      padding: 15,
+      borderRadius: 10,
+      backgroundColor: '#2A2A2A',
+      width: 300,
+    },
+    savedItemContainer: {
+      backgroundColor: '#333',
+      padding: 15,
+      marginBottom: 10,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    savedItemText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+    },
+    removeText: {
+      color: '#FF6347',
+      fontSize: 14,
+      fontWeight: 'bold',
     },
   });

@@ -1,40 +1,48 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem,handleRemoveFromList,handleOnDropDownPress,handleAddToList } from '../../services/Utilities';
-
-export default function Debts({debts, setDebts}) {
+import { handleChangeItem, handleRemoveFromList,handleOnDropDownPress,handleAddToList } from '../../services/Utilities';
+export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
   const [visible, setVisible] = useState(null);
   const [tempObject, setTempObject] = useState({name:"",amount:0})
 
-  const debtsOptions = [
-    { name: 'House Loan', emoji: '🏢' },
-    { name: 'Student Loan', emoji: '🧑‍🎓' },
-    { name: 'Car Loan', emoji: '🚗' },
-    { name: 'Credit card debt', emoji: '💳' },
+  const expenseOptions = [
+    { name: 'Hobbies', emoji: '🎨' },
+    { name: 'Entertainment', emoji: '🎬' },
+    { name: 'Coffee Shops', emoji: '☕' },
+    { name: 'Dining Out', emoji: '🍽️' },
+    { name: 'Shopping', emoji: '🛍️' },
+    { name: 'Fitness & Gym', emoji: '🏋️‍♀️' },
+    { name: 'Streaming Services', emoji: '📺' },
+    { name: 'Nightlife', emoji: '🌃' },
+    { name: 'Gifts', emoji: '🎁' },
+    { name: 'Fashion', emoji: '👕' },
+    { name: 'Tech', emoji: '📱' },
+    { name: 'Cosmetics & Beauty', emoji: '💄' },
+    { name: 'Pets', emoji: '🐶' },
     { name: 'Other', emoji: '💡' },
   ];
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
-        <Text style={styles.label}>Debts</Text>
+        <Text style={styles.label}>Other Expenses</Text>
 
-        {debtsOptions.map((debts, index) => (
+        {expenseOptions.map((expense, index) => (
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
               style={styles.dDownItem}
-              onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,debts.name, index)}
+              onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,expense.name, index)}
             >
               <Text style={styles.dDownText}>
-                {debts.emoji} {debts.name}
+                {expense.emoji} {expense.name}
               </Text>
             </TouchableOpacity>
 
             {visible === index && (
               <View style={styles.expandedContainer}>
-                {debts.name === 'Other' && (
+                {expense.name === 'Other' && (
                   <>
-                    <Text style={styles.label}>Debts Name:</Text>
+                    <Text style={styles.label}>Expense Name:</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter name"
@@ -56,7 +64,7 @@ export default function Debts({debts, setDebts}) {
                 />
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={() => handleAddToList(setDebts,setVisible,setTempObject,tempObject)}
+                  onPress={() => handleAddToList(setOtherExpenses,setVisible,setTempObject,tempObject)}
                 >
                   <Text style={styles.addButtonText}>Add</Text>
                 </TouchableOpacity>
@@ -64,13 +72,13 @@ export default function Debts({debts, setDebts}) {
             )}
           </View>
         ))}
-          <Text style={styles.label}>Saved debts</Text>
-          {debts.map((item, index) => (
+          <Text style={styles.label}>Saved Expenses</Text>
+          {otherExpenses.map((item, index) => (
             <View key={index} style={styles.savedItemContainer}>
               <Text style={styles.savedItemText}>
                 {item.name}: ${item.amount}
               </Text>
-              <TouchableOpacity onPress={() => handleRemoveFromList(setDebts, index)}>
+              <TouchableOpacity onPress={() => handleRemoveFromList(setOtherExpenses, index)}>
                 <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
             </View>

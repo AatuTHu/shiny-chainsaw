@@ -13,11 +13,11 @@ import {
     doc, 
     getDocs,
     addDoc,
-    orderBy,
     deleteDoc,
-    limit,
     updateDoc,
-    where } = require("firebase/firestore");
+    where,
+    setDoc,
+    arrayRemove } = require("firebase/firestore");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
@@ -50,11 +50,11 @@ export {
   addDoc,
   deleteDoc,
   where,
-  limit,
   updateDoc,
-  orderBy,
   onSnapshot,
   query,
   doc,
-  getDocs
+  getDocs,
+  setDoc,
+  arrayRemove
 }

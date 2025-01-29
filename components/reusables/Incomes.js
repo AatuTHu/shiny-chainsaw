@@ -1,94 +1,93 @@
-import { View, Text, TextInput,TouchableOpacity, FlatList } from 'react-native'
-import React, {useState} from 'react'
-import ModalMenu from './ModalMenu'
-import styles from '../..//styles/startPage'
-import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import styles from '../../styles/startPage';
+import { handleAddToList, handleChangeItem, handleOnDropDownPress, handleRemoveFromList } from '../../services/Utilities';
 
-export default function Incomes({incomes,setIncomes,salary,setSalary}) {
+export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
+  const [visible, setVisible] = useState(null);
+  const [tempObject, setTempObject] = useState({ name: '', amount: 0});
 
-    const [visible, setVisible] = useState(false);
-    const [tempObject, setTempObject] = useState({name: "", amount: 0})
-
-    const handleAddIncome = () => {
-        setIncomes((prevIncomes) => {
-          const updatedIncomes = [
-            ...prevIncomes,
-            { name: tempObject.name, amount: tempObject.amount }
-          ];
-          return updatedIncomes;
-        });
-        setTempObject({name: "", amount: ""})
-      };
+  const incomeOptions = [
+    { name: 'Salary', emoji: '💼' },
+    { name: 'Freelance Work', emoji: '💻' },
+    { name: 'Rental Income', emoji: '🏠' },
+    { name: 'Side Business', emoji: '📊' },
+    { name: 'Other', emoji: '💡' },
+  ];
 
   return (
-    <>
-      <Text style={styles.label}>Salary:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Salary amount"
-        placeholderTextColor="#888"
-        keyboardType="numeric"
-        value={salary.salary}
-        onChangeText={(text) => handleChangeItem(setSalary, "salary", text)}
-      />
-      <Text style={styles.label}>How often is your salary paid?</Text>
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setVisible(true)}
-      >
-        <Text style={styles.dropdownText}>{salary.frqType}</Text>
-      </TouchableOpacity>
+    <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
+      <Text style={styles.label}>Enter your monthly income</Text>
+        {incomeOptions.map((income, index) => {        
+          return (
+            <View key={index} style={styles.dDownContainer}>
+              <TouchableOpacity
+                style={styles.dDownItem}
+                onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,income.name, index)}
+              >
+                <Text style={styles.dDownText}>
+                  {income.emoji} {income.name}
+                </Text>
+              </TouchableOpacity>
 
-      <ModalMenu
-        visible={visible}
-        setVisible={setVisible}
-        selectedValue={salary.frqType}
-        setSelectedValue={setSalary}
-        title="Select Salary Frequency" 
-      />
+              {visible === index && (
+                <View style={styles.expandedContainer}>
+                  {income.name === 'Other' ? (
+                    <>
+                      <Text style={styles.label}>Income Source:</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter name"
+                        placeholderTextColor="#888"
+                        value={tempObject.name}
+                        onChangeText={(text) => handleChangeItem(setTempObject, 'name', text)}
+                      />
+                    </>
+                  ) : null}
 
-      {/* Additional Incomes */}
-      <Text style={styles.label}>Other Incomes:</Text>    
-        <View style={styles.incomeRow}>
-          <TextInput
-            style={styles.input}
-            placeholder="Income name"
-            placeholderTextColor="#888"
-            value={tempObject.name}
-            onChangeText={(text) => handleChangeItem(setTempObject,'name', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Income amount"
-            placeholderTextColor="#888"
-            keyboardType="numeric"
-            value={tempObject.amount}
-            onChangeText={(text) => handleChangeItem(setTempObject,'amount', text)}
-          />
+                  <Text style={styles.label}>Amount:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter amount"
+                    placeholderTextColor="#888"
+                    keyboardType="numeric"
+                    value={tempObject.amount}
+                    onChangeText={(text) => handleChangeItem(setTempObject, 'amount', text)}
+                  />
 
-          <FlatList
-            data={incomes}
-            renderItem={({ item, index }) => (<>
-              <Text key={index} style={styles.billItem}>
+                  <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={ () => income.name === 'Salary' ? setSalary(tempObject.amount) : handleAddToList(setIncomes,setVisible,setTempObject,tempObject)}
+                  >
+                    <Text style={styles.addButtonText}>{income.name === 'Salary' ? 'Save Salary' : 'Add Income'}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          );
+        })}
+
+          <Text style={styles.label}>Saved Incomes:</Text>
+          {salary > 0 && (
+            <View style={styles.savedItemContainer}>
+              <Text style={styles.savedItemText}>
+                Salary: ${salary}
+              </Text>
+              <TouchableOpacity onPress={() => setSalary("")}>
+                <Text style={styles.removeText}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {incomes.map((item, index) => (
+            <View key={index} style={styles.savedItemContainer}>
+              <Text style={styles.savedItemText}>
                 {item.name}: ${item.amount}
               </Text>
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => handleRemoveFromList(setIncomes,index)}
-              >
-                <Text style={styles.removeButtonText}>Remove</Text>
+              <TouchableOpacity onPress={() => handleRemoveFromList(setIncomes, index)}>
+                <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
-              </>
-            )}
-          />
-        </View>
-
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={handleAddIncome}
-      >
-        <Text style={styles.addButtonText}>Add Income</Text>
-      </TouchableOpacity>
-    </>
-  )
+            </View>
+          ))}
+    </ScrollView>
+  );
 }

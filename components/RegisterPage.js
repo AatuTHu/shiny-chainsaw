@@ -38,7 +38,6 @@ export default function RegisterPage()  {
       createUserWithEmailAndPassword(auth, email, password).then(() =>{
         setNavigate("StartPage")
       }).catch((error) => {
-        console.log(error)
         Alert.alert('Error', 'Failed to create account. Please try again.');
       })
     };

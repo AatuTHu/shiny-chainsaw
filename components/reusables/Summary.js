@@ -1,71 +1,73 @@
 import { View, Text } from 'react-native'
-import styles from '../../styles/startPage'
+import styles from '../../styles/summary'
 import React from 'react'
 
-export default function Summary({salary,incomes,expenses,bills,debts,emergencies,savingGoal}) {
+export default function Summary({item, title}) {
   return (
     <View style={styles.summaryContainer}>
-        <Text style={styles.summaryTitle}>Summary</Text>
+        <Text style={styles.summaryTitle}>{title}</Text>
+              {/* Displaying the rest of the user data */}
+              <Text style={styles.labelText}>Saving goals:</Text>
+              {item.savingGoal.map((goal, index) => (
+                <View key={`goal-${index}`}>
+                  <Text style={styles.text}>
+                    {goal.name} {goal.amountSaved} / {goal.savingGoal} $
+                  </Text>
+                </View>
+              ))}
 
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Salary:</Text>
-            <Text style={styles.summaryValue}>{salary.salary} ({salary.frqType})</Text>
-            <Text style={styles.summaryLabel}>Other incomes:</Text>
-            {incomes.length > 0 ? (
-                incomes.map((income,index) => (
-                    <Text key={index} style={styles.summaryValue}>
-                    {income.name}: {income.amount}
+              <Text style={styles.labelText}>Salary:</Text>
+              <Text style={styles.text}>{item.salary} $</Text>
+
+              {item.otherIncomes && item.otherIncomes.length > 0 && (
+                <>
+                  <Text style={styles.labelText}>Other Incomes:</Text>
+                  {item.otherIncomes.map((income, index) => (
+                    <View key={`inc-${index}`}>
+                      <Text style={styles.text}>
+                        {income.name} {income.amount} $
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              )}
+
+             {item.expenses.map((expense, index) => (
+              <View key={`exp-${index}`}>
+                <Text style={styles.labelText}>{expense.name}</Text>
+                <Text style={styles.text}>{expense.amount} $</Text>
+              </View>
+             ))}
+
+              <Text style={styles.labelText}>Other Expenses:</Text>
+              {item.otherExpenses.map((expense,item)=>(
+                <View key={`exp-${item}`}>
+                  <Text style={styles.text}>
+                    {expense.name} {expense.amount} $
+                  </Text>
+                </View>
+              ))}
+
+              {/* Additional user data rendering */}
+              <Text style={styles.labelText}>Bills:</Text>
+              {item.bills &&
+                item.bills.map((bill, index) => (
+                  <View key={`bill-${index}`}>
+                    <Text style={styles.text}>
+                      {bill.name} {bill.amount} $ {bill.frq}
                     </Text>
-                ))
-            ) : (
-            <Text style={styles.summaryValue}>No other incomes added.</Text>
-            )}
-        </View>
+                  </View>
+                ))}
 
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Living Expenses:</Text>
-            <Text style={styles.summaryValue}>Housing: {expenses.housing}</Text>
-            <Text style={styles.summaryValue}>Food and Groceries: {expenses.groceries}</Text>
-            <Text style={styles.summaryValue}>Transportation: {expenses.transportation}</Text>
-        </View>
-
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Bills:</Text>
-            {bills.length > 0 ? (
-                bills.map((bill, index) => (
-                <Text key={index} style={styles.summaryValue}>
-                    {bill.name}: {bill.amount} ({bill.frqType})
-                </Text>
-                ))
-            ) : (
-            <Text style={styles.summaryValue}>No Bills Added.</Text>
-            )}
-        </View>
-
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Debts:</Text>
-            {debts.length > 0 ? (
-            debts.map((debt, index) => (
-            <Text key={index} style={styles.summaryValue}>
-                {debt.name}: ${debt.amount} (Repayment: ${debt.payment}, {debt.frqType})
-            </Text>
-            ))
-            ) : (
-            <Text style={styles.summaryValue}>No debts added.</Text>
-            )}
-        </View>
-
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Emergency Fund:</Text>
-            <Text style={styles.summaryValue}>
-                Current: {emergencies.emergencyFund}, Goal: {emergencies.emergencyGoal}
-            </Text>
-        </View>
-
-        <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Saving Goal:</Text>
-            <Text style={styles.summaryValue}>{savingGoal}</Text>
-        </View>
+              <Text style={styles.labelText}>Debts:</Text>
+              {item.debts &&
+                item.debts.map((debt, index) => (
+                  <View key={`debt-${index}`}>
+                    <Text style={styles.text}>
+                      {debt.name} {debt.amount} $
+                    </Text>
+                  </View>
+        ))}
     </View>
   )
 }
