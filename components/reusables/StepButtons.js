@@ -38,4 +38,16 @@ const FinishButton = ({handleFinish, title}) => {
     )
 }
 
-export { NextButton, BackButton, FinishButton }
+const MenuButton = ({handlePress, emoji, value}) => {
+    if(emoji === undefined) emoji = 'Menu'
+    return (
+        <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => handlePress(value)}
+        >
+            <Text style={styles.menuButtonText}>{emoji}</Text>
+        </TouchableOpacity>
+    )
+}
+
+export { NextButton, BackButton, FinishButton, MenuButton }

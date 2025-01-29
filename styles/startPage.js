@@ -10,6 +10,18 @@ export default StyleSheet.create({
       alignItems: 'center',
       padding: 30,
     },
+    menuContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    menuRowContainer: {
+      alignSelf: 'center',
+      flexDirection: "row",
+      justifyContent: "space-around", // Ensures spacing between items
+      width: "90%",
+      padding: 10,
+    },
     label: {
       fontSize: 24,
       color: '#fff',

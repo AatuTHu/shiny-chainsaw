@@ -1,9 +1,9 @@
-import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert,FlatList } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState, useEffect } from 'react'
 import { auth, USERINFO, query, collection, db, where, onSnapshot,setDoc,doc} from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
-import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
+import { BackButton,FinishButton,MenuButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
 import Debts from './reusables/Debts.js'
 import SavingGoal from './reusables/SavingGoal.js'
@@ -32,9 +32,8 @@ export default function EditPage() {
     const queryUserData = onSnapshot(q, (querySnapshot) => {
       if (!querySnapshot.empty) {
         const docData = querySnapshot.docs[0].data();   
-        // Destructure the data for cleaner access
         const { bills, debts, otherExpenses, expenses, salary, savingGoal, otherIncomes, timeStamp, balance } = docData;   
-        // Set all state in one go
+    
         setDocId(querySnapshot.docs[0].id);
         setSalary(salary);
         setIncomes(otherIncomes);
@@ -52,36 +51,12 @@ export default function EditPage() {
     };
   }, []);
     
-    // Show inputfields step by step
-    const handleNextStep = () => {
-      switch (step) {
-          
-        case 1: setStep(2); break; // incomes
-        case 2: setStep(3); break; // expenses
-        case 3: setStep(4); break; // debts
-        case 4: setStep(5); break; // otherExpenses
-        case 5: //goals
-            setSummaryData({
-              salary: salary,
-              otherIncomes: incomes,
-              expenses: expenses,
-              otherExpenses: otherExpenses,
-              bills: bills,
-              debts: debts,
-              savingGoal: savingGoals,
-            })
-            setStep(6)
-          break;
-        default:
-          break;
-      }
-    };
-    
-    const handleBack = () => {
-      if(step === 1) setNavigate("HomePage")
-      else if(step > 1) setStep(step - 1)
-    }
-    
+
+  const handleBack = () => {
+    if(step === 1) setNavigate("HomePage")
+    else if(step > 1) setStep(1)
+  }
+  
     const handleFinish = async() => {
       try {  
         const docRef = doc(db, USERINFO, docId);  // Reference to the Firestore document
@@ -103,11 +78,36 @@ export default function EditPage() {
       setNavigate("HomePage")
     }
 
+    const menuItems = [
+      { id: "1", title: "Incomes", value: 2 },
+      { id: "2", title: "LivingExpenses", value: 3 },
+      { id: "3", title: "Debts", value: 4 },
+      { id: "4", title: "Other Expenses", value: 5 },
+      { id: "5", title: "Savings Goal", value: 6 },
+    ];
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
-    {/* Step 1: Salary */}
+    {/*Step 1: Main menu*/}
     {step === 1 && (
+    <View style={styles.menuContainer}>
+      <FlatList
+        data={menuItems}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.menuRowContainer}
+        renderItem={({ item }) => (
+          
+            <MenuButton emoji={item.title} handlePress={setStep} value={item.value} />
+          
+        )}
+      />
+        <FinishButton handleFinish={handleFinish} title="Confirm" />
+    </View>
+    )}
+    {/* Step 2: Salary */}
+    {step === 2 && (
       <View style={styles.stepContainer}>
           <Incomes 
             setIncomes={setIncomes} 
@@ -117,56 +117,51 @@ export default function EditPage() {
           />
           <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-          <NextButton handleNextStep={handleNextStep}/>
           </View>   
       </View>
     )}
-    {/* Step 2: Living Expenses */}
-    {step === 2 && (
+    {/* Step 3: Living Expenses */}
+    {step === 3 && (
       <View style={styles.stepContainer}>
         <LivingExpenses expenses={expenses} setExpenses={setExpenses} bills={bills} setBills={setBills}/>
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-          <NextButton handleNextStep={handleNextStep}/>
         </View>
         </View>
       )}
   
-    {/* Step 3: Debt Details */}
-    {step === 3 && (
+    {/* Step 4: Debt Details */}
+    {step === 4 && (
       <View style={styles.stepContainer}>     
         <Debts debts={debts} setDebts={setDebts}/>
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-          <NextButton handleNextStep={handleNextStep}/>
         </View>
       </View>
     )}
   
-    {/* Step 4: Other Expenses */}
-    {step === 4 && (
+    {/* Step 5: Other Expenses */}
+    {step === 5 && (
       <View style={styles.stepContainer}>
         <OtherExpenses setOtherExpenses={setOtherExpenses} otherExpenses={otherExpenses}/>
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-          <NextButton handleNextStep={handleNextStep}/>
         </View>
       </View>
     )}
   
-    {/* Step 5: Saving Goal */}
-    {step === 5 && (
+    {/* Step 6: Saving Goal */}
+    {step === 6 && (
       <View style={styles.stepContainer}>
         <SavingGoal setSavingGoals={setSavingGoals} savingGoals={savingGoals}/>
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-          <FinishButton handleFinish={handleNextStep}/>
         </View>
       </View>
     )}
   
-    {/* Step 6: Summary */}
-    {step === 6 && (
+    {/* Step 7: Summary */}
+    {step === 7 && (
       <View style={styles.summaryContainer}>
         <Summary
         item={summaryData}
