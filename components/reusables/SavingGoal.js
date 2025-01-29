@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList,handleOnDropDownPress, handleAddToList } from '../../services/Utilities';
 
 export default function SavingGoal({savingGoals,setSavingGoals}) {
   const [visible, setVisible] = useState(null);
@@ -17,27 +17,6 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const handleAddgoal = () => {
-      setSavingGoals((prevDebts) => {
-          const updatedDebts = [
-          ...prevDebts,
-          { name: tempObject.name, amountSaved: tempObject.amountSaved, savingGoal: tempObject.savingGoal }
-          ];
-          return updatedDebts;
-      });
-      setVisible(null)
-      setTempObject({name: tempObject.name ,amountSaved: "", savingGoal: ""});
-  }
-
-  const handleOnGoalPress = (name, index) => {
-    if(visible === index) {
-      setVisible(null)
-      return;
-    }
-    handleChangeItem(setTempObject,"name",name)
-    setVisible(index);
-  }
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
         <Text style={styles.label}>Saving Goals</Text>
@@ -46,7 +25,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
               style={styles.dDownItem}
-              onPress={() => handleOnGoalPress(goal.name,index)}
+              onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,goal.name, index)}
             >
               <Text style={styles.dDownText}>
                 {goal.emoji} {goal.name}
@@ -90,7 +69,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
 
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={handleAddgoal}
+                  onPress={() => handleAddToList(setSavingGoals,setVisible,setTempObject,tempObject)}
                 >
                   <Text style={styles.addButtonText}>Add Goal</Text>
                 </TouchableOpacity>

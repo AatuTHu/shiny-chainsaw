@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+import { handleAddToList, handleChangeItem, handleOnDropDownPress, handleRemoveFromList } from '../../services/Utilities';
 
 export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
   const [visible, setVisible] = useState(null);
@@ -15,32 +15,6 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const handleAddIncome = () => {
-    setIncomes((prevIncomes) => {
-      const updatedIncomes = [
-        ...prevIncomes,
-        { name: tempObject.name, amount: tempObject.amount},
-      ];
-      return updatedIncomes;
-    });
-    setVisible(null);
-    setTempObject({ name: '', amount: '' });
-  };
-
-  const handleOnIncomePress = (name, index) => {
-    if(visible === index) {
-      setVisible(null)
-      return;
-    } 
-    handleChangeItem(setTempObject, 'name', name);
-    setVisible(index);
-  }
-
-  const handleSaveSalary = () => {
-    setSalary(tempObject.amount);
-    setVisible(null);
-  };
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
       <Text style={styles.label}>Enter your monthly income</Text>
@@ -49,7 +23,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
                 style={styles.dDownItem}
-                onPress={() => handleOnIncomePress(income.name, index)}
+                onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,income.name, index)}
               >
                 <Text style={styles.dDownText}>
                   {income.emoji} {income.name}
@@ -83,7 +57,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary }) {
 
                   <TouchableOpacity
                     style={styles.addButton}
-                    onPress={income.name === 'Salary' ? handleSaveSalary : handleAddIncome}
+                    onPress={ () => income.name === 'Salary' ? setSalary(tempObject.amount) : handleAddToList(setIncomes,setVisible,setTempObject,tempObject)}
                   >
                     <Text style={styles.addButtonText}>{income.name === 'Salary' ? 'Save Salary' : 'Add Income'}</Text>
                   </TouchableOpacity>

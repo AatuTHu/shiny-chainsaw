@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList, handleOnDropDownPress,handleAddToList } from '../../services/Utilities';
 
 export default function LivingExpenses({expenses, setExpenses, bills, setBills}) {
   const [visible, setVisible ] = useState(null);
@@ -24,48 +24,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
     { name: 'Health Insurance', emoji: '❤️' },
     { name: 'Other', emoji: '💡' },
   ];
-    
-  const handleAddExpense = () => {
-    setExpenses((prevExpenses) => {
-      const updatedExpenses = [
-       ...prevExpenses,
-        { name: tempObject.name, amount: tempObject.amount }
-      ];
-      return updatedExpenses;
-    });
-    setVisible(null);
-    setTempObject({ name: '', amount: '' });
-  };
 
-  const handleAddBill = () => {
-    setBills((prevBills) => {
-      const updatedBills = [
-       ...prevBills,
-        { name: tempObject.name, amount: tempObject.amount }
-      ];
-      return updatedBills;
-    });
-    setVisible2(null);
-    setTempObject({ name: '', amount: '' });
-  };
-
-  const handleOnExpensePress = (name, index) => {
-    if(visible === index) {
-      setVisible(null);
-      return;
-    }
-    handleChangeItem(setTempObject,"name", name);
-    setVisible(index);
-  };
-
-  const handleOnBillPress = (name, index) => {
-    if(visible2 === index) {
-      setVisible2(null);
-      return;
-    }
-    handleChangeItem(setTempObject,"name", name);
-    setVisible2(index);
-  };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
       <Text style={styles.label}>Monthly Living Expenses:</Text>
@@ -74,7 +33,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
                 style={styles.dDownItem}
-                onPress={() => handleOnExpensePress(expense.name, index)}
+                onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,expense.name, index)}
               >
                 <Text style={styles.dDownText}>
                   {expense.emoji} {expense.name}
@@ -107,7 +66,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
                   />
                   <TouchableOpacity
                     style={styles.addButton}
-                    onPress={handleAddExpense}
+                    onPress={() => handleAddToList(setExpenses,setVisible,setTempObject,tempObject)}
                   >
                     <Text style={styles.addButtonText}>Add</Text>
                   </TouchableOpacity>
@@ -122,7 +81,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
                 style={styles.dDownItem}
-                onPress={() => handleOnBillPress(bill.name, index)}
+                onPress={() => handleOnDropDownPress(setTempObject,setVisible2,visible2,bill.name, index)}
               >
                 <Text style={styles.dDownText}>
                   {bill.emoji} {bill.name}
@@ -155,7 +114,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
                   />
                   <TouchableOpacity
                     style={styles.addButton}
-                    onPress={handleAddBill}
+                    onPress={()=> handleAddToList(setBills,setVisible2,setTempObject,tempObject)}
                   >
                     <Text style={styles.addButtonText}>Add</Text>
                   </TouchableOpacity>
@@ -166,7 +125,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
         })}
 
           <Text style={styles.label}>Saved expenses:</Text>
-          {expenses.map((item, index) => (
+         {expenses.map((item, index) => (
             <View key={index} style={styles.savedItemContainer}>
               <Text key={index} style={styles.savedItemText}>
                 {item.name}: ${item.amount}

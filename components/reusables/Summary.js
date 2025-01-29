@@ -32,14 +32,12 @@ export default function Summary({item, title}) {
                 </>
               )}
 
-              <Text style={styles.labelText}>Housing:</Text>
-              <Text style={styles.text}>{item.expenses.housing} $</Text>
-
-              <Text style={styles.labelText}>Transportation:</Text>
-              <Text style={styles.text}>{item.expenses.transportation} $</Text>
-
-              <Text style={styles.labelText}>Groceries:</Text>
-              <Text style={styles.text}>{item.expenses.groceries} $</Text>
+             {item.expenses.map((expense, index) => (
+              <View key={`exp-${index}`}>
+                <Text style={styles.labelText}>{expense.name}</Text>
+                <Text style={styles.text}>{expense.amount} $</Text>
+              </View>
+             ))}
 
               <Text style={styles.labelText}>Other Expenses:</Text>
               {item.otherExpenses.map((expense,item)=>(

@@ -16,7 +16,7 @@ const getTotalAmountOfBills = (bills) => {
 
 const getTotalAmountOfExpenses = (expenses) => {
   let totalAmount = 0
-      totalAmount = expenses.housing + expenses.transportation + expenses.groceries;
+      totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   return totalAmount;
 }
 
@@ -36,11 +36,11 @@ const calculateBalance = (data, targetDate = null) => {
         // Aggregate balance changes
         let monthlyBillTotal = bills.reduce((sum, bill) => sum + bill.amount, 0);
         let monthlyDebtPayment = debts.reduce((sum, item) => sum + item.payment, 0);
-        let monthlyExpenseTotal = getTotalAmountOfExpenses(data.expenses);
+        let monthlyExpenseTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
         let otherExpenseTotal = otherExpenses.reduce((sum, expense) => sum + expense.amount, 0);
         let otherIncomeTotal = otherIncomes.reduce((sum, income) => sum + income.amount, 0);
         // Update balance in a single step
-       data.balance += salary.salary - monthlyBillTotal - monthlyDebtPayment - monthlyExpenseTotal - otherExpenseTotal + otherIncomeTotal;
+       data.balance += salary - monthlyBillTotal - monthlyDebtPayment - monthlyExpenseTotal - otherExpenseTotal + otherIncomeTotal;
        // Update debts
        updatedDebts = updatedDebts
        .map(debt => {

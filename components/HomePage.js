@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity,TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity,TextInput,Alert  } from 'react-native';
 import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot,doc, updateDoc} from '../services/Firebase';
 import { useNavigation } from '../services/Navigation';
 import React, { useState, useEffect } from 'react';
@@ -16,40 +16,34 @@ export default function HomePage() {
   const [randomBalanceChange, setRandomBalanceChange] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
-    const queryUserData = onSnapshot(q, (querySnapshot) => {
-      const tempData = [];
-      querySnapshot.forEach((doc) => {
-        const object = {
-          id: doc.id,
-          balance: doc.data().balance,
-          bills: doc.data().bills,
-          debts: doc.data().debts,
-          otherExpenses: doc.data().otherExpenses,
-          expenses: doc.data().expenses,
-          salary: doc.data().salary,
-          savingGoal: doc.data().savingGoal,
-          otherIncomes: doc.data().otherIncomes,
-          timeStamp: doc.data().timeStamp,
-          uid: doc.data().uid,
+    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));   
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+            setNavigate('StartPage');
+            Alert.alert('No data found, Fill your data please.');
+            return;
         }
-        tempData.push(object)
-      })
-      let calculatedTemp = calculateBalance(tempData[0])
-      if(calculatedTemp.length >= 1) setUserData(calculatedTemp)
-      else setUserData(tempData)
-      makeChart(tempData[0])
-    })
+        const tempData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const calculatedTemp = calculateBalance(tempData[0]);
+        setUserData(calculatedTemp.length ? calculatedTemp : tempData);
+        makeChart(tempData[0]);
+    });
 
-    return () => {
-      queryUserData();
-    };
-  }, []);
+    return () => unsubscribe(); // Clean up the listener
+}, []);
 
   const makeChart = (item) => {
-    const housing = item.expenses.housing || 0;
-    const transportation = item.expenses.transportation || 0;
-    const groceries = item.expenses.groceries || 0;
+    let housing = 0;
+    let groceries = 0;
+    let transportation = 0;
+    item.expenses.map(item => {
+      if(item.name === 'Housing') housing = item.amount
+      if(item.name === 'Transportation') transportation = item.amount
+      if(item.name === 'Groceries') groceries = item.amount
+    })
     const totalBills = getTotalAmountOfBills(item.bills)  // Calculate the total of all bills    
     const needs = (getTotalAmountOfExpenses(item.expenses) + totalBills); // Add up nescessary expenses
     setChartData([   // Example piechart to show nescessary expenses in different colors 
@@ -111,7 +105,7 @@ export default function HomePage() {
         setNavigate("AuthPage");
       })
       .catch((e) => {
-        console.log(e);
+        Alert.alert("Something went wrong")
       });
   };
 
@@ -173,6 +167,7 @@ return (
                 accessor="population"
                 backgroundColor="transparent"
               />
+              {/*Summary*/}
               <Summary item={item}/>
             </View>
         )}

@@ -1,11 +1,10 @@
-import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState, useEffect } from 'react'
 import { auth, USERINFO, query, collection, db, where, onSnapshot,setDoc,doc} from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
 import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
-import Bills from './reusables/Bills.js'
 import Debts from './reusables/Debts.js'
 import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
@@ -17,9 +16,9 @@ export default function EditPage() {
     const [step, setStep] = useState(1);
     
     const [docId, setDocId] = useState(0);
-    const [expenses, setExpenses] = useState({});
     const [salary, setSalary] = useState(0)
     const [incomes, setIncomes] = useState([]);
+    const [expenses, setExpenses] = useState([]);
     const [bills, setBills] = useState([]);
     const [debts, setDebts] = useState([]);
     const [otherExpenses, setOtherExpenses] = useState([])
@@ -28,47 +27,30 @@ export default function EditPage() {
     const [timeStamp, setTimeStamp] = useState("");
     const [balance, setBalance] = useState(0);
 
-
-    useEffect(() => {
-        const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
-        const queryUserData = onSnapshot(q, (querySnapshot) => {
-          const tempData = [];
-    
-          querySnapshot.forEach((doc) => {
-            const object = {
-              docId: doc.id,
-              bills: doc.data().bills,
-              debts: doc.data().debts,
-              otherExpenses: doc.data().otherExpenses,
-              expenses: doc.data().expenses,
-              salary: doc.data().salary,
-              savingGoal: doc.data().savingGoal,
-              otherIncomes: doc.data().otherIncomes,
-              transactionHistory: doc.data().transactionHistory,
-              timeStamp: doc.data().timeStamp,
-              balance: doc.data().balance,
-              uid: doc.data().uid,
-            }
-            tempData.push(object)
-          })
-          
-          setDocId(tempData[0].docId)
-          setSalary(tempData[0].salary)
-          setIncomes(tempData[0].otherIncomes)
-          setExpenses(tempData[0].expenses)
-          setBills(tempData[0].bills)
-          setDebts(tempData[0].debts)
-          setOtherExpenses(tempData[0].otherExpenses)
-          setSavingGoals(tempData[0].savingGoal)
-          setTimeStamp(tempData[0].timeStamp)
-          setBalance(tempData[0].balance)
-        })
-    
-        return () => {
-          queryUserData();
-        };
-      }, []);
-    
+  useEffect(() => {
+    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
+    const queryUserData = onSnapshot(q, (querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docData = querySnapshot.docs[0].data();   
+        // Destructure the data for cleaner access
+        const { bills, debts, otherExpenses, expenses, salary, savingGoal, otherIncomes, timeStamp, balance } = docData;   
+        // Set all state in one go
+        setDocId(querySnapshot.docs[0].id);
+        setSalary(salary);
+        setIncomes(otherIncomes);
+        setExpenses(expenses);
+        setBills(bills);
+        setDebts(debts);
+        setOtherExpenses(otherExpenses);
+        setSavingGoals(savingGoal);
+        setTimeStamp(timeStamp);
+        setBalance(balance);
+      }
+    });
+    return () => {
+      queryUserData();
+    };
+  }, []);
     
     // Show inputfields step by step
     const handleNextStep = () => {
@@ -116,10 +98,11 @@ export default function EditPage() {
           timeStamp: timeStamp,
         });
       } catch (error) {
-        console.error('Error updating document:', error);
+        Alert.alert("Error updating. Try again later..")
       }
       setNavigate("HomePage")
     }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
@@ -141,12 +124,9 @@ export default function EditPage() {
     {/* Step 2: Living Expenses */}
     {step === 2 && (
       <View style={styles.stepContainer}>
-        <LivingExpenses expenses={expenses} setExpenses={setExpenses}/>
-        <Bills bills={bills} setBills={setBills}/>
-  
+        <LivingExpenses expenses={expenses} setExpenses={setExpenses} bills={bills} setBills={setBills}/>
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
-  
           <NextButton handleNextStep={handleNextStep}/>
         </View>
         </View>
@@ -154,10 +134,8 @@ export default function EditPage() {
   
     {/* Step 3: Debt Details */}
     {step === 3 && (
-      <View style={styles.stepContainer}>
-        
+      <View style={styles.stepContainer}>     
         <Debts debts={debts} setDebts={setDebts}/>
-  
         <View style={styles.navButtons}>
           <BackButton handleBack={handleBack}/>
           <NextButton handleNextStep={handleNextStep}/>

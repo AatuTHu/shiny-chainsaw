@@ -2,13 +2,7 @@ const makeTimeStamp = () => {
     const date = new Date()
     const time =
     //get date.month.year
-    date.getDate()+'.'+(date.getMonth()+1)+'.'+date.getFullYear()/*+'-'+
-    //get hour, if hours < 10 then add a 0 infront of the number
-    (date.getHours() < 10 ? '0'+date.getHours() : date.getHours())+':'+
-    //get minutes, if minutes < 10 then add a 0 infront of the number
-    (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes())+':'+
-    //get seconds
-    date.getSeconds()*/ 
+    date.getDate()+'.'+(date.getMonth()+1)+'.'+date.getFullYear() 
     return time
 }
 
@@ -39,10 +33,21 @@ const handleRemoveFromList = (setItem,index) => {
     setItem((prevBills) => prevBills.filter((_, i) => i !== index));
 }
 
+const handleOnDropDownPress = (setItem,setVisible,visible,value,index) => {
+    setVisible((prev) => (prev === index ? null : index));
+    if (visible !== index) handleChangeItem(setItem, 'name', value);
+}
+
+const handleAddToList = (setItem, setVisible, setTempObject, tempObject) => {
+    setItem((prevItem) => [...prevItem, { ...tempObject }]);
+    setTempObject({});
+    setVisible(null);
+};
+
 export {
     makeTimeStamp,
-    isNumber,
     handleChangeItem,
-    isValidField,
     handleRemoveFromList,
+    handleOnDropDownPress,
+    handleAddToList
 }

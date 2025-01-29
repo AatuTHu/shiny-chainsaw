@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import styles from '../../styles/startPage';
-import { handleChangeItem, handleRemoveFromList } from '../../services/Utilities';
+import { handleChangeItem, handleRemoveFromList,handleOnDropDownPress,handleAddToList } from '../../services/Utilities';
 export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
   const [visible, setVisible] = useState(null);
   const [tempObject, setTempObject] = useState({name:"",amount:0})
@@ -23,28 +23,6 @@ export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
     { name: 'Other', emoji: '💡' },
   ];
 
-  const handleAddgoal = () => {
-    setOtherExpenses((prevDebts) => {
-        const updatedDebts = [
-        ...prevDebts,
-        { name: tempObject.name, amount: tempObject.amount }
-        ];
-        return updatedDebts;
-    });
-    setVisible(null)
-    setTempObject({name: tempObject.name ,amount: ""});
-  }
-
-const handleOnGoalPress = (name, index) => {
-  if(visible === index) {
-    setVisible(null);
-    return;
-  }
-  handleChangeItem(setTempObject,"name",name)
-  setVisible(index);
-}
-
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: 40}}>
         <Text style={styles.label}>Other Expenses</Text>
@@ -53,7 +31,7 @@ const handleOnGoalPress = (name, index) => {
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
               style={styles.dDownItem}
-              onPress={() => handleOnGoalPress(expense.name,index)}
+              onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,expense.name, index)}
             >
               <Text style={styles.dDownText}>
                 {expense.emoji} {expense.name}
@@ -86,7 +64,7 @@ const handleOnGoalPress = (name, index) => {
                 />
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={handleAddgoal}
+                  onPress={() => handleAddToList(setOtherExpenses,setVisible,setTempObject,tempObject)}
                 >
                   <Text style={styles.addButtonText}>Add</Text>
                 </TouchableOpacity>

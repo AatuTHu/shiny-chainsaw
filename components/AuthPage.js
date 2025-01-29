@@ -46,16 +46,14 @@ export default function AuthPage() {
         .catch((error) => {
           clearTimeout(timeout);  // Clear the timeout if there's an error
           setIsLoading(false);
-          console.log(error);
           Alert.alert('Error', 'Invalid email or password');
         });
     };
   
     const onContinueAnonymousPress = async() => {
-      signInAnonymously(auth).then((creds) =>{
+      signInAnonymously(auth).then(() =>{
       setNavigate("StartPage");
-    }).catch((error) => {
-      console.log(error)
+    }).catch(() => {
       Alert.alert('Error', 'Failed to sign in anonymously')
     })
     }

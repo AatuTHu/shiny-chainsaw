@@ -1,4 +1,4 @@
-import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard,Alert  } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState } from 'react'
 import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
@@ -6,7 +6,6 @@ import { useNavigation } from '../services/Navigation';
 import { makeTimeStamp } from '../services/Utilities.js'
 import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
-import Bills from './reusables/Bills.js'
 import Debts from './reusables/Debts.js'
 import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
@@ -18,9 +17,8 @@ export default function StartPage() {
 const { setNavigate } = useNavigation()
 const [step, setStep] = useState(1);
 
-const [expenses, setExpenses] = useState({housing: 0, groceries: 0, transportation: 0});
-const [salary, setSalary] = useState({ salary: 0, frqType: "Monthly", frqAmount: 30});
-
+const [salary, setSalary] = useState(0);
+const [expenses, setExpenses] = useState([]);
 const [incomes, setIncomes] = useState([]);
 const [bills, setBills] = useState([]);
 const [debts, setDebts] = useState([]);
@@ -54,7 +52,7 @@ const [summaryData, setSummaryData] = useState([])
   };
 
 const handleBack = () => {
-  if(step === 1) setNavigate("AuthPage")
+  if(step === 1) {auth.signOut(); setNavigate("AuthPage");}
   else if(step > 1) setStep(step - 1)
 }
 
@@ -70,9 +68,13 @@ const handleFinish = async() => {
     debts: debts,
     savingGoal: savingGoals,
     timeStamp: makeTimeStamp(),
-}).catch (error => console.log(error))
-  setNavigate("HomePage")
-}
+  }).then(
+    setNavigate("HomePage")
+  ).catch (() =>{ 
+    Alert.alert("Something went wrong...")
+    setNavigate("AuthPage")
+    })
+  }
 
 return (
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -95,8 +97,7 @@ return (
   {/* Step 2: Living Expenses */}
   {step === 2 && (
     <View style={styles.stepContainer}>
-      <LivingExpenses expenses={otherExpenses} setExpenses={setOtherExpenses} bills={bills} setBills={setBills}/>
-
+      <LivingExpenses expenses={expenses} setExpenses={setExpenses} bills={bills} setBills={setBills}/>
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
 
@@ -107,10 +108,8 @@ return (
 
   {/* Step 3: Debt Details */}
   {step === 3 && (
-    <View style={styles.stepContainer}>
-      
+    <View style={styles.stepContainer}>    
       <Debts debts={debts} setDebts={setDebts}/>
-
       <View style={styles.navButtons}>
         <BackButton handleBack={handleBack}/>
         <NextButton handleNextStep={handleNextStep}/>
