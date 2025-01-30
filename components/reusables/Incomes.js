@@ -26,7 +26,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
       <Text style={styles.label}>Current Balance</Text>
       <View style={styles.dDownContainer}>
         <TouchableOpacity
-          style={styles.dDownItem}
+          style={[styles.dDownItem, { borderColor: '#82d986'}]}
           onPress={handleBalanceDropdown}
         >
           <Text style={styles.dDownText}>
@@ -35,7 +35,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
         </TouchableOpacity>
 
         {visible === 'balance' && (
-          <View style={styles.expandedContainer}>
+          <View style={[styles.expandedContainer, { borderColor: '#82d986'}]}>
             <Text style={styles.label}>Enter your current balance:</Text>
             <TextInput
               style={styles.input}
@@ -64,7 +64,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
           return (
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
-                style={styles.dDownItem}
+                style={[styles.dDownItem, { borderColor: '#82d986'}]}
                 onPress={() => handleOnDropDownPress(setTempObject, setVisible, visible, income.name, index)}
               >
                 <Text style={styles.dDownText}>
@@ -73,7 +73,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
               </TouchableOpacity>
 
               {visible === index && (
-                <View style={styles.expandedContainer}>
+                <View style={[styles.expandedContainer, { borderColor: '#82d986'}]}>
                   {income.name === 'Other' ? (
                     <>
                       <Text style={styles.label}>Income Source:</Text>

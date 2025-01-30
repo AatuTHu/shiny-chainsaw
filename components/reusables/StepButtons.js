@@ -1,4 +1,4 @@
-import { Text,TouchableOpacity } from 'react-native'
+import { View, Text,TouchableOpacity } from 'react-native'
 import styles from '../../styles/startPage'
 import React from 'react'
 
@@ -38,15 +38,17 @@ const FinishButton = ({handleFinish, title}) => {
     )
 }
 
-const MenuButton = ({handlePress, emoji, value}) => {
+const MenuButton = ({handlePress, title, emoji, value}) => {
     if(emoji === undefined) emoji = 'Menu'
     return (
-        <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => handlePress(value)}
-        >
-            <Text style={styles.menuButtonText}>{emoji}</Text>
-        </TouchableOpacity>
+        <View style={styles.dDownContainer}>
+            <TouchableOpacity
+                style={[styles.dDownItem, {borderColor: '#6090f0'}]}
+                onPress={() => handlePress(value)}
+            >
+                <Text style={styles.dDownText}>{emoji} {title}</Text>
+            </TouchableOpacity>
+        </View>
     )
 }
 

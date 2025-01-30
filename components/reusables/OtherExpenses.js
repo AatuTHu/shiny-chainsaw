@@ -30,7 +30,7 @@ export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
         {expenseOptions.map((expense, index) => (
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
-              style={styles.dDownItem}
+              style={[styles.dDownItem, { borderColor: '#cb8fe3'}]}
               onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,expense.name, index)}
             >
               <Text style={styles.dDownText}>
@@ -39,7 +39,7 @@ export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
             </TouchableOpacity>
 
             {visible === index && (
-              <View style={styles.expandedContainer}>
+              <View style={[styles.expandedContainer, { borderColor: '#cb8fe3'}]}>
                 {expense.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Expense Name:</Text>

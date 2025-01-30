@@ -5,6 +5,7 @@ import Icon from '@expo/vector-icons/Ionicons'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '../services/Navigation';
+import { useFonts } from "expo-font";
 
 
 export default function AuthPage() {
@@ -13,6 +14,10 @@ export default function AuthPage() {
   const [password, setPassword] = useState('ExamplePassword')
   const [isLoading, setIsLoading] = useState(false)
   const { setNavigate } = useNavigation()
+  const [fontsLoaded] = useFonts({
+    "PassionsConflict-Regular": require("../assets/fonts/PassionsConflict-Regular.ttf"),
+  });
+
 
   useEffect(() => {
     const isLoggedIn = async() => {
@@ -58,6 +63,10 @@ export default function AuthPage() {
     })
     }
 
+    if (!fontsLoaded) {
+      return null;
+    }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -69,7 +78,7 @@ export default function AuthPage() {
             </View>
           </BlurView>
         )}
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>BudJet</Text>
 
       {/* Email Input */}
       <View style={styles.inputContainer}>
@@ -146,7 +155,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 36,
+    fontFamily: 'PassionsConflict-Regular',
+    fontSize: 100,
     color: '#fff',
     fontWeight: 'bold',
     marginBottom: 40,

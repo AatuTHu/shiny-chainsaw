@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
      container: {
       flex: 1,
-      backgroundColor: '#0e0e14',
+      backgroundColor: '#1E1E1E',
     },
     stepContainer: {
       flex: 1,
@@ -12,15 +12,8 @@ export default StyleSheet.create({
     },
     menuContainer: {
       flex: 1,
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
       alignItems: 'center',
-    },
-    menuRowContainer: {
-      alignSelf: 'center',
-      flexDirection: "row",
-      justifyContent: "space-around", // Ensures spacing between items
-      width: "90%",
-      padding: 10,
     },
     label: {
       fontSize: 24,
@@ -76,7 +69,7 @@ export default StyleSheet.create({
       bottom: 20,
     },
     backButton: {
-      backgroundColor: '#ff1100',
+      backgroundColor: '#de4b4b',
       padding: 10,
       borderRadius: 5,
       width: '45%',
@@ -88,7 +81,7 @@ export default StyleSheet.create({
       fontWeight: 'bold',
     },
     nextButton: {
-      backgroundColor: '#1e90ff',
+      backgroundColor: '#4ba1de',
       padding: 10,
       borderRadius: 5,
       width: '45%',
@@ -198,6 +191,7 @@ export default StyleSheet.create({
       backgroundColor: '#1E1E1E',
       width: 300,
       padding: 20,
+      borderWidth: 1,
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -211,6 +205,8 @@ export default StyleSheet.create({
     expandedContainer: {
       marginTop: 10,
       padding: 15,
+      borderWidth: 1,
+      borderRadius: 10,
       borderRadius: 10,
       backgroundColor: '#2A2A2A',
       width: 300,

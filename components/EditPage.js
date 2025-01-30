@@ -79,11 +79,11 @@ export default function EditPage() {
     }
 
     const menuItems = [
-      { id: "1", title: "Incomes", value: 2 },
-      { id: "2", title: "LivingExpenses", value: 3 },
-      { id: "3", title: "Debts", value: 4 },
-      { id: "4", title: "Other Expenses", value: 5 },
-      { id: "5", title: "Savings Goal", value: 6 },
+      { id: "1", title: "Incomes", emoji: '💰', value: 2 },
+      { id: "2", title: "Living Expenses", emoji:'🏡', value: 3 },
+      { id: "3", title: "Debts", emoji:'🏦', value: 4 },
+      { id: "4", title: "Other Expenses", emoji:'🛍️',value: 5 },
+      { id: "5", title: "Savings Goal", emoji:'🚀', value: 6 },
     ];
 
   return (
@@ -94,12 +94,11 @@ export default function EditPage() {
     <View style={styles.menuContainer}>
       <FlatList
         data={menuItems}
+        contentContainerStyle={styles.menuContainer}
         keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.menuRowContainer}
         renderItem={({ item }) => (
           
-            <MenuButton emoji={item.title} handlePress={setStep} value={item.value} />
+            <MenuButton title={item.title} emoji={item.emoji} handlePress={setStep} value={item.value} />
           
         )}
       />

@@ -24,7 +24,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
         {goalOptions.map((goal, index) => (
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
-              style={styles.dDownItem}
+              style={[styles.dDownItem, { borderColor: '#e2e66e'}]}
               onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,goal.name, index)}
             >
               <Text style={styles.dDownText}>
@@ -33,7 +33,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
             </TouchableOpacity>
 
             {visible === index && (
-              <View style={styles.expandedContainer}>
+              <View style={[styles.expandedContainer, { borderColor: '#e2e66e'}]}>
                 {goal.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Goal Name:</Text>

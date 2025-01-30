@@ -60,14 +60,14 @@ const makeChart = (item) => {
     {
       name: "Needs",
       population: totalNeeds,
-      color: "#FF6347",
+      color: "#de8b4b",
       legendFontColor: "#7F7F7F",
       legendFontSize: 14
     },
     {
       name: "Other Expenses",
       population: totalOtherExpenses,
-      color: "#FFA500",
+      color: "#cb8fe3",
       legendFontColor: "#7F7F7F",
       legendFontSize: 14
     },

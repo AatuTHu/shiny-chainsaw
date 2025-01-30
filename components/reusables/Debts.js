@@ -22,7 +22,7 @@ export default function Debts({debts, setDebts}) {
         {debtsOptions.map((debts, index) => (
           <View key={index} style={styles.dDownContainer}>
             <TouchableOpacity
-              style={styles.dDownItem}
+              style={[styles.dDownItem, { borderColor: '#de4b4b'}]}
               onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,debts.name, index)}
             >
               <Text style={styles.dDownText}>
@@ -31,7 +31,7 @@ export default function Debts({debts, setDebts}) {
             </TouchableOpacity>
 
             {visible === index && (
-              <View style={styles.expandedContainer}>
+              <View style={[styles.expandedContainer, { borderColor: '#de4b4b'}]}>
                 {debts.name === 'Other' && (
                   <>
                     <Text style={styles.label}>Debt Name:</Text>

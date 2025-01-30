@@ -32,7 +32,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
           return (
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
-                style={styles.dDownItem}
+                style={[styles.dDownItem, { borderColor: '#de8b4b'}]}
                 onPress={() => handleOnDropDownPress(setTempObject,setVisible,visible,expense.name, index)}
               >
                 <Text style={styles.dDownText}>
@@ -41,7 +41,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
               </TouchableOpacity>
 
               {visible === index && (
-                <View style={styles.expandedContainer}>
+                <View style={[styles.expandedContainer, { borderColor: '#de8b4b'}]}>
                   {expense.name === 'Other' ? (
                     <>
                     <Text style={styles.label}>Expense Name:</Text>
@@ -80,7 +80,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
           return (
             <View key={index} style={styles.dDownContainer}>
               <TouchableOpacity
-                style={styles.dDownItem}
+                style={[styles.dDownItem, { borderColor: '#de8b4b'}]}
                 onPress={() => handleOnDropDownPress(setTempObject,setVisible2,visible2,bill.name, index)}
               >
                 <Text style={styles.dDownText}>
@@ -89,7 +89,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
               </TouchableOpacity>
 
               {visible2 === index && (
-                <View style={styles.expandedContainer}>
+                <View style={[styles.expandedContainer, { borderColor: '#de8b4b'}]}>
                   {bill.name === 'Other' ? (
                     <>
                     <Text style={styles.label}>Bill Name:</Text>
