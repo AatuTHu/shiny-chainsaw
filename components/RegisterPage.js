@@ -9,8 +9,8 @@ import { useNavigation } from '../services/Navigation';
 
 export default function RegisterPage()  {
 
-    const [email, setEmail] = useState('Example@email.com')
-    const [password, setPassword] = useState('ExamplePassword')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('');
     const { setNavigate } = useNavigation()
 
