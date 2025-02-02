@@ -1,10 +1,10 @@
 import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity,TextInput,Alert  } from 'react-native';
 import { signOut, auth, USERINFO, query, collection, db, where, onSnapshot,doc, updateDoc} from '../services/Firebase';
 import { useNavigation } from '../services/Navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { calculateBalance, getTotalAmountOfBills, getTotalAmountOfExpenses} from '../services/Calculator';
+import { calculateBalance } from '../services/Calculator';
 import Icon from '@expo/vector-icons/Ionicons'
 import Summary from './reusables/Summary';
 
@@ -35,51 +35,52 @@ export default function HomePage() {
     return () => unsubscribe(); // Clean up the listener
 }, []);
 
-const makeChart = (item) => {
-  // Helper function to sum amounts from arrays
-  const sumAmounts = (arr) => {
-    return arr.reduce((sum, entry) => {
-      // Ensure the field value is a valid number before adding it
-      const amount = entry.amount;
-      return typeof amount === 'number' && !isNaN(amount) ? sum + amount : sum;
-    }, 0);
+const makeChart = useMemo(() => {
+  return (item) => {
+    // Helper function to sum amounts from arrays
+    const sumAmounts = (arr) => {
+      return arr.reduce((sum, entry) => {
+        const amount = entry.amount;
+        return typeof amount === 'number' && !isNaN(amount) ? sum + amount : sum;
+      }, 0);
+    };
+
+    // Calculate total from bills and expenses
+    const totalBills = sumAmounts(item.bills);
+    const totalExpenses = sumAmounts(item.expenses);
+    const totalNeeds = totalBills + totalExpenses;
+
+    // Repeat for other expenses
+    const totalOtherExpenses = sumAmounts(item.otherExpenses);
+
+    const balance = item.balance || 0;
+    const finalBalance = balance - totalNeeds - totalOtherExpenses;
+
+    setChartData([
+      {
+        name: "Needs",
+        population: totalNeeds,
+        color: "#de8b4b",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14,
+      },
+      {
+        name: "Other Expenses",
+        population: totalOtherExpenses,
+        color: "#cb8fe3",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14,
+      },
+      {
+        name: "Excess balance",
+        population: finalBalance,
+        color: "#1E90FF",
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 14,
+      },
+    ]);
   };
-
-  // Calculate total from bills and expenses
-  const totalBills = sumAmounts(item.bills);
-  const totalExpenses = sumAmounts(item.expenses);
-  const totalNeeds = totalBills + totalExpenses;
-
-  // Repeat for other expenses
-  const totalOtherExpenses = sumAmounts(item.otherExpenses);
-
-  const balance = item.balance || 0;
-  const finalBalance = balance - totalNeeds - totalOtherExpenses;
-
-  setChartData([
-    {
-      name: "Needs",
-      population: totalNeeds,
-      color: "#de8b4b",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 14
-    },
-    {
-      name: "Other Expenses",
-      population: totalOtherExpenses,
-      color: "#cb8fe3",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 14
-    },
-    {
-      name: "Excess balance",
-      population: finalBalance,
-      color: "#1E90FF", 
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 14
-    },
-  ]);
-};
+}, []);
 
 
   const handleRandomBalanceChange = (type) => {
@@ -124,7 +125,7 @@ return (
 
                 <View style={styles.balanceContent}>
                   <Text style={styles.labelText}>Balance:</Text>
-                  <Text style={styles.balanceText}>{userData[0].balance} $</Text>
+                  <Text style={styles.balanceText}>{item.balance} $</Text>
                 </View>
 
                 <TouchableOpacity onPress={()=> setNavigate("EditPage") }>
@@ -164,6 +165,7 @@ return (
                 accessor="population"
                 backgroundColor="transparent"
               />
+
               {/*Summary*/}
               <Summary item={item}/>
             </View>

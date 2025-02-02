@@ -5,7 +5,7 @@ import { handleChangeItem,handleRemoveFromList,handleOnDropDownPress,handleAddTo
 
 export default function Debts({debts, setDebts}) {
   const [visible, setVisible] = useState(null);
-  const [tempObject, setTempObject] = useState({name:"",amount:0})
+  const [tempObject, setTempObject] = useState({name:"",amount:0, payment: 0})
 
   const debtsOptions = [
     { name: 'House Loan', emoji: '🏢' },
@@ -54,6 +54,17 @@ export default function Debts({debts, setDebts}) {
                   value={tempObject.amount}
                   onChangeText={(text) => handleChangeItem(setTempObject,"amount",text)}
                 />
+
+                <Text style={styles.label}>Monthly payment:</Text>
+                <TextInput
+                  style={styles.input}s
+                  placeholder={`Enter payment`}
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  value={tempObject.payment}
+                  onChangeText={(text) => handleChangeItem(setTempObject,"payment",text)}
+                />
+
                 <TouchableOpacity
                   style={styles.addButton}
                   onPress={() => handleAddToList(setDebts,setVisible,setTempObject,tempObject)}

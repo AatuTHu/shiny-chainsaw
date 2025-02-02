@@ -11,11 +11,11 @@ export default function App() {
     return (
       <Navigation>
         <Auth/>
-        <ResetPassword/>
         <Register/>
         <Home/>
         <Start/>
         <Edit/>
+        <ResetPassword/>
       </Navigation>
     )
   }
