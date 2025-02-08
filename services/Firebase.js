@@ -5,7 +5,8 @@ import {
   signOut, 
   initializeAuth, 
   getReactNativePersistence, 
-  signInAnonymously} from "firebase/auth";
+  signInAnonymously,
+  sendPasswordResetEmail } from "firebase/auth";
   const { getFirestore, 
     collection, 
     onSnapshot, 
@@ -43,6 +44,7 @@ export {
   signOut,  
   getReactNativePersistence, 
   signInAnonymously,
+  sendPasswordResetEmail,
   auth,
   db,
   USERINFO,

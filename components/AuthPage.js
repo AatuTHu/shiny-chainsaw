@@ -6,16 +6,17 @@ import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '../services/Navigation';
 import { useFonts } from "expo-font";
+import styles from '../styles/auth.js'
 
 
 export default function AuthPage() {
 
-  const [email, setEmail] = useState('Example@email.com')
-  const [password, setPassword] = useState('ExamplePassword')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { setNavigate } = useNavigation()
   const [fontsLoaded] = useFonts({
-    "PassionsConflict-Regular": require("../assets/fonts/PassionsConflict-Regular.ttf"),
+    "Pacifico-Regular": require("../assets/fonts/Pacifico-Regular.ttf"),
   });
 
 
@@ -56,11 +57,25 @@ export default function AuthPage() {
     };
   
     const onContinueAnonymousPress = async() => {
+
+      setIsLoading(true);
+      
+      const timeout = setTimeout(() => {
+        setIsLoading(false);
+        Alert.alert('Error', 'Login timed out. Please try again.');
+      }, 5000);
+
       signInAnonymously(auth).then(() =>{
-      setNavigate("StartPage");
+        clearTimeout(timeout);  // Clear the timeout if sign-in is successful
+        setIsLoading(false);
+        setNavigate("StartPage");
     }).catch(() => {
       Alert.alert('Error', 'Failed to sign in anonymously')
     })
+    }
+
+    const onResetPassword = () => {
+      setNavigate("ResetPassword");
     }
 
     if (!fontsLoaded) {
@@ -88,6 +103,7 @@ export default function AuthPage() {
           onChangeText={(text) => setEmail(text)}
           placeholder="Email"
           placeholderTextColor="#888"
+          keyboardType="email-address"
           style={styles.input}
         />
       </View>
@@ -106,7 +122,7 @@ export default function AuthPage() {
       </View>
 
       {/* Forgot Password */}
-      <TouchableOpacity style={styles.forgotPassword}>
+      <TouchableOpacity onPress={onResetPassword} style={styles.forgotPassword}>
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
 
@@ -130,9 +146,15 @@ export default function AuthPage() {
       </View>
 
       {/* Anonymous Sign In Button */}
-      <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.googleButton}>
-        <Icon name="person" size={20} color="#fff" />
-        <Text style={styles.googleButtonText}>Continue as guest</Text>
+      <TouchableOpacity onPress={onContinueAnonymousPress} style={styles.anonButton}>
+      <LinearGradient
+          colors={['#f6b93b', '#fae596']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientButton}
+        >
+          <Text style={styles.anonButtonText}>Continue as guest</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       {/* Sign Up Section */}
@@ -146,119 +168,3 @@ export default function AuthPage() {
   </TouchableWithoutFeedback>
   )
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0e0e14',
-    padding: 20,
-    justifyContent: 'center',
-  },
-  title: {
-    fontFamily: 'PassionsConflict-Regular',
-    fontSize: 100,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2a2a3d',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    color: '#fff',
-    height: 50,
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 30,
-  },
-  forgotPasswordText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  gradientButton: {
-    width: '100%',
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  signInButtonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#444',
-  },
-  orText: {
-    color: '#fff',
-    fontSize: 20,
-    textAlign: 'center',
-    marginVertical: 10,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#44475a',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  googleButtonText: {
-    color: '#fff',
-    fontSize: 20,
-    marginLeft: 10,
-  },
-  signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  signUpText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  signUpButtonText: {
-    color: '#4caf50',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 5,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderText: {
-    color: '#fff',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  blur:{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1, // Ensure blur view is on top of other content
-  },
-});

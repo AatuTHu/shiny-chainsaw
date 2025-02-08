@@ -4,6 +4,7 @@ import Register from './components/RegisterPage'
 import Home from './components/HomePage'
 import Start from  './components/StartPage'
 import Edit from './components/EditPage'
+import ResetPassword from './components/ResetPassword';
 
 export default function App() {
 
@@ -14,6 +15,7 @@ export default function App() {
         <Home/>
         <Start/>
         <Edit/>
+        <ResetPassword/>
       </Navigation>
     )
   }
