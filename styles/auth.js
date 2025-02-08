@@ -129,4 +129,11 @@ export default StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
       },
+      title2: {
+        fontSize: 36,
+        color: '#fff',
+        fontWeight: 'bold',
+        marginBottom: 40,
+        textAlign: 'center',
+      },
     });
