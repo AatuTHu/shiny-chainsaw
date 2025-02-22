@@ -30,7 +30,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
           onPress={handleBalanceDropdown}
         >
           <Text style={styles.dDownText}>
-            💰 Current Balance: ${balance}
+            💰 Current Balance: {balance}€
           </Text>
         </TouchableOpacity>
 
@@ -113,7 +113,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
           {salary > 0 && (
             <View style={styles.savedItemContainer}>
               <Text style={styles.savedItemText}>
-                Salary: ${salary}
+                Salary: {salary}€
               </Text>
               <TouchableOpacity onPress={() => setSalary("")}>
                 <Text style={styles.removeText}>Remove</Text>
@@ -123,7 +123,7 @@ export default function Incomes({ incomes, setIncomes, salary, setSalary, balanc
           {incomes.map((item, index) => (
             <View key={index} style={styles.savedItemContainer}>
               <Text style={styles.savedItemText}>
-                {item.name}: ${item.amount}
+                {item.name}: {item.amount}€
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setIncomes, index)}>
                 <Text style={styles.removeText}>Remove</Text>

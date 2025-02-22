@@ -3,13 +3,10 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0e0e14',
-    },
-    summaryContainer:{
-        padding: 10,
+        backgroundColor: '#171717',
     },
     dataContainer: {
-        backgroundColor: '#0e0e14',
+        backgroundColor: '#171717',
         padding: 10,
         borderRadius: 10,
     },

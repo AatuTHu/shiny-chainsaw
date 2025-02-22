@@ -1,16 +1,16 @@
-import { View, Text } from 'react-native'
+import { ScrollView, View, Text } from 'react-native'
 import styles from '../../styles/summary'
 import React from 'react'
 
 export default function Summary({ item, title }) {
   return (
-    <View style={styles.summaryContainer}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%', marginBottom: 80}}>
       <Text style={styles.summaryTitle}>{title}</Text>
 
       <View style={styles.section}>
         <View style={styles.row}>
-          <Text style={styles.labelText}>Current Balance:</Text>
-          <Text style={styles.text}>{item.balance} $</Text>
+          <Text style={styles.labelText}>Current Balance: </Text>
+          <Text style={styles.text}>{item.balance} €</Text>
         </View>
       </View>
 
@@ -19,12 +19,12 @@ export default function Summary({ item, title }) {
           <Text style={styles.labelText}>Saving goals:</Text>
         </View>
         {item.savingGoal.map((goal, index) => (
-          <View key={`goal-${index}`} style={styles.row}>
+          <View key={`goal-€{index}`} style={styles.row}>
             <Text style={styles.text}>
               {goal.name}
             </Text>
             <Text style={styles.text}>
-              {goal.amountSaved} / {goal.savingGoal} $
+              {goal.amountSaved} / {goal.savingGoal} €
             </Text>
           </View>
         ))}
@@ -33,7 +33,7 @@ export default function Summary({ item, title }) {
       <View style={styles.section}>
         <View style={styles.row}>
           <Text style={styles.labelText}>Salary:</Text>
-          <Text style={styles.text}>{item.salary} $</Text>
+          <Text style={styles.text}>{item.salary} €</Text>
         </View>
       </View>
 
@@ -48,7 +48,7 @@ export default function Summary({ item, title }) {
                 {income.name}
               </Text>
               <Text style={styles.text}>
-                {income.amount} $
+                {income.amount} €
               </Text>
             </View>
           ))}
@@ -62,7 +62,7 @@ export default function Summary({ item, title }) {
         {item.expenses.map((expense, index) => (
           <View key={`exp-${index}`} style={styles.row}>
             <Text style={styles.text}>{expense.name}</Text>
-            <Text style={styles.text}>{expense.amount} $</Text>
+            <Text style={styles.text}>{expense.amount} €</Text>
           </View>
         ))}
       </View>
@@ -77,7 +77,7 @@ export default function Summary({ item, title }) {
               {expense.name}
             </Text>
             <Text style={styles.text}>
-              {expense.amount} $
+              {expense.amount} €
             </Text>
           </View>
         ))}
@@ -94,7 +94,7 @@ export default function Summary({ item, title }) {
                 {bill.name}
               </Text>
               <Text style={styles.text}>
-                {bill.amount} $
+                {bill.amount} €
               </Text>
             </View>
           ))}
@@ -111,11 +111,11 @@ export default function Summary({ item, title }) {
                 {debt.name}
               </Text>
               <Text style={styles.text}>
-                {debt.amount} $
+                {debt.amount} €
               </Text>
             </View>
           ))}
       </View>
-    </View>
+    </ScrollView>
   )
 }

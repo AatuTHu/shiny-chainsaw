@@ -129,9 +129,6 @@ return (
     <View style={styles.container}>
       <FlatList
         data={userData}
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
         renderItem={({ item, i }) => (
             <View key={i} style={styles.dataContainer}>
               <View style={styles.balanceHolder}>
@@ -168,21 +165,23 @@ return (
                   />                
                 }
               {/* Pie Chart */}
-              <PieChart
-                data={chartData}
-                width={Dimensions.get("window").width - 50}
-                height={170}
-                chartConfig={{
-                  backgroundColor: "#1E1E1E",
-                  backgroundGradientFrom: "#121212",
-                  backgroundGradientTo: "#121212",
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                }}
-                accessor="population"
-                backgroundColor="transparent"
-              />
+              <View style={{ height: 170, overflow: 'hidden' }}>
+                <PieChart
+                  data={chartData}
+                  width={Dimensions.get("window").width - 50}
+                  height={170}
+                  chartConfig={{
+                    backgroundColor: "#1E1E1E",
+                    backgroundGradientFrom: "#121212",
+                    backgroundGradientTo: "#121212",
+                    decimalPlaces: 0,
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  }}
+                  accessor="population"
+                  backgroundColor="transparent"
+                />
+              </View>
               {/*Summary*/}
               <Summary item={item}/>
             </View>

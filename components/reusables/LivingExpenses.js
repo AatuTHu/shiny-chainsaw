@@ -76,19 +76,19 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
           )
         })}
         <Text style={styles.label}>Monthly Bills:</Text>
-        {billOptions.map((bill, index) => {
+        {billOptions.map((bill, index2) => {
           return (
-            <View key={index} style={styles.dDownContainer}>
+            <View key={index2} style={styles.dDownContainer}>
               <TouchableOpacity
                 style={[styles.dDownItem, { borderColor: '#de8b4b'}]}
-                onPress={() => handleOnDropDownPress(setTempObject,setVisible2,visible2,bill.name, index)}
+                onPress={() => handleOnDropDownPress(setTempObject,setVisible2,visible2,bill.name, index2)}
               >
                 <Text style={styles.dDownText}>
                   {bill.emoji} {bill.name}
                 </Text>
               </TouchableOpacity>
 
-              {visible2 === index && (
+              {visible2 === index2 && (
                 <View style={[styles.expandedContainer, { borderColor: '#de8b4b'}]}>
                   {bill.name === 'Other' ? (
                     <>
@@ -128,7 +128,7 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
          {expenses.map((item, index) => (
             <View key={index} style={styles.savedItemContainer}>
               <Text key={index} style={styles.savedItemText}>
-                {item.name}: ${item.amount}
+                {item.name}: {item.amount}€
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setExpenses, index)}>
                 <Text style={styles.removeText}>Remove</Text>
@@ -136,12 +136,12 @@ export default function LivingExpenses({expenses, setExpenses, bills, setBills})
             </View>
           ))}
 
-          {bills.map((item, index) => (
-            <View key={index} style={styles.savedItemContainer}>
-              <Text key={index} style={styles.savedItemText}>
+          {bills.map((item, index2) => (
+            <View key={index2} style={styles.savedItemContainer}>
+              <Text key={index2} style={styles.savedItemText}>
                 {item.name}: ${item.amount}
               </Text>
-              <TouchableOpacity onPress={() => handleRemoveFromList(setBills, index)}>
+              <TouchableOpacity onPress={() => handleRemoveFromList(setBills, index2)}>
                 <Text style={styles.removeText}>Remove</Text>
               </TouchableOpacity>
             </View>

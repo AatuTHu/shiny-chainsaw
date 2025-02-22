@@ -8,7 +8,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
   const [tempObject, setTempObject] = useState({name: "", amountSaved: "", savingGoal: ""});
 
   const goalOptions = [
-    { name: 'Emergency Fund', emoji: '🛟' },
+    { name: 'Emergency Fund', emoji: '🧯' },
     { name: 'Retirement', emoji: '🏖️' },
     { name: 'Vehicle', emoji: '🚗' },
     { name: 'Travel', emoji: '✈️' },
@@ -81,7 +81,7 @@ export default function SavingGoal({savingGoals,setSavingGoals}) {
           {savingGoals.map((goal, index) => (
           <View key={index} style={styles.savedItemContainer}>
           <Text style={styles.savedItemText}>
-            {goal.name}: {goal.amountSaved} / {goal.savingGoal}$
+            {goal.name}: {goal.savingGoal}€
           </Text>
           <TouchableOpacity onPress={() => handleRemoveFromList(setSavingGoals, index)}>
             <Text style={styles.removeText}>Remove</Text>

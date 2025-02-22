@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0e0e14',
+    backgroundColor: '#171717',
     paddingHorizontal: 20,
     justifyContent: 'center',
   },
@@ -17,7 +17,7 @@ export default StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2a3d',
+    backgroundColor: '#424242',
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 20,

@@ -76,7 +76,7 @@ export default function OtherExpenses({otherExpenses,setOtherExpenses}) {
           {otherExpenses.map((item, index) => (
             <View key={index} style={styles.savedItemContainer}>
               <Text style={styles.savedItemText}>
-                {item.name}: ${item.amount}
+                {item.name}: {item.amount}€
               </Text>
               <TouchableOpacity onPress={() => handleRemoveFromList(setOtherExpenses, index)}>
                 <Text style={styles.removeText}>Remove</Text>

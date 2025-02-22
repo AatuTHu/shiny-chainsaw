@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
      container: {
       flex: 1,
-      backgroundColor: '#0e0e14',
+      backgroundColor: '#171717',
     },
     stepContainer: {
       flex: 1,
@@ -24,25 +24,12 @@ export default StyleSheet.create({
     input: {
       width: '100%',
       height: 50,
-      borderRadius: 5,
+      borderRadius: 10,
       paddingHorizontal: 10,
-      backgroundColor: '#2a2a3d',
+      backgroundColor: '#424242',
       color: '#fff',
       marginVertical: 10,
       fontSize: 18
-    },
-    dropdownButton: {
-      height: 50,
-      width: 90,
-      backgroundColor: '#2a2a3d',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 5,
-      marginVertical: 10,
-    },
-    dropdownText: {
-      color: '#fff',
-      fontSize: 16,
     },
     addButton: {
       backgroundColor: '#28a745',
@@ -182,13 +169,12 @@ export default StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 30,
     },
     dDownContainer: {
       marginBottom: 20,
     },
     dDownItem: {
-      backgroundColor: '#1E1E1E',
+      backgroundColor: '#212121',
       width: 300,
       padding: 20,
       borderWidth: 1,
@@ -212,7 +198,7 @@ export default StyleSheet.create({
       width: 300,
     },
     savedItemContainer: {
-      backgroundColor: '#333',
+      backgroundColor: '#212121',
       padding: 15,
       marginBottom: 10,
       borderRadius: 10,
