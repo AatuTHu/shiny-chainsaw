@@ -1,5 +1,4 @@
 import { makeTimeStamp } from "./Utilities";
-import {USERINFO,db,doc,setDoc,auth} from '../services/Firebase';
 // Helper to calculate days between two dates
 const calculateDaysBetween = (startDate, endDate) => {
     const msPerDay = 1000 * 60 * 60 * 24;

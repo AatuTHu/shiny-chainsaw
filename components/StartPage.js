@@ -1,7 +1,6 @@
-import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard,Alert  } from 'react-native'
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from '../styles/startPage.js'
-import React, { useState } from 'react'
-import { USERINFO, db, addDoc, collection, auth } from '../services/Firebase.js'
+import React, { useState, useEffect } from 'react'
 import { useNavigation } from '../services/Navigation';
 import { makeTimeStamp } from '../services/Utilities.js'
 import { BackButton,FinishButton,NextButton } from './reusables/StepButtons.js'
@@ -10,6 +9,7 @@ import Debts from './reusables/Debts.js'
 import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
 import Summary from './reusables/Summary.js'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtherExpenses from './reusables/OtherExpenses.js';
 
 export default function StartPage() {
@@ -59,23 +59,8 @@ const handleBack = () => {
 }
 
 const handleFinish = async() => {
-  await addDoc(collection(db, USERINFO), {
-    uid: auth.currentUser.uid,
-    salary: salary,
-    balance: balance,
-    otherIncomes: incomes,
-    expenses: expenses,
-    otherExpenses: otherExpenses,
-    bills: bills,
-    debts: debts,
-    savingGoal: savingGoals,
-    timeStamp: makeTimeStamp(),
-  }).then(
-    setNavigate("HomePage")
-  ).catch (() =>{ 
-    Alert.alert("Something went wrong...")
-    setNavigate("AuthPage")
-    })
+    await AsyncStorage.setItem('USERINFO', JSON.stringify(summaryData));
+    setNavigate("HomePage");
   }
 
 return (

@@ -1,7 +1,6 @@
 import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert,FlatList } from 'react-native'
 import styles from '../styles/startPage.js'
 import React, { useState, useEffect } from 'react'
-import { auth, USERINFO, query, collection, db, where, onSnapshot,setDoc,doc} from '../services/Firebase.js'
 import { useNavigation } from '../services/Navigation';
 import { BackButton,FinishButton,MenuButton,NextButton } from './reusables/StepButtons.js'
 import Incomes from './reusables/Incomes.js'
@@ -10,6 +9,7 @@ import SavingGoal from './reusables/SavingGoal.js'
 import LivingExpenses from './reusables/LivingExpenses.js'
 import Summary from './reusables/Summary.js'
 import OtherExpenses from './reusables/OtherExpenses.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditPage() {
     const { setNavigate } = useNavigation()
@@ -28,27 +28,29 @@ export default function EditPage() {
     const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, USERINFO), where("uid", "==", auth.currentUser.uid));
-    const queryUserData = onSnapshot(q, (querySnapshot) => {
-      if (!querySnapshot.empty) {
-        const docData = querySnapshot.docs[0].data();   
-        const { bills, debts, otherExpenses, expenses, salary, savingGoal, otherIncomes, timeStamp, balance } = docData;   
-    
-        setDocId(querySnapshot.docs[0].id);
-        setSalary(salary);
-        setIncomes(otherIncomes);
-        setExpenses(expenses);
-        setBills(bills);
-        setDebts(debts);
-        setOtherExpenses(otherExpenses);
-        setSavingGoals(savingGoal);
-        setTimeStamp(timeStamp);
-        setBalance(balance);
+    const fetchUserData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('USERINFO');
+        if (storedData) {
+          const docData = JSON.parse(storedData);
+          const { bills, debts, otherExpenses, expenses, salary, savingGoal, otherIncomes, timeStamp, balance } = docData;
+
+          setSalary(salary);
+          setIncomes(otherIncomes);
+          setExpenses(expenses);
+          setBills(bills);
+          setDebts(debts);
+          setOtherExpenses(otherExpenses);
+          setSavingGoals(savingGoal);
+          setTimeStamp(timeStamp);
+          setBalance(balance);
+        }
+      } catch (error) {
+        console.error("Error fetching user data from AsyncStorage:", error);
       }
-    });
-    return () => {
-      queryUserData();
     };
+
+    fetchUserData();
   }, []);
     
 
@@ -57,26 +59,26 @@ export default function EditPage() {
     else if(step > 1) setStep(1)
   }
   
-    const handleFinish = async() => {
-      try {  
-        const docRef = doc(db, USERINFO, docId);  // Reference to the Firestore document
-        await setDoc(docRef, {  // Update the Firestore document
-          uid: auth.currentUser.uid,
-          balance: balance,
-          salary: salary,
-          otherIncomes: incomes,
-          expenses: expenses,
-          otherExpenses: otherExpenses,
-          bills: bills,
-          debts: debts,
-          savingGoal: savingGoals,
-          timeStamp: timeStamp,
-        });
-      } catch (error) {
-        Alert.alert("Error updating. Try again later..")
-      }
-      setNavigate("HomePage")
-    }
+const handleFinish = async () => {
+  try {
+    const dataToSave = {
+      balance,
+      salary,
+      otherIncomes: incomes,
+      expenses,
+      otherExpenses,
+      bills,
+      debts,
+      savingGoal: savingGoals,
+      timeStamp,
+    };
+    await AsyncStorage.setItem('USERINFO', JSON.stringify(dataToSave));
+  } catch (error) {
+    Alert.alert("Error updating. Try again later..");
+    return;
+  }
+  setNavigate("HomePage");
+};
 
     const menuItems = [
       { id: "1", title: "Incomes", emoji: '💰', value: 2 },
